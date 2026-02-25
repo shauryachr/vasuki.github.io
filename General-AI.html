@@ -5,462 +5,213 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Vasuki Assistant</title>
 
-  <!-- MathJax v3 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" async></script>
-
-  <!-- Prism dark theme + line-numbers -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+  <!-- MathJax & Prism links remain the same -->
 
   <style>
-    :root {
-      --bg: #0d1117;
-      --surface: #161b22;
-      --text-primary: #c9d1d9;
-      --text-secondary: #8b949e;
-      --border: #30363d;
-      --accent-blue: #58a6ff;
-      --accent-red: #f85149;
-      --accent-green: #238636;
-      --active-chat: #2d3748;
-    }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text-primary);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    header {
-      padding: 0.9rem 1.5rem;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo-header {
-      height: 44px;
-      width: auto;
-    }
-    #mode-toggle {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-    button {
-      background: transparent;
-      border: 1px solid var(--border);
-      padding: 0.4rem 0.9rem;
-      border-radius: 4px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-    button.active {
-      background: var(--accent-blue);
-      color: white;
-      border: none;
-    }
-    #new-chat {
-      background: var(--accent-green);
-      color: white;
-      border: none;
-    }
-    #clear-history, #delete-all {
-      background: var(--accent-red);
-      color: white;
-      border: none;
-    }
-    #main {
-      flex: 1;
-      display: flex;
-      overflow: hidden;
-    }
-    #sidebar {
-      width: 280px;
-      background: #0d1117;
-      border-right: 1px solid var(--border);
-      padding: 1rem;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-    }
-    #chat-search {
-      padding: 0.6rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: #161b22;
-      color: var(--text-primary);
-      font-size: 0.95rem;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .chat-item {
-      padding: 0.7rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      background: #161b22;
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transition: all 0.15s;
-    }
-    .chat-item.active {
-      background: var(--active-chat);
-      color: white;
-      border-color: var(--accent-blue);
-    }
-    .chat-item.editing {
-      padding: 0;
-    }
-    .chat-item input {
-      width: 100%;
-      padding: 0.7rem 1rem;
-      border: none;
-      background: transparent;
-      color: white;
-      font-size: inherit;
-      outline: none;
-    }
-    #messages {
-      flex: 1;
-      padding: 1.5rem;
-      overflow-y: auto;
-      position: relative;
-    }
-    .quote-block {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: #444c56;
-      opacity: 0.5;
-      pointer-events: none;
-      max-width: 80%;
-      line-height: 1.3;
-      letter-spacing: -0.02em;
-    }
-    .quote-block::before,
-    .quote-block::after {
-      content: '“';
-      font-size: 4rem;
-      opacity: 0.3;
-      position: absolute;
-    }
-    .quote-block::before { left: -20px; top: -20px; }
-    .quote-block::after { right: -20px; bottom: -40px; transform: rotate(180deg); }
-    .message {
-      margin-bottom: 1.5rem;
-      display: flex;
-      gap: 1rem;
-      max-width: 90%;
-    }
-    .message.ai { align-self: flex-start; }
-    .message.user { align-self: flex-end; flex-direction: row-reverse; }
-    .avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      overflow: hidden;
-      flex-shrink: 0;
-      background: transparent;
-    }
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .user .avatar {
-      background: var(--accent-green);
-    }
-    .bubble {
-      padding: 1rem 1.3rem;
-      border-radius: 6px;
-      background: #161b22;
-      border: 1px solid var(--border);
-      line-height: 1.5;
-      font-size: 1rem;
-      word-break: break-word;
-    }
-    .user .bubble {
-      background: var(--accent-blue);
-      color: white;
-      border: none;
-    }
-    pre {
-      background: #0d1117;
-      padding: 1.2rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      overflow-x: auto;
-      margin: 1rem 0;
-      max-height: 600px;
-      overflow-y: auto;
-      position: relative;
-      color: #c9d1d9;
-    }
-    pre.code-long {
-      max-height: 900px;
-    }
-    code {
-      font-family: 'Consolas', 'Monaco', monospace;
-      font-size: 0.95rem;
-    }
-    .copy-all-btn {
-      margin-top: 0.8rem;
-      background: var(--accent-green);
-      color: white;
-      border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.95rem;
-    }
-    #input-container {
-      padding: 1rem 1.5rem;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      display: flex;
-      gap: 0.8rem;
-      align-items: center;
-    }
-    #prompt {
-      flex: 1;
-      padding: 0.9rem 1.2rem;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      font-size: 1rem;
-      resize: vertical;
-      min-height: 50px;
-      background: #0d1117;
-      color: var(--text-primary);
-    }
-    #send {
-      background: var(--accent-blue);
-      color: white;
-      border: none;
-      padding: 0 1.6rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-    #stop-btn {
-      background: var(--accent-red);
-      color: white;
-      border: none;
-      padding: 0 1.4rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 1rem;
+    /* your existing styles */
+
+    #admin-panel {
       display: none;
-    }
-    .copy-btn {
-      position: absolute;
-      top: 0.6rem;
-      right: 0.6rem;
-      background: var(--accent-green);
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
       color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
+      font-family: monospace;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    #admin-panel.show {
+      display: block;
+    }
+
+    .admin-section {
+      margin: 1.5rem 0;
+      padding: 1rem;
+      background: #1e293b;
+      border-radius: 8px;
+      border: 1px solid #334155;
+    }
+
+    input, button {
+      padding: 0.6rem 1rem;
+      margin: 0.4rem;
+      border-radius: 6px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: white;
+    }
+
+    button {
       cursor: pointer;
-      font-size: 0.9rem;
+    }
+
+    button:hover {
+      background: #334155;
+    }
+
+    #overrides-list {
+      margin-top: 1rem;
+    }
+
+    .override-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.6rem;
+      background: #1e293b;
+      margin: 0.4rem 0;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <img src="https://files.oaiusercontent.com/file-2tJ1M0z6kYcM8nZ6v3W0uJ?se=2025-02-25T09%3A00%3A00Z&sp=r&sv=2024-08-04&sr=b&rscca=0&sig=exampleSignatureHere" alt="Vasuki Logo" class="logo-header">
-    <div id="mode-toggle">
-      <button class="active" id="ask-btn">Ask</button>
-      <button id="research-btn">Research</button>
-      <button id="new-chat">New Chat</button>
-      <button id="clear-history">Clear Current</button>
-      <button id="delete-all">Delete All</button>
-    </div>
-  </header>
+<!-- your existing HTML -->
 
-  <div id="main">
-    <div id="sidebar">
-      <input type="text" id="chat-search" placeholder="Search chats..." />
-      <div id="chat-list"></div>
-    </div>
+<div id="admin-panel">
+  <h2>Vasuki Admin Panel</h2>
+  <p style="color:#94a3b8;">Custom URL: <code>/admin-vasuki-2025</code></p>
 
-    <div id="messages">
-      <div class="quote-block">
-        Simple, Scalable Tools<br>For Startups And Individuals
+  <div class="admin-section">
+    <h3>Set temporary chat limit override</h3>
+    <p>Enter client device fingerprint (ask them to open dev tools → Application → Storage → Local Storage → key: deviceId)</p>
+    
+    <input type="text" id="client-fingerprint" placeholder="Client device fingerprint" style="width:320px;">
+    <input type="number" id="override-limit" placeholder="Max chats (e.g. 50)" min="21" value="50">
+    <button onclick="addOverride()">Add Override</button>
+  </div>
+
+  <div class="admin-section">
+    <h3>Active overrides</h3>
+    <div id="overrides-list"></div>
+  </div>
+
+  <button onclick="closeAdmin()">Close Admin</button>
+</div>
+
+<script>
+// ──────────────────────────────────────────────
+//  Your existing code (chats, messages, etc.)
+// ──────────────────────────────────────────────
+
+// Add this at the top of your <script>
+
+const ADMIN_PATH = '/admin-vasuki-2025';
+const OVERRIDE_KEY = 'vasuki_chat_limit_overrides';
+
+let overrides = JSON.parse(localStorage.getItem(OVERRIDE_KEY)) || {};
+
+// Check if we are on admin URL
+if (window.location.pathname === ADMIN_PATH) {
+  document.getElementById('admin-panel').classList.add('show');
+  renderOverrides();
+}
+
+// Admin functions
+function addOverride() {
+  const fp = document.getElementById('client-fingerprint').value.trim();
+  const limit = parseInt(document.getElementById('override-limit').value);
+
+  if (!fp || isNaN(limit) || limit <= 20) {
+    alert('Enter valid fingerprint and limit > 20');
+    return;
+  }
+
+  overrides[fp] = {
+    maxChats: limit,
+    added: new Date().toISOString()
+  };
+
+  localStorage.setItem(OVERRIDE_KEY, JSON.stringify(overrides));
+  renderOverrides();
+
+  alert(`Override added for fingerprint: ${fp}\nNew limit: ${limit}`);
+}
+
+function removeOverride(fp) {
+  delete overrides[fp];
+  localStorage.setItem(OVERRIDE_KEY, JSON.stringify(overrides));
+  renderOverrides();
+}
+
+function renderOverrides() {
+  const list = document.getElementById('overrides-list');
+  list.innerHTML = '';
+
+  Object.entries(overrides).forEach(([fp, data]) => {
+    const div = document.createElement('div');
+    div.className = 'override-item';
+    div.innerHTML = `
+      <div>
+        <strong>${fp.slice(0,12)}...</strong><br>
+        Max chats: ${data.maxChats} • Added: ${new Date(data.added).toLocaleString()}
       </div>
-    </div>
-  </div>
+      <button onclick="removeOverride('${fp}')">Remove</button>
+    `;
+    list.appendChild(div);
+  });
 
-  <div id="input-container">
-    <textarea id="prompt" placeholder="Type your question or topic..." rows="1"></textarea>
-    <button id="send">Send</button>
-    <button id="stop-btn">Stop</button>
-  </div>
+  if (Object.keys(overrides).length === 0) {
+    list.innerHTML = '<p style="color:#94a3b8;">No active overrides yet.</p>';
+  }
+}
 
-  <script>
-    const messagesDiv = document.getElementById('messages');
-    const promptInput = document.getElementById('prompt');
-    const sendBtn = document.getElementById('send');
-    const stopBtn = document.getElementById('stop-btn');
-    const askBtn = document.getElementById('ask-btn');
-    const researchBtn = document.getElementById('research-btn');
-    const newChatBtn = document.getElementById('new-chat');
-    const clearCurrentBtn = document.getElementById('clear-history');
-    const deleteAllBtn = document.getElementById('delete-all');
-    const chatList = document.getElementById('chat-list');
-    const chatSearch = document.getElementById('chat-search');
+function closeAdmin() {
+  window.location.pathname = '/';
+}
 
-    let currentMode = 'ask';
-    let abortController = null;
-    let currentChatId = null;
-    let chats = JSON.parse(localStorage.getItem('vasukiChats')) || {};
-    const MAX_CHATS = 20;
+// ──────────────────────────────────────────────
+// In createNewChat() → check override limit
+// ──────────────────────────────────────────────
 
-    const logoSrc = "https://files.oaiusercontent.com/file-2tJ1M0z6kYcM8nZ6v3W0uJ?se=2025-02-25T09%3A00%3A00Z&sp=r&sv=2024-08-04&sr=b&rscca=0&sig=exampleSignatureHere";
+function getMaxChats() {
+  const deviceId = localStorage.getItem('deviceId') || generateDeviceId();
+  localStorage.setItem('deviceId', deviceId);
 
-    // Initialize
-    function initChats() {
-      if (Object.keys(chats).length === 0) {
-        createNewChat();
-      } else {
-        currentChatId = Object.keys(chats)[Object.keys(chats).length - 1]; // load most recent
-        loadChat(currentChatId);
-      }
-      renderChatList();
-    }
+  if (overrides[deviceId]) {
+    return overrides[deviceId].maxChats;
+  }
+  return 20;
+}
 
-    function createNewChat() {
-      // Enforce max 20 chats
-      if (Object.keys(chats).length >= MAX_CHATS) {
-        const oldestId = Object.keys(chats)[0];
-        delete chats[oldestId];
-      }
+function generateDeviceId() {
+  // Very simple fingerprint — good enough for this use-case
+  const data = [
+    navigator.userAgent,
+    screen.width, screen.height,
+    new Date().getTimezoneOffset(),
+    navigator.language
+  ].join('|');
+  let hash = 0;
+  for (let i = 0; i < data.length; i++) {
+    hash = ((hash << 5) - hash) + data.charCodeAt(i);
+    hash = hash & hash;
+  }
+  return 'fp_' + Math.abs(hash).toString(36).slice(0, 12);
+}
 
-      const id = Date.now().toString();
-      chats[id] = {
-        title: 'New Chat',
-        messages: []
-      };
-      currentChatId = id;
-      messagesDiv.innerHTML = '<div class="quote-block">Simple, Scalable Tools<br>For Startups And Individuals</div>';
-      saveChats();
-      renderChatList();
-    }
+// Replace your createNewChat with this version
+function createNewChat() {
+  const currentCount = Object.keys(chats).length;
+  const maxAllowed = getMaxChats();
 
-    function loadChat(chatId) {
-      currentChatId = chatId;
-      messagesDiv.innerHTML = '';
-      const chat = chats[chatId];
-      if (chat.messages.length === 0) {
-        messagesDiv.innerHTML = '<div class="quote-block">Simple, Scalable Tools<br>For Startups And Individuals</div>';
-      } else {
-        chat.messages.forEach(msg => addMessage(msg.content, msg.isUser, false));
-      }
-      renderChatList();
-    }
+  if (currentCount >= maxAllowed) {
+    alert(`You have reached your chat limit (${maxAllowed}).\nClear some chats or contact admin for more.`);
+    return;
+  }
 
-    function saveChats() {
-      localStorage.setItem('vasukiChats', JSON.stringify(chats));
-    }
+  const id = Date.now().toString();
+  chats[id] = {
+    title: 'New Chat',
+    messages: [],
+    lastUpdated: Date.now()
+  };
+  currentChatId = id;
+  messagesDiv.innerHTML = '<div class="quote-block">Simple, Scalable Tools<br>For Startups And Individuals</div>';
+  saveChats();
+  renderChatList();
+}
 
-    function renderChatList(filter = '') {
-      chatList.innerHTML = '';
-      const filteredIds = Object.keys(chats).filter(id => {
-        const title = chats[id].title.toLowerCase();
-        return title.includes(filter.toLowerCase());
-      });
-
-      filteredIds.forEach(id => {
-        const chat = chats[id];
-        const item = document.createElement('div');
-        item.className = 'chat-item';
-        if (id === currentChatId) item.classList.add('active');
-
-        const titleSpan = document.createElement('span');
-        titleSpan.textContent = chat.title || 'New Chat';
-        titleSpan.ondblclick = () => makeTitleEditable(item, id, titleSpan);
-
-        item.appendChild(titleSpan);
-        item.onclick = (e) => {
-          if (e.target.tagName !== 'INPUT') loadChat(id);
-        };
-        chatList.appendChild(item);
-      });
-    }
-
-    function makeTitleEditable(item, chatId, span) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = chats[chatId].title || 'New Chat';
-      input.maxLength = 50;
-
-      input.onblur = () => {
-        chats[chatId].title = input.value.trim() || 'New Chat';
-        saveChats();
-        renderChatList(chatSearch.value);
-      };
-
-      input.onkeydown = e => {
-        if (e.key === 'Enter') input.blur();
-        if (e.key === 'Escape') {
-          input.value = chats[chatId].title;
-          input.blur();
-        }
-      };
-
-      item.innerHTML = '';
-      item.appendChild(input);
-      item.classList.add('editing');
-      input.focus();
-      input.select();
-    }
-
-    // Search filter
-    chatSearch.addEventListener('input', () => {
-      renderChatList(chatSearch.value);
-    });
-
-    // Event listeners
-    newChatBtn.addEventListener('click', createNewChat);
-
-    clearCurrentBtn.addEventListener('click', () => {
-      if (confirm('Clear current chat?')) {
-        chats[currentChatId].messages = [];
-        chats[currentChatId].title = 'New Chat';
-        messagesDiv.innerHTML = '<div class="quote-block">Simple, Scalable Tools<br>For Startups And Individuals</div>';
-        saveChats();
-        renderChatList(chatSearch.value);
-      }
-    });
-
-    deleteAllBtn.addEventListener('click', () => {
-      if (confirm('Delete ALL chats? This cannot be undone.')) {
-        chats = {};
-        localStorage.removeItem('vasukiChats');
-        createNewChat();
-      }
-    });
-
-    // Initial load
-    initChats();
-
-    // Rest of your existing code (sendQuery, addMessage, etc.)
-    // ... (copy the rest of your previous script here, just make sure addMessage calls saveChats() and updateChatTitle())
-  </script>
-</body>
-</html>
+// Rest of your code remains the same...
+</script>
