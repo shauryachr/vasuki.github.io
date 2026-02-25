@@ -6,11 +6,11 @@
   <title>Vasuki Labs — Innovative Technology Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --primary: #0061ff;       /* Google Blue accent */
+      --primary: #0061ff;
       --primary-dark: #004bb8;
       --surface: #ffffff;
       --on-surface: #1f1f1f;
@@ -21,11 +21,7 @@
       --radius: 16px;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; }
 
     body {
       font-family: 'Roboto', system-ui, sans-serif;
@@ -34,14 +30,56 @@
       line-height: 1.6;
     }
 
-    .hero {
-      min-height: 100vh;
+    header {
+      padding: 1.2rem 2rem;
+      background: white;
+      box-shadow: var(--elevation-1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
+    }
+
+    .logo {
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+    }
+
+    .nav-links a {
+      color: var(--on-surface-variant);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1.05rem;
+      transition: color 0.22s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--primary);
+    }
+
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      padding: 2rem 1.5rem;
+      padding: 5rem 1.5rem 6rem;
       background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%);
       position: relative;
       overflow: hidden;
@@ -50,11 +88,8 @@
     .hero::before {
       content: '';
       position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at 30% 20%, rgba(0,97,255,0.08) 0%, transparent 40%);
+      inset: -50%;
+      background: radial-gradient(circle at 30% 20%, rgba(0,97,255,0.09) 0%, transparent 45%);
       pointer-events: none;
     }
 
@@ -64,55 +99,35 @@
       z-index: 1;
     }
 
-    .logo {
-      font-size: 3.5rem;
-      font-weight: 700;
-      color: var(--primary);
-      letter-spacing: -1px;
-      margin-bottom: 0.5rem;
-      display: inline-block;
-    }
-
     .tagline {
-      font-size: 1.75rem;
+      font-size: 2.4rem;
       font-weight: 400;
-      color: var(--on-surface-variant);
-      margin-bottom: 1.5rem;
-      max-width: 680px;
-      margin-left: auto;
-      margin-right: auto;
+      margin-bottom: 1rem;
     }
 
     .subtitle {
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       color: var(--on-surface-variant);
-      margin-bottom: 2.5rem;
-      max-width: 720px;
-      margin-left: auto;
-      margin-right: auto;
+      max-width: 760px;
+      margin: 0 auto 2.8rem;
     }
 
     .cta-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 1.3rem;
       justify-content: center;
-      margin-bottom: 3rem;
     }
 
     .btn {
-      font-family: 'Roboto', sans-serif;
       font-size: 1.1rem;
       font-weight: 500;
-      padding: 0.9rem 2.2rem;
+      padding: 1rem 2.4rem;
       border-radius: 50px;
       text-decoration: none;
-      transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
-      border: none;
+      transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       box-shadow: var(--elevation-1);
     }
 
@@ -124,7 +139,7 @@
     .btn-primary:hover {
       background: var(--primary-dark);
       box-shadow: var(--elevation-2);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
     }
 
     .btn-outline {
@@ -134,95 +149,110 @@
     }
 
     .btn-outline:hover {
-      background: rgba(0,97,255,0.04);
+      background: rgba(0,97,255,0.05);
       box-shadow: var(--elevation-1);
     }
 
     .features {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 2rem;
-      margin-top: 4rem;
-      padding: 0 1rem;
+      max-width: 1200px;
+      margin: 5rem auto;
+      padding: 0 1.5rem;
     }
 
     .feature-card {
-      background: var(--surface);
+      background: white;
       border-radius: var(--radius);
-      padding: 2rem 1.8rem;
+      padding: 2.2rem 1.8rem;
       box-shadow: var(--elevation-1);
-      transition: all 0.3s ease;
+      transition: all 0.32s ease;
     }
 
     .feature-card:hover {
+      transform: translateY(-8px);
       box-shadow: var(--elevation-2);
-      transform: translateY(-4px);
     }
 
     .feature-icon {
-      font-size: 2.8rem;
-      color: var(--primary);
-      margin-bottom: 1rem;
+      font-size: 3.2rem;
+      margin-bottom: 1.2rem;
     }
 
     .feature-title {
-      font-size: 1.4rem;
+      font-size: 1.45rem;
       font-weight: 500;
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.9rem;
     }
 
     footer {
-      margin-top: 6rem;
-      padding: 2rem;
       text-align: center;
+      padding: 3.5rem 1rem 2rem;
       color: var(--on-surface-variant);
       font-size: 0.95rem;
+      border-top: 1px solid #e0e0e0;
     }
 
-    @media (max-width: 640px) {
-      .logo { font-size: 2.8rem; }
-      .tagline { font-size: 1.4rem; }
-      .subtitle { font-size: 1.1rem; }
+    @media (max-width: 768px) {
+      .nav-links { gap: 1.4rem; font-size: 1rem; }
+      .tagline { font-size: 2rem; }
+      .subtitle { font-size: 1.2rem; }
+    }
+
+    @media (max-width: 560px) {
+      nav { flex-direction: column; gap: 1rem; }
+      .nav-links { flex-wrap: wrap; justify-content: center; }
     }
   </style>
 </head>
 <body>
 
+  <header>
+    <nav>
+      <a href="index.html" class="logo">Vasuki Labs</a>
+      <div class="nav-links">
+        <a href="index.html" class="active">Home</a>
+        <a href="Image-Generator.html">Image Generator</a>
+        <a href="General-AI.html">General AI</a>
+      </div>
+    </nav>
+  </header>
+
   <section class="hero">
     <div class="container">
-      <h1 class="logo">Vasuki Labs</h1>
-      <p class="tagline">Engineering Tomorrow's Solutions Today</p>
+      <h1 class="tagline">Engineering Tomorrow's Solutions Today</h1>
       <p class="subtitle">
-        We build intelligent systems, scalable platforms, and transformative digital experiences — with precision, speed, and obsessive attention to quality.
+        From advanced image generation to powerful general-purpose AI — explore intelligent tools built with precision and care.
       </p>
 
       <div class="cta-group">
-        <a href="#contact" class="btn btn-primary">Get in Touch</a>
-        <a href="#work" class="btn btn-outline">See Our Work</a>
-      </div>
-
-      <div class="features">
-        <div class="feature-card">
-          <div class="feature-icon">🧠</div>
-          <h3 class="feature-title">AI & Machine Learning</h3>
-          <p>Custom models, generative AI, predictive systems — delivered production-ready.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3 class="feature-title">Scalable Infrastructure</h3>
-          <p>Cloud-native architecture, high-performance backends, zero-downtime deployments.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🎨</div>
-          <h3 class="feature-title">Product & Experience Design</h3>
-          <p>Intuitive interfaces that users love — built with modern design systems.</p>
-        </div>
+        <a href="Image-Generator.html" class="btn btn-primary">Try Image Generator</a>
+        <a href="General-AI.html" class="btn btn-outline">Explore General AI</a>
       </div>
     </div>
   </section>
 
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">🖼️</div>
+      <h3 class="feature-title">Image Generator</h3>
+      <p>Create stunning visuals from text prompts with state-of-the-art diffusion models — fast, high-quality, customizable.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3 class="feature-title">General AI Assistant</h3>
+      <p>Versatile AI for reasoning, coding, writing, research, brainstorming and more — your everyday intelligent companion.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3 class="feature-title">Built for Speed & Privacy</h3>
+      <p>Optimized inference, clean interface, no unnecessary tracking — focused on performance and user control.</p>
+    </div>
+  </div>
+
   <footer>
-    © 2026 Vasuki Labs • Delhi, India • <a href="mailto:hello@vasukilabs.com" style="color: var(--primary);">hello@vasukilabs.com</a>
+    © 2026 Vasuki Labs • Made with precision in India
   </footer>
 
 </body>
