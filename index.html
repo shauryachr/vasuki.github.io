@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vasuki Code Assistant - Google Workspace Theme</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfA9DOHeZu+u82R8cA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    :root {
+      --google-blue: #1a73e8;
+      --google-red: #ea4335;
+      --google-yellow: #fbbc04;
+      --google-green: #34a853;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --text-tertiary: #70757a;
+      --bg: #fff;
+      --surface: #fff;
+      --border: #dadce0;
+      --hover: #f1f3f4;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 1.25rem 2rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-size: 1.4rem;
+      font-weight: normal;
+      color: var(--google-blue);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      justify-content: space-between;
+    }
+    header::before {
+      content: "G";
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--google-blue);
+    }
+    #mode-toggle {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .mode-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .mode-btn.active {
+      background: var(--google-blue);
+      color: white;
+      border: none;
+    }
+    #main {
+      flex: 1;
+      display: flex;
+    }
+    #sidebar {
+      width: 240px;
+      background: #f8f9fa;
+      border-right: 1px solid var(--border);
+      padding: 1.5rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+    #messages {
+      flex: 1;
+      padding: 2rem;
+      max-width: 960px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .message {
+      margin-bottom: 1.75rem;
+      display: flex;
+      gap: 1rem;
+    }
+    .message.ai { align-self: flex-start; }
+    .message.user { align-self: flex-end; flex-direction: row-reverse; }
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--google-blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .user .avatar { background: var(--google-green); }
+    .bubble {
+      padding: 1rem 1.25rem;
+      border-radius: 4px;
+      background: #f1f3f4;
+      line-height: 1.55;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+    }
+    .user .bubble {
+      background: var(--google-blue);
+      color: white;
+      border: none;
+    }
+    pre {
+      background: #f6f8fa;
+      padding: 1.2rem;
+      border-radius: 4px;
+      overflow-x: auto;
+      position: relative;
+      margin: 1rem 0;
+      border: 1px solid var(--border);
+    }
+    code { font-family: 'Consolas', 'Monaco', monospace; }
+    #input-container {
+      padding: 1.5rem 2rem;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 1rem;
+    }
+    #prompt {
+      flex: 1;
+      padding: 1rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: #fff;
+      color: var(--text-primary);
+      font-size: 1.05rem;
+      resize: none;
+      min-height: 54px;
+      max-height: 200px;
+    }
+    #prompt:focus {
+      outline: none;
+      border-color: var(--google-blue);
+    }
+    #send {
+      background: var(--google-blue);
+      color: white;
+      border: none;
+      padding: 0 1.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    #send:hover { background: #1967d2; }
+    .copy-btn {
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      background: var(--google-green);
+      color: white;
+      border: none;
+      padding: 0.4rem 0.9rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .copy-btn:hover { background: #2d8e47; }
+    .status {
+      font-size: 0.9rem;
+      color: var(--text-tertiary);
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span>Vasuki Code Assistant</span>
+    <div id="mode-toggle">
+      <button class="mode-btn" id="ask-mode">Ask</button>
+      <button class="mode-btn" id="research-mode">Research</button>
+    </div>
+  </header>
+
+  <div id="main">
+    <div id="sidebar">
+      <div style="font-weight: bold; color: var(--text-primary);">Professional Assistant</div>
+      <p style="margin-top: 0.75rem;">HTML • CSS • JavaScript</p>
+      <p class="status" id="api-status">Status: Placeholder responses (API key pending)</p>
+    </div>
+
+    <div id="messages">
+      <div class="message ai">
+        <div class="avatar">AI</div>
+        <div class="bubble">
+          This is your professional coding assistant, styled in the flat Google Workspace theme.<br><br>
+          In 'Ask' mode: Request direct code generation.<br>
+          In 'Research' mode: Provide a topic for in-depth research (e.g., via URL param ?mode=research&topic=adamya%20khairwal).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="input-container">
+    <textarea id="prompt" placeholder="Enter request or topic..." rows="1"></textarea>
+    <button id="send">Submit</button>
+  </div>
+
+  <script>
+    const messages = document.getElementById('messages');
+    const promptInput = document.getElementById('prompt');
+    const sendBtn = document.getElementById('send');
+    const askModeBtn = document.getElementById('ask-mode');
+    const researchModeBtn = document.getElementById('research-mode');
+    const apiStatus = document.getElementById('api-status');
+
+    let currentMode = 'ask'; // Default
+    let isProcessing = false;
+
+    // Read URL params
+    const params = new URLSearchParams(window.location.search);
+    currentMode = params.get('mode') || 'ask';
+    const topic = params.get('topic');
+
+    // Set initial mode
+    updateModeButtons();
+    if (topic && currentMode === 'research') {
+      promptInput.value = `Research on ${decodeURIComponent(topic)}`;
+      handleSend(); // Auto-research if topic provided
+    }
+
+    // Mode toggle
+    askModeBtn.addEventListener('click', () => switchMode('ask'));
+    researchModeBtn.addEventListener('click', () => switchMode('research'));
+
+    function switchMode(mode) {
+      currentMode = mode;
+      updateModeButtons();
+      updateURLParam('mode', mode);
+      messages.innerHTML = ''; // Clear chat for new mode
+      addMessage(getWelcomeMessage(), false);
+    }
+
+    function updateModeButtons() {
+      askModeBtn.classList.toggle('active', currentMode === 'ask');
+      researchModeBtn.classList.toggle('active', currentMode === 'research');
+    }
+
+    function updateURLParam(key, value) {
+      const newParams = new URLSearchParams(window.location.search);
+      newParams.set(key, value);
+      history.replaceState(null, '', `?${newParams.toString()}`);
+    }
+
+    function getWelcomeMessage() {
+      if (currentMode === 'ask') {
+        return 'Ask mode: Request code generation (e.g., "Create a flat button component").';
+      } else {
+        return 'Research mode: Provide a topic for detailed analysis (e.g., "adamya khairwal").';
+      }
+    }
+
+    // Initial welcome
+    addMessage(getWelcomeMessage(), false);
+
+    promptInput.addEventListener('input', () => {
+      promptInput.style.height = 'auto';
+      promptInput.style.height = promptInput.scrollHeight + 'px';
+    });
+
+    promptInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+      }
+    });
+
+    sendBtn.addEventListener('click', handleSend);
+
+    async function handleSend() {
+      const text = promptInput.value.trim();
+      if (!text || isProcessing) return;
+
+      isProcessing = true;
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Processing...';
+
+      addMessage(text, true);
+      promptInput.value = '';
+      promptInput.style.height = 'auto';
+
+      let response;
+      if (currentMode === 'research') {
+        response = await researchTopic(text); // Placeholder for research
+      } else {
+        response = generateCodeResponse(text); // Placeholder for ask
+      }
+
+      addMessage(response, false);
+      isProcessing = false;
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Submit';
+    }
+
+    function addMessage(content, isUser) {
+      const div = document.createElement('div');
+      div.className = `message ${isUser ? 'user' : 'ai'}`;
+
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar';
+      avatar.textContent = isUser ? 'You' : 'AI';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.innerHTML = content;
+
+      setTimeout(() => {
+        Prism.highlightAllUnder(bubble);
+        bubble.querySelectorAll('pre').forEach(pre => {
+          const btn = document.createElement('button');
+          btn.className = 'copy-btn';
+          btn.textContent = 'Copy';
+          btn.onclick = () => {
+            const code = pre.querySelector('code')?.textContent || pre.textContent;
+            navigator.clipboard.writeText(code.trim());
+            btn.textContent = 'Copied';
+            setTimeout(() => btn.textContent = 'Copy', 2000);
+          };
+          pre.appendChild(btn);
+        });
+      }, 100);
+
+      div.appendChild(avatar);
+      div.appendChild(bubble);
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function generateCodeResponse(prompt) {
+      // Placeholder for 'ask' mode - direct code gen
+      return `Code for "${prompt}":<br><br>
+<pre><code class="language-html">&lt;!-- Flat Button Component --&gt;
+&lt;button style="background: #1a73e8; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 1rem; cursor: pointer;"&gt;Submit&lt;/button&gt;</code></pre>
+
+Flat design, no shadows/gradients.`;
+    }
+
+    function researchTopic(topic) {
+      // Placeholder for 'research' mode - deeper info
+      // When API ready, integrate search tools here
+      return `Research on "${topic}":<br><br>
+Detailed analysis: [Placeholder - General info in ask mode, deep research here].<br>
+Example: Adamya Khairwal is the founder of Vasuki iTech. For full research, integrate API.`;
+    }
+  </script>
+</body>
+</html>
