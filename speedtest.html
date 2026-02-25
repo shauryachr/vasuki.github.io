@@ -1,316 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speedtest</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap');
-        body { font-family: 'Roboto', system-ui, sans-serif; }
-        
-        .speedtest-logo {
-            font-size: 2.1rem;
-            font-weight: 700;
-            letter-spacing: 4px;
-            color: #fff;
-        }
-        
-        .gauge-container {
-            width: 320px;
-            height: 320px;
-            position: relative;
-        }
-        
-        .needle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 6px;
-            height: 110px;
-            background: linear-gradient(#ff3b5c, #ff3b5c);
-            transform-origin: bottom center;
-            border-radius: 9999px;
-            box-shadow: 0 4px 15px rgba(255, 59, 92, 0.6);
-            transition: transform 2.2s cubic-bezier(0.23, 1, 0.32, 1);
-            z-index: 10;
-        }
-        
-        .needle::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 22px;
-            height: 22px;
-            background: #ff3b5c;
-            border-radius: 50%;
-            border: 3px solid #111827;
-        }
-        
-        .gauge-bg {
-            stroke: #1f2937;
-        }
-        
-        .gauge-fill {
-            transition: stroke-dashoffset 2.2s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Vasuki SpeedTest Beta</title>
+<style>
+body{
+    margin:0;
+    background:#0f172a;
+    color:white;
+    font-family:Arial;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    text-align:center;
+}
+.container{
+    width:400px;
+}
+h1{
+    font-weight:300;
+}
+span{
+    color:#38bdf8;
+}
+.speed{
+    font-size:48px;
+    margin:20px 0;
+}
+.stats{
+    display:flex;
+    justify-content:space-between;
+    margin:20px 0;
+}
+button{
+    padding:12px 30px;
+    border:none;
+    border-radius:30px;
+    background:#38bdf8;
+    color:black;
+    font-size:16px;
+    cursor:pointer;
+}
+button:hover{
+    background:white;
+}
+</style>
 </head>
-<body class="bg-[#0f172a] text-white min-h-screen flex flex-col items-center justify-center">
+<body>
 
-    <div class="w-full max-w-md mx-auto px-5 py-8">
+<div class="container">
+    <h1>Vasuki SpeedTest <span>Beta</span></h1>
+    <div class="speed" id="speed">0 Mbps</div>
 
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-12">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-[#ff6b00] rounded flex items-center justify-center text-xs font-black">S</div>
-                <div class="speedtest-logo tracking-[3px]">SPEEDTEST</div>
-            </div>
-            <div class="text-xs text-zinc-400 flex items-center gap-1">
-                <i class="fa-solid fa-globe"></i>
-                <span>India • Delhi</span>
-            </div>
-        </div>
-
-        <!-- Gauge -->
-        <div class="flex justify-center mb-6">
-            <div class="gauge-container">
-                <!-- SVG Gauge -->
-                <svg class="w-full h-full -rotate-90" viewBox="0 0 320 320">
-                    <!-- Background arc -->
-                    <circle cx="160" cy="160" r="142" fill="none" stroke="#1f2937" stroke-width="36" stroke-dasharray="446" stroke-dashoffset="0"/>
-                    <!-- Colored arc (gradient) -->
-                    <defs>
-                        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#22c55e"/>
-                            <stop offset="50%" stop-color="#eab308"/>
-                            <stop offset="100%" stop-color="#ef4444"/>
-                        </linearGradient>
-                    </defs>
-                    <circle id="progress" cx="160" cy="160" r="142" fill="none" 
-                            stroke="url(#grad)" stroke-width="36"
-                            stroke-dasharray="446" stroke-dashoffset="446"
-                            stroke-linecap="round"/>
-                </svg>
-
-                <!-- Needle -->
-                <div id="needle" class="needle" style="transform: rotate(-135deg);"></div>
-
-                <!-- Center number -->
-                <div class="absolute inset-0 flex flex-col items-center justify-center">
-                    <div id="main-speed" class="text-[92px] font-bold leading-none tracking-tighter text-white">0</div>
-                    <div class="text-zinc-400 text-xl font-medium -mt-4">Mbps</div>
-                    <div id="test-type" class="absolute bottom-12 text-[#ff6b00] text-sm font-semibold tracking-widest">READY</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Big GO Button -->
-        <div onclick="startTest()" id="go-btn"
-             class="mx-auto w-40 h-40 rounded-full bg-white flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-2xl border-[14px] border-[#0f172a]">
-            <div class="text-center">
-                <div class="text-[#0f172a] text-6xl font-black tracking-widest">GO</div>
-            </div>
-        </div>
-
-        <!-- Results -->
-        <div id="results-screen" class="hidden mt-12">
-            <div class="grid grid-cols-3 gap-3 text-center">
-                <!-- Ping -->
-                <div class="bg-[#1e2937] rounded-3xl py-6">
-                    <i class="fa-solid fa-bolt text-[#fbbf24] text-3xl mb-3"></i>
-                    <div id="ping-val" class="text-5xl font-bold text-white">12</div>
-                    <div class="text-zinc-400 text-sm">PING</div>
-                    <div class="text-[10px] text-zinc-500">ms</div>
-                </div>
-                <!-- Download -->
-                <div class="bg-[#1e2937] rounded-3xl py-6 border-2 border-[#22c55e]">
-                    <i class="fa-solid fa-download text-[#22c55e] text-3xl mb-3"></i>
-                    <div id="down-val" class="text-5xl font-bold text-[#22c55e]">246</div>
-                    <div class="text-zinc-400 text-sm">DOWNLOAD</div>
-                    <div class="text-[10px] text-zinc-500">Mbps</div>
-                </div>
-                <!-- Upload -->
-                <div class="bg-[#1e2937] rounded-3xl py-6">
-                    <i class="fa-solid fa-upload text-[#a855f7] text-3xl mb-3"></i>
-                    <div id="up-val" class="text-5xl font-bold text-[#a855f7]">112</div>
-                    <div class="text-zinc-400 text-sm">UPLOAD</div>
-                    <div class="text-[10px] text-zinc-500">Mbps</div>
-                </div>
-            </div>
-
-            <button onclick="resetTest()" 
-                    class="mt-10 w-full py-5 text-xl font-medium bg-[#ff6b00] hover:bg-orange-600 rounded-2xl transition-all active:scale-[0.97]">
-                TEST AGAIN
-            </button>
-        </div>
-
-        <!-- Testing screen -->
-        <div id="testing-screen" class="hidden mt-8 space-y-7">
-            <div class="flex gap-4 items-center">
-                <div class="w-9 h-9 bg-zinc-800 rounded-2xl flex items-center justify-center text-yellow-400">
-                    <i class="fa-solid fa-bolt"></i>
-                </div>
-                <div class="flex-1">
-                    <div class="flex justify-between text-sm mb-1">
-                        <span>Ping</span>
-                        <span id="ping-live" class="font-mono text-white">— ms</span>
-                    </div>
-                    <div class="h-2.5 bg-zinc-800 rounded-full overflow-hidden">
-                        <div id="ping-bar" class="h-full bg-yellow-400 w-0 transition-all duration-1000"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="flex gap-4 items-center">
-                <div class="w-9 h-9 bg-zinc-800 rounded-2xl flex items-center justify-center text-[#22c55e]">
-                    <i class="fa-solid fa-download"></i>
-                </div>
-                <div class="flex-1">
-                    <div class="flex justify-between text-sm mb-1">
-                        <span>Download</span>
-                        <span id="down-live" class="font-mono text-white">— Mbps</span>
-                    </div>
-                    <div class="h-2.5 bg-zinc-800 rounded-full overflow-hidden">
-                        <div id="down-bar" class="h-full bg-[#22c55e] w-0 transition-all duration-1000"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="flex gap-4 items-center">
-                <div class="w-9 h-9 bg-zinc-800 rounded-2xl flex items-center justify-center text-[#a855f7]">
-                    <i class="fa-solid fa-upload"></i>
-                </div>
-                <div class="flex-1">
-                    <div class="flex justify-between text-sm mb-1">
-                        <span>Upload</span>
-                        <span id="up-live" class="font-mono text-white">— Mbps</span>
-                    </div>
-                    <div class="h-2.5 bg-zinc-800 rounded-full overflow-hidden">
-                        <div id="up-bar" class="h-full bg-[#a855f7] w-0 transition-all duration-1000"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    <div class="stats">
+        <div>Ping: <span id="ping">--</span></div>
+        <div>Download: <span id="download">--</span></div>
+        <div>Upload: <span id="upload">--</span></div>
     </div>
 
-    <script>
-        let isTesting = false;
+    <button onclick="startTest()">Start Test</button>
+</div>
 
-        const needle = document.getElementById('needle');
-        const progress = document.getElementById('progress');
-        const mainSpeed = document.getElementById('main-speed');
+<script>
 
-        async function measurePing() {
-            let min = 999;
-            for (let i = 0; i < 5; i++) {
-                const s = Date.now();
-                await fetch('https://jsonplaceholder.typicode.com/todos/1?' + Date.now());
-                min = Math.min(min, Date.now() - s);
-                await new Promise(r => setTimeout(r, 60));
-            }
-            return Math.max(8, Math.round(min * 0.7));
-        }
+async function testPing() {
+    const start = performance.now();
+    await fetch("https://www.google.com", {mode:"no-cors"});
+    const end = performance.now();
+    return (end - start).toFixed(2);
+}
 
-        async function measureDownload() {
-            const start = Date.now();
-            const res = await fetch('https://upload.wikimedia.org/wikipedia/commons/3/3e/Tokyo_Sky_Tree_2012.JPG?' + Date.now());
-            const blob = await res.blob();
-            const time = (Date.now() - start) / 1000;
-            return Math.round((blob.size * 8) / time / 1024 / 1024 * 10) / 10;
-        }
+async function testDownload() {
+    const fileUrl = "https://speed.hetzner.de/100MB.bin";
+    const start = performance.now();
+    const response = await fetch(fileUrl);
+    const reader = response.body.getReader();
+    let received = 0;
 
-        async function measureUpload() {
-            const size = 5 * 1024 * 1024;
-            const data = new Uint8Array(size);
-            crypto.getRandomValues(data);
-            const start = Date.now();
-            await fetch('https://httpbin.org/post', { method: 'POST', body: data });
-            const time = (Date.now() - start) / 1000;
-            return Math.round((size * 8) / time / 1024 / 1024 * 10) / 10;
-        }
+    while(true){
+        const {done, value} = await reader.read();
+        if(done) break;
+        received += value.length;
+    }
 
-        function animateSpeed(start, end, duration) {
-            let startTime = null;
-            function step(ts) {
-                if (!startTime) startTime = ts;
-                const progress = Math.min((ts - startTime) / duration, 1);
-                const val = Math.floor(start + (end - start) * progress);
-                mainSpeed.textContent = val;
-                // Needle rotation: -135° (0) to +45° (max \~1000 Mbps)
-                const rot = -135 + (180 * Math.min(val / 800, 1));
-                needle.style.transform = `rotate(${rot}deg)`;
-                if (progress < 1) requestAnimationFrame(step);
-            }
-            requestAnimationFrame(step);
-        }
+    const end = performance.now();
+    const duration = (end - start) / 1000;
+    const bitsLoaded = received * 8;
+    const speedMbps = (bitsLoaded / duration / 1024 / 1024).toFixed(2);
+    return speedMbps;
+}
 
-        function updateProgressCircle(speed) {
-            const maxOffset = 446;
-            const offset = maxOffset - (maxOffset * Math.min(speed / 800, 1));
-            progress.style.strokeDashoffset = offset;
-        }
+async function testUpload() {
+    const data = new Blob([new Uint8Array(20 * 1024 * 1024)]);
+    const start = performance.now();
+    await fetch("https://httpbin.org/post", {
+        method:"POST",
+        body:data
+    });
+    const end = performance.now();
+    const duration = (end - start) / 1000;
+    const bitsLoaded = data.size * 8;
+    const speedMbps = (bitsLoaded / duration / 1024 / 1024).toFixed(2);
+    return speedMbps;
+}
 
-        async function startTest() {
-            if (isTesting) return;
-            isTesting = true;
+async function startTest(){
 
-            document.getElementById('go-btn').classList.add('hidden');
-            document.getElementById('testing-screen').classList.remove('hidden');
-            document.getElementById('results-screen').classList.add('hidden');
+    document.getElementById("speed").innerText="Testing...";
+    document.getElementById("ping").innerText="--";
+    document.getElementById("download").innerText="--";
+    document.getElementById("upload").innerText="--";
 
-            // Reset
-            mainSpeed.textContent = '0';
-            needle.style.transform = 'rotate(-135deg)';
-            progress.style.strokeDashoffset = '446';
+    const ping = await testPing();
+    document.getElementById("ping").innerText = ping + " ms";
 
-            // Ping
-            const ping = await measurePing();
-            document.getElementById('ping-live').textContent = ping + ' ms';
-            document.getElementById('ping-bar').style.width = '100%';
-            await new Promise(r => setTimeout(r, 500));
+    const download = await testDownload();
+    document.getElementById("download").innerText = download + " Mbps";
+    document.getElementById("speed").innerText = download + " Mbps";
 
-            // Download
-            const down = await measureDownload();
-            document.getElementById('down-live').textContent = down + ' Mbps';
-            document.getElementById('down-bar').style.width = '100%';
-            updateProgressCircle(down);
-            animateSpeed(0, down, 1400);
-            await new Promise(r => setTimeout(r, 700));
+    const upload = await testUpload();
+    document.getElementById("upload").innerText = upload + " Mbps";
+}
 
-            // Upload
-            const up = await measureUpload();
-            document.getElementById('up-live').textContent = up + ' Mbps';
-            document.getElementById('up-bar').style.width = '100%';
+</script>
 
-            // Show final results
-            setTimeout(() => {
-                document.getElementById('testing-screen').classList.add('hidden');
-                document.getElementById('results-screen').classList.remove('hidden');
-
-                document.getElementById('ping-val').textContent = ping;
-                document.getElementById('down-val').textContent = down;
-                document.getElementById('up-val').textContent = up;
-
-                isTesting = false;
-            }, 800);
-        }
-
-        function resetTest() {
-            document.getElementById('go-btn').classList.remove('hidden');
-            document.getElementById('results-screen').classList.add('hidden');
-            document.getElementById('testing-screen').classList.add('hidden');
-            mainSpeed.textContent = '0';
-            needle.style.transform = 'rotate(-135deg)';
-            progress.style.strokeDashoffset = '446';
-        }
-
-        // Keyboard support
-        document.addEventListener('keydown', e => {
-            if ((e.key === ' ' || e.key === 'Enter') && !isTesting) startTest();
-        });
-    </script>
 </body>
 </html>
