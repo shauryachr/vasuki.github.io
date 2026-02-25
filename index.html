@@ -62,7 +62,8 @@
 
     .nav-links {
       display: flex;
-      gap: 2.2rem;
+      gap: 2.1rem;
+      flex-wrap: wrap;
     }
 
     .nav-links a {
@@ -120,7 +121,7 @@
     .cta-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 1.4rem;
+      gap: 1.3rem;
       justify-content: center;
     }
 
@@ -206,7 +207,7 @@
     @media (max-width: 768px) {
       .tagline { font-size: 2.4rem; }
       .subtitle { font-size: 1.2rem; }
-      .cta-group { flex-direction: column; }
+      .nav-links { gap: 1.5rem; }
     }
   </style>
 </head>
@@ -219,6 +220,7 @@
         <a href="index.html" class="active">Home</a>
         <a href="Image-Generator.html">Image Generator</a>
         <a href="General-AI.html">General AI</a>
+        <a href="speedtest.html">Speed Test</a>
       </div>
     </nav>
   </header>
@@ -235,6 +237,7 @@
       <div class="cta-group">
         <a href="Image-Generator.html" class="btn btn-primary">Try Image Generator</a>
         <a href="General-AI.html" class="btn btn-primary">Explore General AI</a>
+        <a href="speedtest.html" class="btn btn-primary">Run Speed Test</a>
         <a href="https://vasuki.cloud" target="_blank" rel="noopener noreferrer" class="btn btn-outline external">Visit Vasuki Cloud</a>
       </div>
     </div>
@@ -252,6 +255,11 @@
       <p>Versatile AI for reasoning, coding, writing, research, brainstorming and more — your everyday intelligent companion.</p>
     </div>
     <div class="feature-card">
+      <div class="feature-icon">📡</div>
+      <h3 class="feature-title">Internet Speed Test</h3>
+      <p>Real-time, accurate bandwidth & latency test using global Vasuki Cloud edge servers — clean, fast, no ads.</p>
+    </div>
+    <div class="feature-card">
       <div class="feature-icon">☁️</div>
       <h3 class="feature-title">Vasuki Cloud</h3>
       <p>Developer-first cloud platform: simplified infrastructure, AI-ready tools, secure storage & scalable apps.</p>
@@ -262,7 +270,7 @@
     © 2026 Vasuki Labs • Made with precision in India • <a href="https://vasuki.cloud" target="_blank" style="color: var(--primary);">vasuki.cloud</a>
   </footer>
 
-  <!-- tsParticles config -->
+  <!-- tsParticles config (unchanged) -->
   <script>
     tsParticles.load("tsparticles", {
       fullScreen: { enable: false },
