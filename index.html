@@ -4,8 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Vasuki Assistant</title>
+
+  <!-- MathJax for LaTeX / mathematical expressions -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS_HTML"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      "HTML-CSS": { linebreaks: { automatic: true } },
+      SVG: { linebreaks: { automatic: true } }
+    });
+  </script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
   <style>
     :root {
       --google-blue: #1a73e8;
@@ -118,6 +135,7 @@
       border-top: 1px solid var(--border);
       display: flex;
       gap: 0.8rem;
+      position: relative;
     }
     #prompt {
       flex: 1;
@@ -137,6 +155,16 @@
       cursor: pointer;
       font-size: 0.95rem;
     }
+    #stop-btn {
+      background: var(--google-red);
+      color: white;
+      border: none;
+      padding: 0 1.2rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      display: none;
+    }
     .copy-btn {
       position: absolute;
       top: 0.4rem;
@@ -148,6 +176,10 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 0.8rem;
+    }
+    /* Better spacing for math */
+    .bubble mjx-container {
+      margin: 0.4em 0;
     }
   </style>
 </head>
@@ -169,23 +201,26 @@
     </div>
 
     <div id="messages">
-      <!-- intentionally empty – no greeting -->
+      <!-- Chat starts completely empty -->
     </div>
   </div>
 
   <div id="input-container">
     <textarea id="prompt" placeholder="Type your question or topic..." rows="1"></textarea>
     <button id="send">Send</button>
+    <button id="stop-btn">Stop</button>
   </div>
 
   <script>
     const messagesDiv = document.getElementById('messages');
     const promptInput = document.getElementById('prompt');
     const sendBtn = document.getElementById('send');
+    const stopBtn = document.getElementById('stop-btn');
     const askBtn = document.getElementById('ask-btn');
     const researchBtn = document.getElementById('research-btn');
 
     let currentMode = 'ask';
+    let abortController = null;
 
     askBtn.addEventListener('click', () => setMode('ask'));
     researchBtn.addEventListener('click', () => setMode('research'));
@@ -204,6 +239,28 @@
     });
 
     sendBtn.addEventListener('click', sendQuery);
+    stopBtn.addEventListener('click', stopRequest);
+
+    function showStopButton() {
+      stopBtn.style.display = 'inline-block';
+      sendBtn.style.display = 'none';
+    }
+
+    function hideStopButton() {
+      stopBtn.style.display = 'none';
+      sendBtn.style.display = 'inline-block';
+      sendBtn.textContent = 'Send';
+      sendBtn.disabled = false;
+    }
+
+    function stopRequest() {
+      if (abortController) {
+        abortController.abort();
+        addMessage('Response stopped by user.', false);
+      }
+      hideStopButton();
+      promptInput.disabled = false;
+    }
 
     async function sendQuery() {
       const query = promptInput.value.trim();
@@ -211,9 +268,13 @@
 
       addMessage(query, true);
       promptInput.value = '';
+      promptInput.disabled = true;
 
       sendBtn.disabled = true;
       sendBtn.textContent = 'Loading...';
+      showStopButton();
+
+      abortController = new AbortController();
 
       try {
         const params = new URLSearchParams({
@@ -222,12 +283,13 @@
         });
         const url = `https://adamyakhairwal2011-vasuki-ai.hf.space/research?${params}`;
 
-        const res = await fetch(url);
+        const res = await fetch(url, { signal: abortController.signal });
+
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         let text = await res.text();
 
-        // Aggressive cleanup – try to extract meaningful content
+        // Cleanup HTML wrappers if present
         text = text
           .replace(/<!DOCTYPE html>[\s\S]*?<body[^>]*>/gi, '')
           .replace(/<\/body>[\s\S]*?<\/html>/gi, '')
@@ -236,20 +298,28 @@
           .replace(/<style[\s\S]*?<\/style>/gi, '')
           .trim();
 
-        // If still heavy HTML, take inner body content
+        // Try to extract main content if still HTML-heavy
         if (text.includes('<div') || text.includes('<p') || text.includes('<h')) {
           const parser = new DOMParser();
           const doc = parser.parseFromString(text, 'text/html');
           text = doc.body?.innerHTML || text;
         }
 
-        addMessage(text || '[No readable content returned]', false);
+        addMessage(text || '[No content returned]', false);
+
+        // Re-render MathJax after new content is added
+        if (typeof MathJax !== 'undefined') {
+          MathJax.Hub.Queue(["Typeset", MathJax.Hub, messagesDiv.lastChild]);
+        }
       } catch (err) {
-        addMessage(`Error: ${err.message}`, false);
-        console.error(err);
+        if (err.name !== 'AbortError') {
+          addMessage(`Error: ${err.message}`, false);
+          console.error(err);
+        }
       } finally {
-        sendBtn.disabled = false;
-        sendBtn.textContent = 'Send';
+        abortController = null;
+        hideStopButton();
+        promptInput.disabled = false;
       }
     }
 
@@ -265,8 +335,10 @@
       bubble.className = 'bubble';
       bubble.innerHTML = content;
 
+      // Code highlighting
       setTimeout(() => {
         Prism.highlightAllUnder(bubble);
+
         bubble.querySelectorAll('pre, code').forEach(block => {
           const parent = block.tagName === 'PRE' ? block : block.parentElement;
           if (parent) {
@@ -282,6 +354,11 @@
             parent.appendChild(copyBtn);
           }
         });
+
+        // Re-trigger MathJax for this new message
+        if (typeof MathJax !== 'undefined') {
+          MathJax.Hub.Queue(["Typeset", MathJax.Hub, bubble]);
+        }
       }, 100);
 
       msg.append(avatar, bubble);
