@@ -168,6 +168,258 @@
       <div class="message ai">
         <div class="avatar">AI</div>
         <div class="bubble">
+          Hello Adamya. Select mode and ask anything.<br>
+          Responses come directly from Vasuki AI (Hugging Face Space).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="input-container">
+    <textarea id="prompt" placeholder="Your question or topic..." rows="1"></textarea>
+    <button id="send">Send</button>
+  </div>
+
+  <script>
+    const messagesDiv = document.getElementById('messages');
+    const promptInput = document.getElementById('prompt');
+    const sendBtn = document.getElementById('send');
+    const askBtn = document.getElementById('ask-btn');
+    const researchBtn = document.getElementById('research-btn');
+
+    let currentMode = 'ask';
+
+    askBtn.addEventListener('click', () => setMode('ask'));
+    researchBtn.addEventListener('click', () => setMode('research'));
+
+    function setMode(mode) {
+      currentMode = mode;
+      askBtn.classList.toggle('active', mode === 'ask');
+      researchBtn.classList.toggle('active', mode === 'research');
+    }
+
+    promptInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendQuery();
+      }
+    });
+
+    sendBtn.addEventListener('click', sendQuery);
+
+    async function sendQuery() {
+      const query = promptInput.value.trim();
+      if (!query) return;
+
+      addMessage(query, true);
+      promptInput.value = '';
+
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Loading...';
+
+      try {
+        const params = new URLSearchParams({
+          topic: query,
+          mode: currentMode
+        });
+        const url = `https://adamyakhairwal2011-vasuki-ai.hf.space/research?${params}`;
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        let text = await res.text();
+
+        // Basic cleanup: remove full HTML wrapper if present, keep main content
+        text = text
+          .replace(/<!DOCTYPE html>[\s\S]*?<body[^>]*>/gi, '')
+          .replace(/<\/body>[\s\S]*?<\/html>/gi, '')
+          .replace(/<head>[\s\S]*?<\/head>/gi, '')
+          .trim();
+
+        // If still looks like full page, extract likely main content
+        if (text.includes('<div') || text.includes('<p')) {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(text, 'text/html');
+          const mainContent = doc.body.innerHTML || text;
+          text = mainContent;
+        }
+
+        addMessage(text || '[Response received but empty - check network/console]', false);
+      } catch (err) {
+        addMessage(`Error: ${err.message}. Space may be sleeping, rate-limited, or network issue. Try again in a minute.`, false);
+        console.error(err);
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send';
+      }
+    }
+
+    function addMessage(content, isUser) {
+      const msg = document.createElement('div');
+      msg.className = `message ${isUser ? 'user' : 'ai'}`;
+
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar';
+      avatar.textContent = isUser ? 'You' : 'AI';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.innerHTML = content;
+
+      setTimeout(() => {
+        Prism.highlightAllUnder(bubble);
+        bubble.querySelectorAll('pre, code').forEach(block => {
+          const parent = block.tagName === 'PRE' ? block : block.parentElement;
+          if (parent) {
+            parent.style.position = 'relative';
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = 'Copy';
+            copyBtn.onclick = () => {
+              navigator.clipboard.writeText(block.textContent.trim());
+              copyBtn.textContent = 'Copied!';
+              setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+            };
+            parent.appendChild(copyBtn);
+          }
+        });
+      }, 100);
+
+      msg.append(avatar, bubble);
+      messagesDiv.appendChild(msg);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+  </script>
+</body>
+</html>    #mode-toggle button {
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+    #mode-toggle button.active {
+      background: var(--google-blue);
+      color: white;
+      border: none;
+    }
+    #main {
+      flex: 1;
+      display: flex;
+    }
+    #sidebar {
+      width: 220px;
+      background: #f8f9fa;
+      border-right: 1px solid var(--border);
+      padding: 1.5rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+    #messages {
+      flex: 1;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+    .message {
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1rem;
+    }
+    .message.ai { align-self: flex-start; }
+    .message.user { align-self: flex-end; flex-direction: row-reverse; }
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--google-blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .user .avatar { background: var(--google-green); }
+    .bubble {
+      padding: 1rem;
+      border-radius: 4px;
+      background: #f1f3f4;
+      border: 1px solid var(--border);
+      line-height: 1.5;
+    }
+    .user .bubble {
+      background: var(--google-blue);
+      color: white;
+      border: none;
+    }
+    pre {
+      background: #f6f8fa;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow-x: auto;
+      position: relative;
+    }
+    #input-container {
+      padding: 1rem 1.5rem;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 1rem;
+    }
+    #prompt {
+      flex: 1;
+      padding: 0.9rem 1.2rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 1rem;
+      resize: vertical;
+      min-height: 52px;
+    }
+    #send {
+      background: var(--google-blue);
+      color: white;
+      border: none;
+      padding: 0 1.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--google-green);
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    Vasuki Assistant
+    <div id="mode-toggle">
+      <button class="active" id="ask-btn">Ask</button>
+      <button id="research-btn">Research</button>
+    </div>
+  </header>
+
+  <div id="main">
+    <div id="sidebar">
+      <strong>Mode Info</strong><br>
+      <small>Ask: General questions/code</small><br>
+      <small>Research: In-depth on topic</small>
+      <p class="status">Connected to Vasuki AI Space</p>
+    </div>
+
+    <div id="messages">
+      <div class="message ai">
+        <div class="avatar">AI</div>
+        <div class="bubble">
           Hello Shaurya. Select mode and ask anything.<br>
           Responses come directly from Vasuki AI (Hugging Face Space).
         </div>
