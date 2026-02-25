@@ -211,160 +211,118 @@
     <button id="stop-btn">Stop</button>
   </div>
 
-  <script>
-    const messagesDiv = document.getElementById('messages');
-    const promptInput = document.getElementById('prompt');
-    const sendBtn = document.getElementById('send');
-    const stopBtn = document.getElementById('stop-btn');
-    const askBtn = document.getElementById('ask-btn');
-    const researchBtn = document.getElementById('research-btn');
+  // ... (keep the rest of your HTML the same, only replace the <script> part)
 
-    let currentMode = 'ask';
-    let abortController = null;
+<script>
+  // ... (keep all the previous variables and functions: messagesDiv, promptInput, sendBtn, etc.)
 
-    askBtn.addEventListener('click', () => setMode('ask'));
-    researchBtn.addEventListener('click', () => setMode('research'));
+  async function sendQuery() {
+    const query = promptInput.value.trim();
+    if (!query) return;
 
-    function setMode(mode) {
-      currentMode = mode;
-      askBtn.classList.toggle('active', mode === 'ask');
-      researchBtn.classList.toggle('active', mode === 'research');
-    }
+    addMessage(query, true);
+    promptInput.value = '';
+    promptInput.disabled = true;
 
-    promptInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendQuery();
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Loading...';
+    showStopButton();
+
+    abortController = new AbortController();
+
+    try {
+      const params = new URLSearchParams({
+        topic: query,
+        mode: currentMode
+      });
+      const url = `https://adamyakhairwal2011-vasuki-ai.hf.space/research?${params}`;
+
+      const res = await fetch(url, { signal: abortController.signal });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      let text = await res.text();
+
+      // Aggressive cleanup of HTML + visible delimiters
+      text = text
+        .replace(/<!DOCTYPE html>[\s\S]*?<body[^>]*>/gi, '')
+        .replace(/<\/body>[\s\S]*?<\/html>/gi, '')
+        .replace(/<head>[\s\S]*?<\/head>/gi, '')
+        .replace(/<script[\s\S]*?<\/script>/gi, '')
+        .replace(/<style[\s\S]*?<\/style>/gi, '')
+        // Remove stray visible LaTeX brackets that weren't processed
+        .replace(/\\\[|\\]|\\(|\\)|\$\$|\$|\[|\]/g, '')
+        .trim();
+
+      if (text.includes('<div') || text.includes('<p') || text.includes('<h')) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+        text = doc.body?.innerHTML || text;
       }
-    });
 
-    sendBtn.addEventListener('click', sendQuery);
-    stopBtn.addEventListener('click', stopRequest);
+      addMessage(text || '[No content returned]', false);
 
-    function showStopButton() {
-      stopBtn.style.display = 'inline-block';
-      sendBtn.style.display = 'none';
-    }
-
-    function hideStopButton() {
-      stopBtn.style.display = 'none';
-      sendBtn.style.display = 'inline-block';
-      sendBtn.textContent = 'Send';
-      sendBtn.disabled = false;
-    }
-
-    function stopRequest() {
-      if (abortController) {
-        abortController.abort();
-        addMessage('Response stopped by user.', false);
+      // Force MathJax v3 re-render on new content
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        await MathJax.typesetPromise([messagesDiv.lastChild]).catch(err => {
+          console.error('MathJax render failed:', err);
+        });
       }
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        addMessage(`Error: ${err.message}`, false);
+        console.error(err);
+      }
+    } finally {
+      abortController = null;
       hideStopButton();
       promptInput.disabled = false;
     }
+  }
 
-    async function sendQuery() {
-      const query = promptInput.value.trim();
-      if (!query) return;
+  function addMessage(content, isUser) {
+    const msg = document.createElement('div');
+    msg.className = `message ${isUser ? 'user' : 'ai'}`;
 
-      addMessage(query, true);
-      promptInput.value = '';
-      promptInput.disabled = true;
+    const avatar = document.createElement('div');
+    avatar.className = 'avatar';
+    avatar.textContent = isUser ? 'You' : 'AI';
 
-      sendBtn.disabled = true;
-      sendBtn.textContent = 'Loading...';
-      showStopButton();
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.innerHTML = content;
 
-      abortController = new AbortController();
+    setTimeout(async () => {
+      Prism.highlightAllUnder(bubble);
 
-      try {
-        const params = new URLSearchParams({
-          topic: query,
-          mode: currentMode
-        });
-        const url = `https://adamyakhairwal2011-vasuki-ai.hf.space/research?${params}`;
-
-        const res = await fetch(url, { signal: abortController.signal });
-
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-        let text = await res.text();
-
-        // Cleanup HTML wrappers if present
-        text = text
-          .replace(/<!DOCTYPE html>[\s\S]*?<body[^>]*>/gi, '')
-          .replace(/<\/body>[\s\S]*?<\/html>/gi, '')
-          .replace(/<head>[\s\S]*?<\/head>/gi, '')
-          .replace(/<script[\s\S]*?<\/script>/gi, '')
-          .replace(/<style[\s\S]*?<\/style>/gi, '')
-          .trim();
-
-        // Try to extract main content if still HTML-heavy
-        if (text.includes('<div') || text.includes('<p') || text.includes('<h')) {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(text, 'text/html');
-          text = doc.body?.innerHTML || text;
+      bubble.querySelectorAll('pre, code').forEach(block => {
+        const parent = block.tagName === 'PRE' ? block : block.parentElement;
+        if (parent) {
+          parent.style.position = 'relative';
+          const copyBtn = document.createElement('button');
+          copyBtn.className = 'copy-btn';
+          copyBtn.textContent = 'Copy';
+          copyBtn.onclick = () => {
+            navigator.clipboard.writeText(block.textContent.trim());
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+          };
+          parent.appendChild(copyBtn);
         }
+      });
 
-        addMessage(text || '[No content returned]', false);
-
-        // Re-render MathJax after new content is added
-        if (typeof MathJax !== 'undefined') {
-          MathJax.Hub.Queue(["Typeset", MathJax.Hub, messagesDiv.lastChild]);
-        }
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          addMessage(`Error: ${err.message}`, false);
-          console.error(err);
-        }
-      } finally {
-        abortController = null;
-        hideStopButton();
-        promptInput.disabled = false;
+      // Force MathJax re-render + delay for safety
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        await MathJax.typesetPromise([bubble]).catch(err => console.error(err));
       }
-    }
+    }, 150);
 
-    function addMessage(content, isUser) {
-      const msg = document.createElement('div');
-      msg.className = `message ${isUser ? 'user' : 'ai'}`;
+    msg.append(avatar, bubble);
+    messagesDiv.appendChild(msg);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
 
-      const avatar = document.createElement('div');
-      avatar.className = 'avatar';
-      avatar.textContent = isUser ? 'You' : 'AI';
-
-      const bubble = document.createElement('div');
-      bubble.className = 'bubble';
-      bubble.innerHTML = content;
-
-      // Code highlighting
-      setTimeout(() => {
-        Prism.highlightAllUnder(bubble);
-
-        bubble.querySelectorAll('pre, code').forEach(block => {
-          const parent = block.tagName === 'PRE' ? block : block.parentElement;
-          if (parent) {
-            parent.style.position = 'relative';
-            const copyBtn = document.createElement('button');
-            copyBtn.className = 'copy-btn';
-            copyBtn.textContent = 'Copy';
-            copyBtn.onclick = () => {
-              navigator.clipboard.writeText(block.textContent.trim());
-              copyBtn.textContent = 'Copied!';
-              setTimeout(() => copyBtn.textContent = 'Copy', 2000);
-            };
-            parent.appendChild(copyBtn);
-          }
-        });
-
-        // Re-trigger MathJax for this new message
-        if (typeof MathJax !== 'undefined') {
-          MathJax.Hub.Queue(["Typeset", MathJax.Hub, bubble]);
-        }
-      }, 100);
-
-      msg.append(avatar, bubble);
-      messagesDiv.appendChild(msg);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
-  </script>
+  // ... (keep the rest: setMode, showStopButton, hideStopButton, stopRequest)
+</script>
 </body>
 </html>
