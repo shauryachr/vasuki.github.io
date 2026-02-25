@@ -3,299 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpeedTest • by Grok</title>
+    <title>Speed Test</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .gauge {
-            background: conic-gradient(#22c55e 0deg 0deg, #eab308 0deg 180deg, #ef4444 180deg 360deg);
+        @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap');
+        body { font-family: 'Google Sans', system-ui, sans-serif; }
+        
+        .google-blue { color: #4285f4; }
+        .google-button {
+            background: #4285f4;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .google-button:hover {
+            background: #3367d6;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+        }
+        .card {
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
         }
         .speed-number {
-            font-size: 5rem;
+            font-size: 6.5rem;
+            font-weight: 600;
             line-height: 1;
+            color: #202124;
         }
-        .stage {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        .progress-circle {
+            stroke: #4285f4;
+            transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0.0, 0.2, 1);
         }
     </style>
 </head>
-<body class="bg-zinc-950 text-white min-h-screen flex items-center justify-center">
-    <div class="max-w-md w-full mx-auto p-6">
+<body class="bg-[#f8f9fa] min-h-screen flex items-center justify-center">
+    <div class="max-w-lg w-full mx-auto px-6 py-12">
         <!-- Header -->
-        <div class="text-center mb-10">
-            <h1 class="text-4xl font-bold tracking-tighter mb-2">SpeedTest</h1>
-            <p class="text-zinc-400">Real-time internet speed test</p>
+        <div class="flex items-center justify-center gap-3 mb-10">
+            <div class="w-9 h-9 bg-[#4285f4] rounded-full flex items-center justify-center text-white text-2xl font-bold">S</div>
+            <h1 class="text-4xl font-medium tracking-tighter text-[#202124]">Speed Test</h1>
         </div>
 
-        <!-- Main Card -->
-        <div id="card" class="bg-zinc-900 rounded-3xl shadow-2xl border border-zinc-800 p-8">
+        <div id="card" class="card bg-white rounded-3xl p-10 border border-[#dadce0]">
+            
             <!-- Results -->
-            <div id="results" class="hidden">
-                <div class="flex justify-center mb-8">
-                    <div class="relative w-48 h-48">
-                        <svg class="w-48 h-48 -rotate-90" viewBox="0 0 200 200">
-                            <circle cx="100" cy="100" r="90" fill="none" stroke="#27272a" stroke-width="20"/>
-                            <circle id="progress-circle" cx="100" cy="100" r="90" fill="none" 
-                                    stroke="#22c55e" stroke-width="20" stroke-dasharray="565" 
-                                    stroke-dashoffset="565" stroke-linecap="round"/>
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <div id="main-speed" class="speed-number font-bold text-white">0</div>
-                            <div class="text-sm text-zinc-400 -mt-3">Mbps</div>
-                        </div>
+            <div id="results" class="hidden text-center">
+                <div class="relative mx-auto w-64 h-64 flex items-center justify-center">
+                    <svg class="w-64 h-64 -rotate-90" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="92" fill="none" stroke="#f1f3f4" stroke-width="16"/>
+                        <circle id="progress-circle" cx="100" cy="100" r="92" fill="none"
+                                stroke="#4285f4" stroke-width="16"
+                                stroke-dasharray="578" stroke-dashoffset="578"
+                                stroke-linecap="round"/>
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <div id="main-speed" class="speed-number">0</div>
+                        <div class="text-[#5f6368] text-xl -mt-3 font-medium">Mbps</div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-3 gap-4 text-center">
+                <div class="grid grid-cols-3 gap-8 mt-8 text-center">
                     <div>
-                        <div class="text-emerald-400 text-2xl font-semibold" id="ping-result">0</div>
-                        <div class="text-xs text-zinc-400">PING</div>
-                        <div class="text-[10px] text-zinc-500">ms</div>
+                        <div class="text-4xl font-medium text-[#202124]" id="ping-result">0</div>
+                        <div class="text-sm text-[#5f6368] mt-1">Ping</div>
+                        <div class="text-xs text-[#8a8d92]">ms</div>
                     </div>
                     <div>
-                        <div class="text-emerald-400 text-2xl font-semibold" id="download-result">0.0</div>
-                        <div class="text-xs text-zinc-400">DOWNLOAD</div>
-                        <div class="text-[10px] text-zinc-500">Mbps</div>
+                        <div class="text-4xl font-medium text-[#4285f4]" id="download-result">0.0</div>
+                        <div class="text-sm text-[#5f6368] mt-1">Download</div>
+                        <div class="text-xs text-[#8a8d92]">Mbps</div>
                     </div>
                     <div>
-                        <div class="text-emerald-400 text-2xl font-semibold" id="upload-result">0.0</div>
-                        <div class="text-xs text-zinc-400">UPLOAD</div>
-                        <div class="text-[10px] text-zinc-500">Mbps</div>
+                        <div class="text-4xl font-medium text-[#4285f4]" id="upload-result">0.0</div>
+                        <div class="text-sm text-[#5f6368] mt-1">Upload</div>
+                        <div class="text-xs text-[#8a8d92]">Mbps</div>
                     </div>
                 </div>
 
                 <button onclick="startTest()" 
-                        class="mt-10 w-full bg-white text-zinc-900 hover:bg-zinc-200 font-semibold py-4 rounded-2xl text-lg transition-all active:scale-95">
+                        class="mt-12 w-full google-button text-white font-medium text-lg py-4 rounded-2xl flex items-center justify-center gap-3 hover:scale-[1.02]">
+                    <i class="fa-solid fa-rotate"></i>
                     TEST AGAIN
                 </button>
             </div>
 
             <!-- Start Screen -->
-            <div id="start-screen">
-                <div class="flex justify-center mb-8">
+            <div id="start-screen" class="text-center">
+                <div class="mb-12">
                     <div onclick="startTest()" 
-                         class="w-48 h-48 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-xl shadow-emerald-500/30">
+                         class="google-button mx-auto w-52 h-52 rounded-full flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 shadow-xl transition-all">
                         <div class="text-center">
-                            <i class="fa-solid fa-play text-7xl text-zinc-900 mb-2"></i>
-                            <div class="text-2xl font-bold text-zinc-900 tracking-tighter">GO</div>
+                            <i class="fa-solid fa-play text-8xl text-white"></i>
+                            <div class="mt-6 text-3xl font-medium text-white tracking-wider">GO</div>
                         </div>
                     </div>
                 </div>
-                <p class="text-center text-zinc-400 text-sm">Click GO to test your internet speed</p>
+                <p class="text-[#5f6368] text-xl font-medium">Test your internet speed</p>
+                <p class="text-[#8a8d92] mt-1">Powered by real-time measurements</p>
             </div>
 
             <!-- Testing Screen -->
-            <div id="testing-screen" class="hidden">
-                <div class="space-y-8">
-                    <!-- Ping -->
-                    <div id="stage-ping" class="stage flex items-center gap-4">
-                        <div class="w-10 h-10 bg-zinc-800 rounded-2xl flex items-center justify-center">
-                            <i class="fa-solid fa-bolt text-yellow-400"></i>
+            <div id="testing-screen" class="hidden space-y-10">
+                <div class="flex items-center gap-5">
+                    <div class="w-9 h-9 bg-[#f1f3f4] rounded-2xl flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-bolt text-[#fbbc05] text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between mb-2 text-sm">
+                            <span class="font-medium text-[#202124]">Ping</span>
+                            <span id="ping-value" class="font-mono text-[#5f6368]">— ms</span>
                         </div>
-                        <div class="flex-1">
-                            <div class="flex justify-between text-sm mb-1">
-                                <span class="font-medium">Ping</span>
-                                <span id="ping-value" class="font-mono">— ms</span>
-                            </div>
-                            <div class="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-                                <div id="ping-bar" class="h-full w-0 bg-yellow-400 transition-all duration-700"></div>
-                            </div>
+                        <div class="h-2 bg-[#f1f3f4] rounded-full overflow-hidden">
+                            <div id="ping-bar" class="h-full w-0 bg-[#fbbc05] transition-all duration-700"></div>
                         </div>
                     </div>
-
-                    <!-- Download -->
-                    <div id="stage-download" class="stage flex items-center gap-4 opacity-40">
-                        <div class="w-10 h-10 bg-zinc-800 rounded-2xl flex items-center justify-center">
-                            <i class="fa-solid fa-download text-emerald-400"></i>
+                </div>
+                
+                <div class="flex items-center gap-5">
+                    <div class="w-9 h-9 bg-[#f1f3f4] rounded-2xl flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-download text-[#4285f4] text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between mb-2 text-sm">
+                            <span class="font-medium text-[#202124]">Download</span>
+                            <span id="download-value" class="font-mono text-[#5f6368]">— Mbps</span>
                         </div>
-                        <div class="flex-1">
-                            <div class="flex justify-between text-sm mb-1">
-                                <span class="font-medium">Download</span>
-                                <span id="download-value" class="font-mono">— Mbps</span>
-                            </div>
-                            <div class="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-                                <div id="download-bar" class="h-full w-0 bg-emerald-400 transition-all duration-700"></div>
-                            </div>
+                        <div class="h-2 bg-[#f1f3f4] rounded-full overflow-hidden">
+                            <div id="download-bar" class="h-full w-0 bg-[#4285f4] transition-all duration-700"></div>
                         </div>
                     </div>
-
-                    <!-- Upload -->
-                    <div id="stage-upload" class="stage flex items-center gap-4 opacity-40">
-                        <div class="w-10 h-10 bg-zinc-800 rounded-2xl flex items-center justify-center">
-                            <i class="fa-solid fa-upload text-sky-400"></i>
+                </div>
+                
+                <div class="flex items-center gap-5">
+                    <div class="w-9 h-9 bg-[#f1f3f4] rounded-2xl flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-upload text-[#34a853] text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between mb-2 text-sm">
+                            <span class="font-medium text-[#202124]">Upload</span>
+                            <span id="upload-value" class="font-mono text-[#5f6368]">— Mbps</span>
                         </div>
-                        <div class="flex-1">
-                            <div class="flex justify-between text-sm mb-1">
-                                <span class="font-medium">Upload</span>
-                                <span id="upload-value" class="font-mono">— Mbps</span>
-                            </div>
-                            <div class="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-                                <div id="upload-bar" class="h-full w-0 bg-sky-400 transition-all duration-700"></div>
-                            </div>
+                        <div class="h-2 bg-[#f1f3f4] rounded-full overflow-hidden">
+                            <div id="upload-bar" class="h-full w-0 bg-[#34a853] transition-all duration-700"></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="text-center mt-12">
-                    <div class="inline-flex items-center gap-2 text-zinc-500 text-sm">
-                        <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                        Testing your connection...
+                <div class="text-center pt-6">
+                    <div class="inline-flex items-center gap-3 bg-[#f1f3f4] text-[#5f6368] text-sm font-medium px-6 py-2 rounded-3xl">
+                        <div class="w-3 h-3 bg-[#4285f4] rounded-full animate-ping"></div>
+                        Testing your connection…
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="text-center mt-8 text-xs text-zinc-500">
-            Made with ❤️ using pure HTML • CSS • JS<br>
-            Uses public endpoints (no data stored)
+        <div class="text-center text-[#8a8d92] text-xs mt-8">
+            Clean Google-style design • Real measurements • No ads
         </div>
     </div>
 
     <script>
-        // Tailwind script already loaded via CDN
-        function tailwindInit() {
-            // Already ready
-        }
-
         let isTesting = false;
 
         async function measurePing() {
             const pings = [];
             const url = `https://jsonplaceholder.typicode.com/todos/1?nocache=${Date.now()}`;
-            
-            for (let i = 0; i < 6; i++) {
+            for (let i = 0; i < 5; i++) {
                 const start = Date.now();
                 try {
-                    await fetch(url, { cache: 'no-store', mode: 'cors' });
+                    await fetch(url, { cache: 'no-store' });
                     pings.push(Date.now() - start);
-                } catch (e) {}
-                await new Promise(r => setTimeout(r, 100));
+                } catch(e) {}
+                await new Promise(r => setTimeout(r, 80));
             }
-            return Math.min(...pings); // best ping
+            return Math.round(Math.min(...pings));
         }
 
         async function measureDownload() {
-            // Large public image (\~8 MB) from Wikimedia (CORS enabled)
             const url = `https://upload.wikimedia.org/wikipedia/commons/3/3e/Tokyo_Sky_Tree_2012.JPG?nocache=${Date.now()}`;
             const start = Date.now();
-            
-            const response = await fetch(url, { cache: 'no-store', mode: 'cors' });
-            const blob = await response.blob();
+            const res = await fetch(url, { cache: 'no-store' });
+            const blob = await res.blob();
             const duration = (Date.now() - start) / 1000;
-            
-            const bits = blob.size * 8;
-            const Mbps = (bits / duration / 1024 / 1024).toFixed(1);
-            return parseFloat(Mbps);
+            return Math.round((blob.size * 8) / duration / 1024 / 1024 * 10) / 10;
         }
 
         async function measureUpload() {
-            // 4 MB random data
             const size = 4 * 1024 * 1024;
             const data = new Uint8Array(size);
             crypto.getRandomValues(data);
-            const blob = new Blob([data]);
-            
             const start = Date.now();
             await fetch('https://httpbin.org/post', {
                 method: 'POST',
-                body: blob,
-                headers: { 'Content-Type': 'application/octet-stream' }
+                body: new Blob([data]),
             });
             const duration = (Date.now() - start) / 1000;
-            
-            const bits = size * 8;
-            const Mbps = (bits / duration / 1024 / 1024).toFixed(1);
-            return parseFloat(Mbps);
+            return Math.round((size * 8) / duration / 1024 / 1024 * 10) / 10;
         }
 
         function animateValue(id, start, end, duration, suffix = '') {
-            const obj = document.getElementById(id);
+            const element = document.getElementById(id);
             const range = end - start;
-            const startTime = Date.now();
-            
-            function update() {
-                const now = Date.now();
-                const elapsed = now - startTime;
-                let progress = elapsed / duration;
-                if (progress > 1) progress = 1;
-                
+            let startTime = null;
+
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = Math.min((timestamp - startTime) / duration, 1);
                 const value = Math.floor(start + range * progress);
-                obj.textContent = value + suffix;
-                
+                element.textContent = value + suffix;
                 if (progress < 1) {
-                    requestAnimationFrame(update);
+                    requestAnimationFrame(step);
                 } else {
-                    obj.textContent = end + suffix;
+                    element.textContent = end + suffix;
                 }
             }
-            update();
+            requestAnimationFrame(step);
         }
 
         async function startTest() {
             if (isTesting) return;
             isTesting = true;
 
-            const startScreen = document.getElementById('start-screen');
-            const testingScreen = document.getElementById('testing-screen');
-            const resultsScreen = document.getElementById('results');
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('results').classList.add('hidden');
+            const testing = document.getElementById('testing-screen');
+            testing.classList.remove('hidden');
 
-            startScreen.classList.add('hidden');
-            testingScreen.classList.remove('hidden');
-            resultsScreen.classList.add('hidden');
-
-            // Reset bars
+            // Reset
             document.getElementById('ping-bar').style.width = '0%';
             document.getElementById('download-bar').style.width = '0%';
             document.getElementById('upload-bar').style.width = '0%';
 
-            // STAGE 1: Ping
-            document.getElementById('stage-ping').classList.remove('opacity-40');
+            // Ping
+            document.getElementById('ping-value').textContent = '— ms';
             const ping = await measurePing();
             document.getElementById('ping-bar').style.width = '100%';
             document.getElementById('ping-value').textContent = ping + ' ms';
-            await new Promise(r => setTimeout(r, 600));
+            await new Promise(r => setTimeout(r, 400));
 
-            // STAGE 2: Download
-            document.getElementById('stage-download').classList.remove('opacity-40');
+            // Download
             const download = await measureDownload();
             document.getElementById('download-bar').style.width = '100%';
             document.getElementById('download-value').textContent = download + ' Mbps';
-            await new Promise(r => setTimeout(r, 600));
+            await new Promise(r => setTimeout(r, 400));
 
-            // STAGE 3: Upload
-            document.getElementById('stage-upload').classList.remove('opacity-40');
+            // Upload
             const upload = await measureUpload();
             document.getElementById('upload-bar').style.width = '100%';
             document.getElementById('upload-value').textContent = upload + ' Mbps';
 
             // Show results
             setTimeout(() => {
-                testingScreen.classList.add('hidden');
+                testing.classList.add('hidden');
+                const resultsScreen = document.getElementById('results');
                 resultsScreen.classList.remove('hidden');
 
-                // Animate results
-                animateValue('ping-result', 0, ping, 800);
-                animateValue('download-result', 0, download, 1200);
-                animateValue('upload-result', 0, upload, 1200);
+                // Progress circle
+                const offset = 578 - (578 * Math.min(download / 800, 1)); // max 800 Mbps for visual
+                document.getElementById('progress-circle').style.strokeDashoffset = offset;
 
-                // Main speed = download (most important)
-                animateValue('main-speed', 0, download, 1500);
+                animateValue('main-speed', 0, download, 1400);
+                animateValue('ping-result', 0, ping, 800);
+                animateValue('download-result', 0, download, 1100);
+                animateValue('upload-result', 0, upload, 1100);
 
                 isTesting = false;
-            }, 800);
+            }, 600);
         }
 
-        // Keyboard support: Press Enter or Space to start
+        // Keyboard support
         document.addEventListener('keydown', e => {
-            if ((e.key === 'Enter' || e.key === ' ') && !isTesting) {
-                startTest();
-            }
+            if ((e.key === 'Enter' || e.key === ' ') && !isTesting) startTest();
         });
-
-        // Auto-run once loaded (optional)
-        // window.onload = () => setTimeout(startTest, 600);
     </script>
 </body>
 </html>
