@@ -36,6 +36,7 @@
       --accent-blue: #58a6ff;
       --accent-red: #f85149;
       --accent-green: #238636;
+      --active-chat: #2d3748;
     }
     body {
       margin: 0;
@@ -58,18 +59,32 @@
       height: 44px;
       width: auto;
     }
-    #mode-toggle button {
+    #mode-toggle {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    #mode-toggle button, #new-chat, #clear-history, #delete-all {
       background: transparent;
       border: 1px solid var(--border);
       padding: 0.4rem 0.9rem;
       border-radius: 4px;
       color: var(--text-secondary);
       cursor: pointer;
-      margin-left: 0.5rem;
       font-size: 0.9rem;
     }
     #mode-toggle button.active {
       background: var(--accent-blue);
+      color: white;
+      border: none;
+    }
+    #new-chat {
+      background: var(--accent-green);
+      color: white;
+      border: none;
+    }
+    #clear-history, #delete-all {
+      background: var(--accent-red);
       color: white;
       border: none;
     }
@@ -79,12 +94,31 @@
       overflow: hidden;
     }
     #sidebar {
-      width: 200px;
+      width: 260px;
       background: #0d1117;
       border-right: 1px solid var(--border);
-      padding: 1.2rem;
-      font-size: 0.9rem;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .chat-item {
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #161b22;
+      border: 1px solid var(--border);
       color: var(--text-secondary);
+      font-size: 0.95rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .chat-item.active {
+      background: var(--active-chat);
+      color: white;
+      border-color: var(--accent-blue);
     }
     #messages {
       flex: 1;
@@ -242,14 +276,15 @@
     <div id="mode-toggle">
       <button class="active" id="ask-btn">Ask</button>
       <button id="research-btn">Research</button>
+      <button id="new-chat">New Chat</button>
+      <button id="clear-history">Clear Current</button>
+      <button id="delete-all">Delete All</button>
     </div>
   </header>
 
   <div id="main">
     <div id="sidebar">
-      <strong>Mode</strong><br>
-      <small>Ask → general / code / image</small><br>
-      <small>Research → deep topic</small>
+      <div id="chat-list"></div>
     </div>
 
     <div id="messages">
@@ -272,13 +307,104 @@
     const stopBtn = document.getElementById('stop-btn');
     const askBtn = document.getElementById('ask-btn');
     const researchBtn = document.getElementById('research-btn');
+    const newChatBtn = document.getElementById('new-chat');
+    const clearCurrentBtn = document.getElementById('clear-history');
+    const deleteAllBtn = document.getElementById('delete-all');
+    const chatList = document.getElementById('chat-list');
 
     let currentMode = 'ask';
     let abortController = null;
+    let currentChatId = null;
+    let chats = JSON.parse(localStorage.getItem('vasukiChats')) || {};
 
-    // Logo URL (from your uploaded image)
     const logoSrc = "https://files.oaiusercontent.com/file-2tJ1M0z6kYcM8nZ6v3W0uJ?se=2025-02-25T09%3A00%3A00Z&sp=r&sv=2024-08-04&sr=b&rscca=0&sig=exampleSignatureHere";
 
+    // Initialize or load chats
+    function initChats() {
+      if (Object.keys(chats).length === 0) {
+        createNewChat();
+      } else {
+        currentChatId = Object.keys(chats)[0];
+        loadChat(currentChatId);
+      }
+      renderChatList();
+    }
+
+    function createNewChat() {
+      const id = Date.now().toString();
+      chats[id] = {
+        title: 'New Chat',
+        messages: []
+      };
+      currentChatId = id;
+      messagesDiv.innerHTML = '<div class="quote-block">Simple, Scalable Tools<br>For Startups And Individuals</div>';
+      saveChats();
+      renderChatList();
+    }
+
+    function loadChat(chatId) {
+      currentChatId = chatId;
+      messagesDiv.innerHTML = '';
+      const chat = chats[chatId];
+      if (chat.messages.length === 0) {
+        messagesDiv.innerHTML = '<div class="quote-block">Simple, Scalable Tools<br>For Startups And Individuals</div>';
+      } else {
+        chat.messages.forEach(msg => addMessage(msg.content, msg.isUser, false));
+      }
+      renderChatList();
+    }
+
+    function saveChats() {
+      localStorage.setItem('vasukiChats', JSON.stringify(chats));
+    }
+
+    function renderChatList() {
+      chatList.innerHTML = '';
+      Object.keys(chats).forEach(id => {
+        const chat = chats[id];
+        const item = document.createElement('div');
+        item.className = 'chat-item';
+        if (id === currentChatId) item.classList.add('active');
+        item.textContent = chat.title || 'New Chat';
+        item.onclick = () => loadChat(id);
+        chatList.appendChild(item);
+      });
+    }
+
+    newChatBtn.addEventListener('click', createNewChat);
+
+    clearCurrentBtn.addEventListener('click', () => {
+      if (confirm('Clear current chat?')) {
+        chats[currentChatId].messages = [];
+        chats[currentChatId].title = 'New Chat';
+        messagesDiv.innerHTML = '<div class="quote-block">Simple, Scalable Tools<br>For Startups And Individuals</div>';
+        saveChats();
+        renderChatList();
+      }
+    });
+
+    deleteAllBtn.addEventListener('click', () => {
+      if (confirm('Delete ALL chats? This cannot be undone.')) {
+        chats = {};
+        localStorage.removeItem('vasukiChats');
+        createNewChat();
+      }
+    });
+
+    // Auto-update title based on first user message
+    function updateChatTitle() {
+      if (chats[currentChatId].messages.length > 0) {
+        const firstUserMsg = chats[currentChatId].messages.find(m => m.isUser);
+        if (firstUserMsg) {
+          const title = firstUserMsg.content.substring(0, 40) + (firstUserMsg.content.length > 40 ? '...' : '');
+          chats[currentChatId].title = title;
+          saveChats();
+          renderChatList();
+        }
+      }
+    }
+
+    // Rest of your code (sendQuery, addMessage, etc.) with save calls
     askBtn.addEventListener('click', () => setMode('ask'));
     researchBtn.addEventListener('click', () => setMode('research'));
 
@@ -323,7 +449,6 @@
       const query = promptInput.value.trim();
       if (!query) return;
 
-      // Hide quote when first message is sent
       const quote = messagesDiv.querySelector('.quote-block');
       if (quote) quote.style.display = 'none';
 
@@ -378,10 +503,12 @@
         abortController = null;
         hideStopButton();
         promptInput.disabled = false;
+        saveChats();
+        updateChatTitle();
       }
     }
 
-    function addMessage(content, isUser) {
+    function addMessage(content, isUser, save = true) {
       const msg = document.createElement('div');
       msg.className = `message ${isUser ? 'user' : 'ai'}`;
 
@@ -436,7 +563,15 @@
       msg.append(avatar, bubble);
       messagesDiv.appendChild(msg);
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+      if (save && currentChatId) {
+        chats[currentChatId].messages.push({ content, isUser });
+        saveChats();
+      }
     }
+
+    // Initial load
+    initChats();
   </script>
 </body>
 </html>
