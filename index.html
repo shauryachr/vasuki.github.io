@@ -50,11 +50,34 @@
       padding: 0.9rem 1.5rem;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      font-size: 1.2rem;
-      color: var(--google-blue);
       display: flex;
       align-items: center;
       justify-content: space-between;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-v {
+      width: 38px;
+      height: 38px;
+      background: var(--google-blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: bold;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    .logo-v.thinking {
+      animation: grok-like-pulse 1.2s infinite ease-in-out;
+    }
+    @keyframes grok-like-pulse {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50%      { transform: scale(1.15) rotate(10deg); }
     }
     #mode-toggle button {
       background: transparent;
@@ -86,10 +109,8 @@
     }
     #messages {
       flex: 1;
-      padding: 1.5rem 1.5rem 0;
+      padding: 1.5rem;
       overflow-y: auto;
-      display: flex;
-      flex-direction: column;
     }
     .message {
       margin-bottom: 1.5rem;
@@ -100,15 +121,15 @@
     .message.ai { align-self: flex-start; }
     .message.user { align-self: flex-end; flex-direction: row-reverse; }
     .avatar {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: var(--google-blue);
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 1.1rem;
       flex-shrink: 0;
     }
     .user .avatar { background: var(--google-green); }
@@ -128,24 +149,72 @@
     }
     pre {
       background: #f6f8fa;
-      padding: 1rem;
+      padding: 1.2rem;
       border: 1px solid var(--border);
       border-radius: 6px;
       overflow-x: auto;
-      margin: 0.8rem 0;
+      margin: 1rem 0;
       max-height: 600px;
       overflow-y: auto;
       position: relative;
     }
     pre.code-long {
-      max-height: 800px;
+      max-height: 900px;
     }
     code {
       font-family: 'Consolas', 'Monaco', monospace;
       font-size: 0.95rem;
     }
     .copy-all-btn {
-      margin-top: 0.6rem;
+      margin-top: 0.8rem;
+      background: var(--google-green);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    #input-container {
+      padding: 1rem 1.5rem;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 1rem;
+      position: relative;
+    }
+    #prompt {
+      flex: 1;
+      padding: 0.9rem 1.2rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 1rem;
+      resize: vertical;
+      min-height: 50px;
+    }
+    #send {
+      background: var(--google-blue);
+      color: white;
+      border: none;
+      padding: 0 1.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    #stop-btn {
+      background: var(--google-red);
+      color: white;
+      border: none;
+      padding: 0 1.4rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: none;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
       background: var(--google-green);
       color: white;
       border: none;
@@ -154,60 +223,15 @@
       cursor: pointer;
       font-size: 0.9rem;
     }
-    #input-container {
-      padding: 1rem 1.5rem;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      display: flex;
-      gap: 0.8rem;
-      position: relative;
-    }
-    #prompt {
-      flex: 1;
-      padding: 0.8rem 1.1rem;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      font-size: 1rem;
-      resize: vertical;
-      min-height: 48px;
-    }
-    #send {
-      background: var(--google-blue);
-      color: white;
-      border: none;
-      padding: 0 1.4rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.95rem;
-    }
-    #stop-btn {
-      background: var(--google-red);
-      color: white;
-      border: none;
-      padding: 0 1.2rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.95rem;
-      display: none;
-    }
-    .copy-btn {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      background: var(--google-green);
-      color: white;
-      border: none;
-      padding: 0.4rem 0.8rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.85rem;
-    }
   </style>
 </head>
 <body>
 
   <header>
-    Vasuki Assistant
+    <div class="logo-container">
+      <div class="logo-v" id="logo-v">V</div>
+      <span>Vasuki Assistant</span>
+    </div>
     <div id="mode-toggle">
       <button class="active" id="ask-btn">Ask</button>
       <button id="research-btn">Research</button>
@@ -222,7 +246,7 @@
     </div>
 
     <div id="messages">
-      <!-- Chat starts empty -->
+      <!-- Empty on start -->
     </div>
   </div>
 
@@ -239,6 +263,7 @@
     const stopBtn = document.getElementById('stop-btn');
     const askBtn = document.getElementById('ask-btn');
     const researchBtn = document.getElementById('research-btn');
+    const logoV = document.getElementById('logo-v');
 
     let currentMode = 'ask';
     let abortController = null;
@@ -262,9 +287,18 @@
     sendBtn.addEventListener('click', sendQuery);
     stopBtn.addEventListener('click', stopRequest);
 
+    function startThinkingAnimation() {
+      logoV.classList.add('thinking');
+    }
+
+    function stopThinkingAnimation() {
+      logoV.classList.remove('thinking');
+    }
+
     function showStopButton() {
       stopBtn.style.display = 'inline-block';
       sendBtn.style.display = 'none';
+      startThinkingAnimation();
     }
 
     function hideStopButton() {
@@ -272,6 +306,7 @@
       sendBtn.style.display = 'inline-block';
       sendBtn.textContent = 'Send';
       sendBtn.disabled = false;
+      stopThinkingAnimation();
     }
 
     function stopRequest() {
@@ -326,7 +361,6 @@
 
         addMessage(text || '[No content returned]', false);
 
-        // MathJax v3 render
         if (window.MathJax?.typesetPromise) {
           await MathJax.typesetPromise([messagesDiv.lastChild]);
         }
@@ -357,12 +391,10 @@
       setTimeout(() => {
         Prism.highlightAllUnder(bubble);
 
-        // Long code handling
         bubble.querySelectorAll('pre').forEach(pre => {
           pre.classList.add('line-numbers');
           if (pre.textContent.length > 1500) pre.classList.add('code-long');
 
-          // Copy single block
           const copyBtn = document.createElement('button');
           copyBtn.className = 'copy-btn';
           copyBtn.textContent = 'Copy';
@@ -375,7 +407,6 @@
           pre.appendChild(copyBtn);
         });
 
-        // Copy entire long response (for AI messages only)
         if (!isUser && bubble.textContent.length > 800) {
           const copyAll = document.createElement('button');
           copyAll.className = 'copy-all-btn';
@@ -388,7 +419,6 @@
           bubble.appendChild(copyAll);
         }
 
-        // MathJax re-render
         if (window.MathJax?.typesetPromise) {
           MathJax.typesetPromise([bubble]);
         }
