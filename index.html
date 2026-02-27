@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Vasuki Labs — Innovative Technology Studio</title>
+  <title>|| वासुकी प्रयोगशाला ||</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
   
   <!-- tsParticles CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@tsparticles/engine@3/tsparticles.engine.min.js"></script>
@@ -14,12 +14,15 @@
 
   <style>
     :root {
-      --primary: #0061ff;
-      --primary-dark: #004bb8;
-      --surface: #ffffff;
-      --on-surface: #1f1f1f;
-      --on-surface-variant: #5f6368;
-      --background: #f8fafc;
+      /* Rose gold palette */
+      --primary: #b76e79;
+      --primary-dark: #8f5a62;
+      --rg-light: #f1d5cf;
+      --rg-lighter: #f7e9e6;
+      --surface: #191416;
+      --on-surface: #efe6e8;
+      --on-surface-variant: #cdb6bc;
+      --background: radial-gradient(1200px 800px at 15% 10%, #2a1f22 0%, #1b1417 40%, #0f0c0d 100%);
       --elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
       --elevation-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
       --radius: 16px;
@@ -28,7 +31,7 @@
     * { margin:0; padding:0; box-sizing:border-box; }
 
     body {
-      font-family: 'Roboto', system-ui, sans-serif;
+      font-family: 'Noto Sans Devanagari', 'Roboto', system-ui, sans-serif;
       background: var(--background);
       color: var(--on-surface);
       line-height: 1.6;
@@ -36,7 +39,7 @@
 
     header {
       padding: 1.2rem 2rem;
-      background: rgba(255,255,255,0.92);
+      background: rgba(10,9,10,0.6);
       backdrop-filter: blur(8px);
       box-shadow: var(--elevation-1);
       position: sticky;
@@ -55,9 +58,13 @@
     .logo {
       font-size: 1.9rem;
       font-weight: 700;
-      color: var(--primary);
+      color: var(--rg-lighter);
       text-decoration: none;
       letter-spacing: -0.5px;
+      background: linear-gradient(90deg, var(--rg-light), var(--primary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
 
     .nav-links {
@@ -76,7 +83,7 @@
 
     .nav-links a:hover,
     .nav-links a.active {
-      color: var(--primary);
+      color: var(--rg-light);
     }
 
     .hero {
@@ -107,7 +114,11 @@
       font-size: 3rem;
       font-weight: 500;
       margin-bottom: 1.2rem;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.12);
+      text-shadow: 0 2px 18px rgba(183,110,121,0.25);
+      background: linear-gradient(180deg, var(--rg-lighter), var(--rg-light) 60%, var(--primary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
 
     .subtitle {
@@ -135,29 +146,29 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      box-shadow: var(--elevation-1);
+      box-shadow: 0 6px 20px rgba(183,110,121,0.25);
     }
 
     .btn-primary {
-      background: var(--primary);
-      color: white;
+      background: linear-gradient(135deg, var(--primary), #c88f87 60%, var(--rg-light));
+      color: #1b1417;
     }
 
     .btn-primary:hover {
-      background: var(--primary-dark);
-      box-shadow: var(--elevation-2);
+      background: linear-gradient(135deg, var(--primary-dark), #b5767f 60%, var(--rg-light));
+      box-shadow: 0 10px 28px rgba(183,110,121,0.35);
       transform: translateY(-2px);
     }
 
     .btn-outline {
       background: transparent;
-      border: 2px solid var(--primary);
-      color: var(--primary);
+      border: 2px solid var(--rg-light);
+      color: var(--rg-light);
     }
 
     .btn-outline:hover {
-      background: rgba(0,97,255,0.08);
-      box-shadow: var(--elevation-1);
+      background: rgba(247, 233, 230, 0.08);
+      box-shadow: 0 6px 20px rgba(183,110,121,0.25);
     }
 
     .external::after {
@@ -178,17 +189,18 @@
     }
 
     .feature-card {
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(14px);
       border-radius: var(--radius);
       padding: 2.2rem 1.8rem;
-      box-shadow: var(--elevation-1);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 10px 30px rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.06);
       transition: all 0.32s ease;
     }
 
     .feature-card:hover {
       transform: translateY(-8px);
-      box-shadow: var(--elevation-2);
+      box-shadow: 0 16px 40px rgba(183,110,121,0.22);
     }
 
     .feature-icon { font-size: 3.2rem; margin-bottom: 1.2rem; }
@@ -201,7 +213,7 @@
       padding: 4rem 1rem 2rem;
       color: var(--on-surface-variant);
       font-size: 0.95rem;
-      border-top: 1px solid #e0e0e0;
+      border-top: 1px solid rgba(255,255,255,0.08);
     }
 
     @media (max-width: 768px) {
@@ -215,7 +227,7 @@
 
   <header>
     <nav>
-      <a href="index.html" class="logo">Vasuki Labs</a>
+      <a href="index.html" class="logo">वासुकी प्रयोगशाला</a>
       <div class="nav-links">
         <a href="index.html" class="active">Home</a>
         <a href="Image-Generator.html">Image Generator</a>
@@ -267,10 +279,10 @@
   </div>
 
   <footer>
-    © 2026 Vasuki Labs • Made with precision in India • <a href="https://vasuki.cloud" target="_blank" style="color: var(--primary);">vasuki.cloud</a>
+    © 2026 वासुकी प्रयोगशाला • Made with precision in India • <a href="https://vasuki.cloud" target="_blank" style="color: var(--rg-light);">vasuki.cloud</a>
   </footer>
 
-  <!-- tsParticles config (unchanged) -->
+  <!-- tsParticles config -->
   <script>
     tsParticles.load("tsparticles", {
       fullScreen: { enable: false },
@@ -287,9 +299,9 @@
         }
       },
       particles: {
-        color: { value: ["#0061ff", "#4d9aff", "#ffffff"] },
+        color: { value: ["#b76e79", "#e9c7c1", "#f7e9e6"] },
         links: {
-          color: "#0061ff",
+          color: "#b76e79",
           distance: 160,
           enable: true,
           opacity: 0.4,
