@@ -421,12 +421,67 @@
       border-radius: 50%;
     }
 
+    /* Stacking Section Styles */
+    .stack-container {
+      position: relative;
+      width: 100%;
+      max-width: 1200px;
+      margin: 10rem auto;
+      padding: 0 2rem;
+    }
+
+    .stack-card-wrapper {
+      position: sticky;
+      top: 15vh;
+      width: 100%;
+      height: 70vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10vh;
+    }
+
+    .stack-card {
+      width: 100%;
+      height: 100%;
+      background: rgba(25, 20, 22, 0.9);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 40px;
+      padding: 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-shadow: 0 -20px 50px rgba(0,0,0,0.5);
+      transform-origin: center top;
+    }
+
+    .stack-card h3 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+    }
+
+    .stack-card p {
+      font-size: 1.2rem;
+      color: var(--on-surface-variant);
+      max-width: 600px;
+    }
+
+    .stack-card-icon {
+      font-size: 5rem;
+      margin-bottom: 2rem;
+      opacity: 0.8;
+    }
+
     footer {
       padding: 4rem 2rem;
       text-align: center;
       border-top: 1px solid var(--glass-border);
       color: var(--on-surface-variant);
       font-size: 0.9rem;
+      margin-top: 20vh;
     }
 
     @media (max-width: 768px) {
@@ -498,6 +553,46 @@
     </a>
   </section>
 
+  <!-- Stacking Section (Sarvam AI style) -->
+  <section class="stack-container" id="how-it-works">
+    <div class="text-center mb-20 reveal">
+      <h2 class="text-5xl font-bold mb-6">Innovative Architecture</h2>
+      <p class="text-on-surface-variant text-xl">The foundation of intelligence, built to scale.</p>
+    </div>
+
+    <div class="stack-card-wrapper" id="card-1">
+      <div class="stack-card">
+        <div class="stack-card-icon">🧠</div>
+        <h3>Neural Foundations</h3>
+        <p>Our models are trained on diverse, localized datasets to ensure deep cultural and linguistic understanding, delivering precision that feels personal.</p>
+      </div>
+    </div>
+
+    <div class="stack-card-wrapper" id="card-2">
+      <div class="stack-card">
+        <div class="stack-card-icon">⚡</div>
+        <h3>Ultra-Low Latency</h3>
+        <p>By leveraging global edge computing, we bring inference closer to the user, achieving speeds that redefine real-time interaction.</p>
+      </div>
+    </div>
+
+    <div class="stack-card-wrapper" id="card-3">
+      <div class="stack-card">
+        <div class="stack-card-icon">🛡️</div>
+        <h3>Enterprise Privacy</h3>
+        <p>Your data stays yours. We implement end-to-end encryption and localized data processing to meet the highest standards of security.</p>
+      </div>
+    </div>
+
+    <div class="stack-card-wrapper" id="card-4">
+      <div class="stack-card">
+        <div class="stack-card-icon">🌐</div>
+        <h3>Open Ecosystem</h3>
+        <p>Designed for developers, by developers. Our API allows seamless integration into any workflow, from mobile apps to cloud infrastructures.</p>
+      </div>
+    </div>
+  </section>
+
   <footer>
     <p>© 2026 वासुकी प्रयोगशाला • Built with precision in India</p>
     <p class="mt-2 text-xs opacity-50">Powered by वासुकी Engine • <a href="https://vasuki.cloud" class="hover:text-primary transition">vasuki.cloud</a></p>
@@ -534,6 +629,24 @@
           duration: 1,
           ease: 'power3.out'
         });
+      });
+
+      // Stacking Cards Animation
+      const cards = gsap.utils.toArray('.stack-card-wrapper');
+      cards.forEach((card, i) => {
+        if (i < cards.length - 1) {
+          gsap.to(card.querySelector('.stack-card'), {
+            scale: 0.9,
+            opacity: 0.3,
+            scrollTrigger: {
+              trigger: cards[i + 1],
+              start: "top 15%",
+              end: "top 15%",
+              scrub: true,
+              toggleActions: "play none none reverse"
+            }
+          });
+        }
       });
     });
 
