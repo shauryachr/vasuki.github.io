@@ -110,6 +110,67 @@
     .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
     .nav-links a:hover { color: #fff; transform: translateY(-1px); }
 
+    /* Dropdown Styles */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: rgba(15, 12, 13, 0.95);
+      backdrop-filter: blur(20px);
+      min-width: 200px;
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 1100;
+      padding: 5px 0;
+      margin-top: 0; /* Removed margin to prevent gap */
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+    }
+
+    /* Invisible bridge to prevent closing on hover gap */
+    .dropdown-content::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      background: transparent;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .dropdown-content a {
+      color: var(--on-surface-variant);
+      padding: 12px 20px;
+      text-decoration: none;
+      display: block;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .dropdown-content a:last-child { border-bottom: none; }
+
+    .dropdown-content a:hover {
+      background: rgba(183, 110, 121, 0.1);
+      color: #fff;
+      padding-left: 25px;
+    }
+
     /* Hero Section */
     .hero {
       position: relative;
@@ -386,6 +447,13 @@
         <a href="#home" class="active">Home</a>
         <a href="General-AI.html">Assistant</a>
         <a href="https://vasuki.cloud" target="_blank" class="external">Cloud प्रयोगशाला</a>
+        <div class="dropdown">
+          <a href="#" class="cursor-pointer">Support</a>
+          <div class="dropdown-content">
+            <a href="https://www.linkedin.com/in/shaurya-chauhan-1307742bb/" target="_blank">Shaurya Chauhan</a>
+            <a href="https://www.linkedin.com/in/adamya-m-khairwal-8b51b235b/" target="_blank">Adamya Khairwal</a>
+          </div>
+        </div>
       </div>
     </nav>
   </header>
