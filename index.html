@@ -17,7 +17,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tsparticles/engine@3/tsparticles.engine.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.min.js"></script>
+  
+  <!-- Google reCAPTCHA -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script>
+    const RECAPTCHA_SITE_KEY = "6LeY6XosAAAAAAyWXQUcRoE2giPUPZVQ3egUY9Ix";
+    const RECAPTCHA_SECRET_KEY = "6LeY6XosAAAAAGkJdv_1_AYvENQUerZ556q5CXqV";
+  </script>
 
   <style>
     :root {
@@ -712,6 +719,11 @@
         <p>Designed for developers, by developers. Our API allows seamless integration into any workflow, from mobile apps to cloud infrastructures.</p>
       </div>
     </div>
+  </section>
+
+  <!-- Security Verification Section -->
+  <section class="py-12 flex justify-center reveal">
+    <div class="g-recaptcha" data-sitekey="6LeY6XosAAAAAAyWXQUcRoE2giPUPZVQ3egUY9Ix" data-theme="dark"></div>
   </section>
 
   <footer>
