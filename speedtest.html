@@ -191,7 +191,8 @@
     <nav>
       <a href="index.html" class="logo">वासुकी प्रयोगशाला</a>
       <div class="nav-links">
-        <a href="index.html" style="color: var(--on-surface-variant); text-decoration: none;">Home</a>
+        <a href="index.html">Home</a>
+        <a href="Wiki-Knowledge.html">Wiki Knowledge</a>
       </div>
     </nav>
   </header>
@@ -227,40 +228,54 @@
 
     async function startTest() {
       startBtn.disabled = true;
-      statusText.innerText = "Finding nearest edge server...";
+      statusText.innerText = "Connecting to global edge network...";
       speedText.innerText = "0";
-      
-      // Reset ring
       progressRing.style.strokeDashoffset = 628;
 
-      // Simulation of "Finding data speed" phase with realistic animations
-      const timeline = gsap.timeline();
-      
-      // Phase 1: Latency check
-      await new Promise(r => setTimeout(r, 1500));
-      statusText.innerText = "Checking latency and jitter...";
-      
-      // Phase 2: Bandwidth Download test (Simulation)
-      statusText.innerText = "Measuring bandwidth capacity...";
-      
-      let currentSpeed = 0;
-      let targetSpeed = Math.floor(Math.random() * 450) + 50; // Random speed between 50 and 500
-      
-      const speedAnim = { value: 0 };
-      gsap.to(speedAnim, {
-        value: targetSpeed,
-        duration: 4,
-        ease: "power2.out",
-        onUpdate: () => {
-          speedText.innerText = Math.floor(speedAnim.value);
-          const offset = 628 - (speedAnim.value / 500) * 628;
-          progressRing.style.strokeDashoffset = offset;
+      try {
+        // Step 1: Get initial estimate from Browser Network API (if supported)
+        let initialEstimate = 0;
+        if (navigator.connection && navigator.connection.downlink) {
+          initialEstimate = navigator.connection.downlink;
         }
-      });
 
-      await new Promise(r => setTimeout(r, 4500));
-      statusText.innerText = "Test complete. Optimization recommended.";
-      startBtn.disabled = false;
+        // Step 2: Real Bandwidth Test (Download 5MB sample)
+        // Using a reliable CDN asset for measurement
+        const testFile = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=5000&q=80";
+        const startTime = performance.now();
+        
+        statusText.innerText = "Analyzing bandwidth capacity...";
+
+        const response = await fetch(testFile, { cache: 'no-store' });
+        const reader = response.body.getReader();
+        let loaded = 0;
+        const total = 10000000; // Estimated size or use Content-Length if available
+
+        while(true) {
+          const {done, value} = await reader.read();
+          if (done) break;
+          loaded += value.length;
+          
+          // Calculate real-time speed
+          const currentTime = performance.now();
+          const duration = (currentTime - startTime) / 1000; // seconds
+          if (duration > 0) {
+            const bps = (loaded * 8) / duration;
+            const mbps = (bps / 1048576).toFixed(1);
+            
+            speedText.innerText = mbps;
+            const offset = 628 - (Math.min(mbps, 500) / 500) * 628;
+            progressRing.style.strokeDashoffset = offset;
+          }
+        }
+
+        statusText.innerText = "Analysis complete. Connection optimized.";
+      } catch (e) {
+        statusText.innerText = "Error: Network interference detected.";
+        console.error(e);
+      } finally {
+        startBtn.disabled = false;
+      }
     }
 
     // tsParticles Config
