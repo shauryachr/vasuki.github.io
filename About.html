@@ -1,0 +1,340 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Showcase | Vasuki iTech</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./extras.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap">
+
+    <script type="module">
+        import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+        const supabase = createClient(
+            "https://aitckloahlwemlekaour.supabase.co",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpdGNrbG9haGx3ZW1sZWthb3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYyOTQ3MTMsImV4cCI6MjA3MTg3MDcxM30.uQjQLSz0mQuuArPQ_F8u-suQ-6T0e9bF11ahQtSw6yA"
+        );
+
+        const orgId = new URLSearchParams(location.search).get("org");
+
+        async function loadOrg() {
+            if (!orgId) { 
+                document.body.innerHTML = "<div class='error'>404: Node Not Found</div>"; 
+                return; 
+            }
+            const { data, error } = await supabase.from("startups").select("*").eq("id", orgId);
+            if (error || !data[0]) { 
+                document.body.innerHTML = "<div class='error'>Profile Hidden or Private</div>"; 
+                return; 
+            }
+            renderOrg(data[0]);
+        }
+
+        function renderOrg(org) {
+            const theme = org.theme_color || "#FFD1C1"; // Soft Peach/Coral default
+            document.documentElement.style.setProperty("--brand", theme);
+
+            document.body.innerHTML = `
+<style>
+    :root {
+        --brand: ${theme};
+        --bg: #fff;
+        --card: #FFFFFF;
+        --text: #2D2D2D;
+        --text-light: #757575;
+        --shadow: 0 20px 40px rgba(0,0,0,0.04);
+        --clay-shadow: 0 10px 30px -5px rgba(0,0,0,0.05), inset 0 -2px 5px rgba(0,0,0,0.02);
+    }
+
+    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+    
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* --- PROFILE HEADER (WAVY) --- */
+    .profile-hero {
+        position: relative;
+        background: var(--brand);
+        height: 150px;
+        width: 100%;
+    }
+
+    .wave-container {
+        position: absolute;
+        bottom: -2px;
+        width: 100%;
+        line-height: 0;
+    }
+
+    .wave-container svg {
+        fill: var(--bg);
+        width: 100%;
+        height: 30px;
+    }
+
+    .avatar-wrapper {
+        position: absolute;
+        bottom: -50px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+    }
+
+    .avatar {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        border: 6px solid var(--bg);
+        box-shadow: var(--shadow);
+        object-fit: cover;
+        background: #fff;
+    }
+
+        /* --- SERVICES --- */
+.services {
+  margin-top: 40px;
+}
+
+.services h3 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+}
+
+.service-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px 14px;
+  border: 1px solid rgba(0,0,0,0.06);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+.service-card b {
+  display: block;
+  font-size: 14px;
+}
+
+.service-card span {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+    /* --- CONTENT SECTION --- */
+    .main-content {
+        max-width: 600px;
+        margin: 60px auto 0;
+        padding: 0 20px;
+        text-align: center;
+    }
+
+    .title-block h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: -0.02em;
+    }
+
+    .title-block p {
+        color: var(--text-light);
+        margin: 5px 0 25px;
+        font-weight: 500;
+    }
+
+    /* --- ACTION BUTTONS --- */
+    .btn-row {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 35px;
+    }
+
+    .btn {
+        padding: 12px 35px;
+        border-radius: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-solid { background: var(--brand); color: #fff; border: 1px solid gray; }
+    .btn-solid:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); }
+
+    .btn-ghost { background: transparent; color: var(--text); font-style: italic; }
+
+    /* --- STATS --- */
+    .stats-bar {
+        display: flex;
+        justify-content: space-around;
+        padding: 20px 0;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+    }
+
+    .stat-item b { display: block; font-size: 18px; }
+    .stat-item span { font-size: 12px; color: var(--text-light); text-transform: uppercase; }
+
+    /* --- BENTO NAV --- */
+    .nav-pills {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+        scrollbar-width: none;
+    }
+
+    .pill {
+        white-space: nowrap;
+        background: #fff;
+        padding: 10px 20px;
+        border-radius: 10px;
+        border: 1px solid gray;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-light);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .pill.active { border-color: var(--text); color: var(--text); }
+
+    /* --- GRID --- */
+    .image-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .grid-item {
+        aspect-ratio: 1/1;
+        background: #eee;
+        overflow: hidden;
+    }
+
+    .grid-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .grid-item:hover img { transform: scale(1.1); }
+
+</style>
+
+<section class="profile-hero">
+    <div class="wave-container">
+        <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+            <path d="M0,160L80,176C160,192,320,224,480,213.3C640,203,800,149,960,138.7C1120,128,1280,160,1360,176L1440,192L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
+        </svg>
+    </div>
+    <div class="avatar-wrapper">
+        <img src="${org.logo_base64 || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400"}" class="avatar">
+    </div>
+</section>
+
+<main class="main-content">
+    <div class="title-block">
+        <h1>${org.name}</h1>
+        <p>${org.tagline || "Founder & Visionary"}</p>
+    </div>
+
+${(() => {
+  let c = {};
+  try { c = typeof org.contacts === "string" ? JSON.parse(org.contacts) : (org.contacts || {}); } catch(e){}
+
+  return `
+  <div class="btn-row">
+    ${c.website ? `<a href="${c.website}" target="_blank" class="btn btn-solid">Connect</a>` : ""}
+    ${c.email ? `<a href="mailto:${c.email}" class="btn btn-ghost">Contact Directly</a>` : ""}
+  </div>`;
+})()}
+
+
+${org.location || org.website ? `
+<div class="stats-bar">
+  ${org.location ? `<div class="stat-item"><b>${org.location}</b><span>Location</span></div>` : ""}
+  ${org.website ? `<div class="stat-item"><b>Live</b><span>Website</span></div>` : ""}
+</div>
+` : ""}
+
+
+    <p style="color: var(--text-light); font-size: 14px; line-height: 1.6; margin-bottom: 30px;">
+        ${org.about || "Driving the future of Information Technology through the Vasuki iTech Network. Always looking for new perspectives and innovative cuisines."}
+    </p>
+
+${(() => {
+  let btns = [];
+  try { btns = typeof org.buttons === "string" ? JSON.parse(org.buttons) : (org.buttons || []); } catch(e){}
+
+  if (!btns.length) return "";
+
+  return `
+  <div class="nav-pills">
+    ${btns.map((b, i) => `
+      <div class="pill ${i === 0 ? "active" : ""}" onclick="window.open('${b.url}','_blank')">
+        ${b.icon || ""} ${b.label}
+      </div>
+    `).join("")}
+  </div>`;
+})()}
+
+
+${(() => {
+  let services = [];
+  try {
+    services = typeof org.services === "string"
+      ? JSON.parse(org.services)
+      : (org.services || []);
+  } catch(e){}
+
+  if (!services.length) return "";
+
+  return `
+  <section class="services">
+    <h3>Services</h3>
+    <div class="services-grid">
+      ${services.map(s => `
+        <div class="service-card">
+          <b>${s}</b>
+        </div>
+      `).join("")}
+    </div>
+  </section>
+  `;
+})()}
+
+</main>
+
+<footer style="margin-top: 60px; padding: 20px; opacity: 0.3; font-size: 12px; text-align: center;">
+    MEMBER OF VASUKI ITECH ECOSYSTEM • 2026
+</footer>
+`;
+        }
+
+        loadOrg();
+    </script>
+</head>
