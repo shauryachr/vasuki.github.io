@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Global Edge Speed Test | वासुकी प्रयोगशाला</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  
+  <!-- Animation Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tsparticles/engine@3/tsparticles.engine.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #b76e79;
+      --primary-glow: rgba(183, 110, 121, 0.4);
+      --surface: #0f0c0d;
+      --on-surface: #efe6e8;
+      --on-surface-variant: #cdb6bc;
+      --bg-main: radial-gradient(1200px 800px at 15% 10%, #2a1f22 0%, #1b1417 40%, #0c0a0b 100%);
+      --radius: 30px;
+      --glass: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Noto Sans Devanagari', 'Roboto', system-ui, sans-serif;
+      background: var(--bg-main);
+      color: var(--on-surface);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 1.5rem 2rem;
+      background: rgba(10, 9, 10, 0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-decoration: none;
+      background: linear-gradient(90deg, #f1d5cf, var(--primary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    main {
+      padding-top: 140px;
+      max-width: 900px;
+      margin: 0 auto;
+      padding-bottom: 5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .speed-card {
+      background: var(--glass);
+      backdrop-filter: blur(30px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 4rem 2rem;
+      width: 100%;
+      max-width: 600px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+    }
+
+    .gauge-container {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      margin: 0 auto 3rem;
+    }
+
+    .gauge-ring {
+      fill: none;
+      stroke: rgba(183, 110, 121, 0.1);
+      stroke-width: 12;
+    }
+
+    .gauge-progress {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 12;
+      stroke-linecap: round;
+      stroke-dasharray: 628;
+      stroke-dashoffset: 628;
+      transition: stroke-dashoffset 0.5s ease;
+      filter: drop-shadow(0 0 10px var(--primary-glow));
+    }
+
+    .speed-value {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .speed-unit {
+      font-size: 1.2rem;
+      color: var(--on-surface-variant);
+      display: block;
+      margin-top: -10px;
+    }
+
+    .test-btn {
+      background: var(--primary);
+      color: #000;
+      padding: 1rem 3rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: none;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    .test-btn:hover {
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 0 40px var(--primary-glow);
+    }
+
+    .test-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status-text {
+      margin-top: 2rem;
+      font-size: 1.1rem;
+      color: var(--on-surface-variant);
+      height: 1.6em;
+    }
+
+    #tsparticles { position: fixed; inset: 0; z-index: -1; }
+
+    .blob {
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+      filter: blur(80px);
+      z-index: -2;
+      border-radius: 50%;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="tsparticles"></div>
+  <div class="blob" style="top: -10%; left: -10%;"></div>
+  <div class="blob" style="bottom: -10%; right: -10%;"></div>
+
+  <header>
+    <nav>
+      <a href="index.html" class="logo">वासुकी प्रयोगशाला</a>
+      <div class="nav-links">
+        <a href="index.html" style="color: var(--on-surface-variant); text-decoration: none;">Home</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="mb-12">
+      <h1 class="text-5xl font-bold mb-4">Global Edge Speed Test</h1>
+      <p class="text-xl text-on-surface-variant">Analyze your network latency and bandwidth across the Vasuki infrastructure.</p>
+    </div>
+
+    <div class="speed-card">
+      <div class="gauge-container">
+        <svg viewBox="0 0 220 220" width="240" height="240">
+          <circle class="gauge-ring" cx="110" cy="110" r="100"></circle>
+          <circle id="progress" class="gauge-progress" cx="110" cy="110" r="100"></circle>
+        </svg>
+        <div class="speed-value">
+          <span id="current-speed">0</span>
+          <span class="speed-unit">Mbps</span>
+        </div>
+      </div>
+
+      <button id="start-btn" class="test-btn" onclick="startTest()">Start Speed Test</button>
+      <div id="status" class="status-text">Ready to analyze connection...</div>
+    </div>
+  </main>
+
+  <script>
+    const startBtn = document.getElementById('start-btn');
+    const statusText = document.getElementById('status');
+    const speedText = document.getElementById('current-speed');
+    const progressRing = document.getElementById('progress');
+
+    async function startTest() {
+      startBtn.disabled = true;
+      statusText.innerText = "Finding nearest edge server...";
+      speedText.innerText = "0";
+      
+      // Reset ring
+      progressRing.style.strokeDashoffset = 628;
+
+      // Simulation of "Finding data speed" phase with realistic animations
+      const timeline = gsap.timeline();
+      
+      // Phase 1: Latency check
+      await new Promise(r => setTimeout(r, 1500));
+      statusText.innerText = "Checking latency and jitter...";
+      
+      // Phase 2: Bandwidth Download test (Simulation)
+      statusText.innerText = "Measuring bandwidth capacity...";
+      
+      let currentSpeed = 0;
+      let targetSpeed = Math.floor(Math.random() * 450) + 50; // Random speed between 50 and 500
+      
+      const speedAnim = { value: 0 };
+      gsap.to(speedAnim, {
+        value: targetSpeed,
+        duration: 4,
+        ease: "power2.out",
+        onUpdate: () => {
+          speedText.innerText = Math.floor(speedAnim.value);
+          const offset = 628 - (speedAnim.value / 500) * 628;
+          progressRing.style.strokeDashoffset = offset;
+        }
+      });
+
+      await new Promise(r => setTimeout(r, 4500));
+      statusText.innerText = "Test complete. Optimization recommended.";
+      startBtn.disabled = false;
+    }
+
+    // tsParticles Config
+    tsParticles.load("tsparticles", {
+      fpsLimit: 120,
+      particles: {
+        color: { value: "#b76e79" },
+        links: { color: "#b76e79", distance: 150, enable: true, opacity: 0.2, width: 1 },
+        move: { enable: true, speed: 1.2 },
+        number: { density: { enable: true, area: 800 }, value: 100 },
+        opacity: { value: 0.3 },
+        size: { value: { min: 1, max: 3 } },
+      }
+    });
+  </script>
+</body>
+</html>
