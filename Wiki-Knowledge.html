@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wikipedia Summarizer | वासुकी प्रयोगशाला</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  
+  <!-- Animation Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tsparticles/engine@3/tsparticles.engine.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #b76e79;
+      --primary-glow: rgba(183, 110, 121, 0.4);
+      --surface: #0f0c0d;
+      --on-surface: #efe6e8;
+      --on-surface-variant: #cdb6bc;
+      --bg-main: radial-gradient(1200px 800px at 15% 10%, #2a1f22 0%, #1b1417 40%, #0c0a0b 100%);
+      --radius: 20px;
+      --glass: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Noto Sans Devanagari', 'Roboto', system-ui, sans-serif;
+      background: var(--bg-main);
+      color: var(--on-surface);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 1.5rem 2rem;
+      background: rgba(10, 9, 10, 0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-decoration: none;
+      background: linear-gradient(90deg, #f1d5cf, var(--primary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .nav-links a {
+      color: var(--on-surface-variant);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: #fff; }
+
+    main {
+      padding-top: 120px;
+      max-width: 800px;
+      margin: 0 auto;
+      padding-bottom: 5rem;
+    }
+
+    .search-container {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+      padding: 0.5rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    #search-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 1.1rem;
+      padding: 0.8rem 0;
+    }
+
+    .search-btn {
+      background: var(--primary);
+      color: #000;
+      padding: 0.6rem 1.5rem;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .search-btn:hover { transform: scale(1.05); }
+
+    .result-pane {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 2.5rem;
+      min-height: 200px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .result-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+    }
+
+    .result-content {
+      font-size: 1.1rem;
+      color: var(--on-surface-variant);
+      line-height: 1.8;
+    }
+
+    .loading-spinner {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(183, 110, 121, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 2rem auto;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #tsparticles { position: fixed; inset: 0; z-index: -1; }
+
+    .blob {
+      position: fixed;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+      filter: blur(60px);
+      z-index: -2;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="tsparticles"></div>
+  <div class="blob" style="top: -10%; left: -10%;"></div>
+  <div class="blob" style="bottom: -10%; right: -10%;"></div>
+
+  <header>
+    <nav>
+      <a href="index.html" class="logo">वासुकी प्रयोगशाला</a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4">Wikipedia Summarizer</h1>
+      <p class="text-on-surface-variant">Get concise summaries of Wikipedia articles instantly.</p>
+    </div>
+
+    <div class="search-container">
+      <input type="text" id="search-input" placeholder="Search any article on Wikipedia..." autocomplete="off">
+      <button class="search-btn" onclick="fetchWikiData()">Discover</button>
+    </div>
+
+    <div id="loading" class="loading-spinner"></div>
+
+    <div id="result-pane" class="result-pane">
+      <h2 id="result-title" class="result-title"></h2>
+      <div id="result-content" class="result-content"></div>
+    </div>
+  </main>
+
+  <script>
+    async function fetchWikiData() {
+      const query = document.getElementById('search-input').value.trim();
+      if (!query) return;
+
+      const pane = document.getElementById('result-pane');
+      const loader = document.getElementById('loading');
+      const titleEl = document.getElementById('result-title');
+      const contentEl = document.getElementById('result-content');
+
+      // Reset and show loader
+      gsap.to(pane, { opacity: 0, y: 20, duration: 0.3 });
+      loader.style.display = 'block';
+
+      try {
+        // Step 1: Search for the best match
+        const searchRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*`);
+        const searchData = await searchRes.json();
+        
+        if (searchData.query.search.length === 0) {
+          throw new Error("No results found.");
+        }
+
+        const bestMatch = searchData.query.search[0].title;
+
+        // Step 2: Fetch the summary of the best match
+        const summaryRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&titles=${encodeURIComponent(bestMatch)}&format=json&origin=*`);
+        const summaryData = await summaryRes.json();
+        
+        const pages = summaryData.query.pages;
+        const pageId = Object.keys(pages)[0];
+        const extract = pages[pageId].extract;
+
+        if (!extract) {
+          throw new Error("Could not retrieve summary.");
+        }
+
+        // Display data
+        titleEl.innerText = bestMatch;
+        contentEl.innerText = extract;
+        
+        loader.style.display = 'none';
+        gsap.to(pane, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" });
+
+      } catch (err) {
+        loader.style.display = 'none';
+        titleEl.innerText = "Error";
+        contentEl.innerText = err.message || "Failed to fetch summary from Wikipedia.";
+        gsap.to(pane, { opacity: 1, y: 0, duration: 0.6 });
+      }
+    }
+
+    // tsParticles Config
+    tsParticles.load("tsparticles", {
+      fpsLimit: 120,
+      particles: {
+        color: { value: "#b76e79" },
+        links: { color: "#b76e79", distance: 150, enable: true, opacity: 0.2, width: 1 },
+        move: { enable: true, speed: 1 },
+        number: { density: { enable: true, area: 800 }, value: 80 },
+        opacity: { value: 0.3 },
+        size: { value: { min: 1, max: 3 } },
+      }
+    });
+
+    // Enter key support
+    document.getElementById('search-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') fetchWikiData();
+    });
+  </script>
+</body>
+</html>
