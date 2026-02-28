@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Wikipedia Summarizer | वासुकी प्रयोगशाला</title>
+  <title>Wiki Knowledge | वासुकी प्रयोगशाला</title>
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -187,14 +187,14 @@
     </nav>
   </header>
 
-  <main>
+  <main class="min-h-[80vh] flex flex-col justify-center">
     <div class="text-center mb-12">
-      <h1 class="text-4xl font-bold mb-4">Wikipedia Summarizer</h1>
-      <p class="text-on-surface-variant">Get concise summaries of Wikipedia articles instantly.</p>
+      <h1 class="text-5xl font-bold mb-4">Wikipedia Summarizer</h1>
+      <p class="text-xl text-on-surface-variant">Get concise summaries of Wikipedia articles instantly.</p>
     </div>
 
     <div class="search-container">
-      <input type="text" id="search-input" placeholder="Search any article on Wikipedia..." autocomplete="off">
+      <input type="text" id="search-input" placeholder="Search anything on Wikipedia..." autocomplete="off">
       <button class="search-btn" onclick="fetchWikiData()">Discover</button>
     </div>
 
@@ -240,7 +240,7 @@
         const extract = pages[pageId].extract;
 
         if (!extract) {
-          throw new Error("Could not retrieve summary.");
+          throw new Error("Could not retrieve information.");
         }
 
         // Display data
@@ -253,7 +253,7 @@
       } catch (err) {
         loader.style.display = 'none';
         titleEl.innerText = "Error";
-        contentEl.innerText = err.message || "Failed to fetch summary from Wikipedia.";
+        contentEl.innerText = err.message || "Failed to fetch data from Wikipedia.";
         gsap.to(pane, { opacity: 1, y: 0, duration: 0.6 });
       }
     }
