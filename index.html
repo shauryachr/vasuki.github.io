@@ -18,13 +18,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tsparticles/engine@3/tsparticles.engine.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.min.js"></script>
-  
-  <!-- Google reCAPTCHA -->
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-  <script>
-    const RECAPTCHA_SITE_KEY = "6LeY6XosAAAAAAyWXQUcRoE2giPUPZVQ3egUY9Ix";
-    const RECAPTCHA_SECRET_KEY = "6LeY6XosAAAAAGkJdv_1_AYvENQUerZ556q5CXqV";
-  </script>
 
   <style>
     :root {
@@ -78,15 +71,13 @@
     }
 
     .logo {
-      font-size: 1.6rem;
-      font-weight: 700;
       text-decoration: none;
       background: linear-gradient(90deg, #f1d5cf, var(--primary));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       display: flex;
-      flex-direction: column;
+      align-items: center;
       line-height: 1.1;
     }
 
@@ -586,7 +577,10 @@
   <header id="header">
     <nav>
       <a href="#home" class="logo">
-        <span class="logo-main">वासुकी प्रयोगशाला</span>
+        <div class="flex items-center gap-3">
+          <img src="Gemini_Generated_Image_7pas67pas67pas67.png" alt="Logo" class="w-12 h-12 object-contain">
+          <span class="logo-main">वासुकी प्रयोगशाला</span>
+        </div>
       </a>
       <div class="nav-links">
         <a href="#home" class="active">Home</a>
@@ -594,7 +588,7 @@
         <a href="Wiki-Knowledge.html">Wiki Knowledge</a>
         <a href="speedtest.html">Speed Test</a>
         <a href="General-AI.html">Assistant</a>
-        <a href="https://vasuki.cloud" target="_blank" class="external">Cloud प्रयोगशाला</a>
+        <a href="https://vasuki.cloud" target="_blank" class="external">Cloud</a>
         <div class="dropdown">
           <a href="#" class="cursor-pointer">Support</a>
           <div class="dropdown-content">
@@ -723,10 +717,7 @@
     </div>
   </section>
 
-  <!-- Security Verification Section -->
-  <section class="py-12 flex justify-center reveal">
-    <div class="g-recaptcha" data-sitekey="6LeY6XosAAAAAAyWXQUcRoE2giPUPZVQ3egUY9Ix" data-theme="dark"></div>
-  </section>
+
 
   <footer>
     <p>© 2026 वासुकी प्रयोगशाला • Built with precision in India</p>
