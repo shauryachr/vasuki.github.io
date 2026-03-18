@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📏 Unit Converter | Vasuki Tools</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--primary:#1a73e8;
+--bg:#202124;
+--card:#18181b;
+--text:#e8eaed;
+--muted:#9aa0a6;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+font-family:'Roboto',system-ui;
+background:var(--bg);
+color:var(--text);
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+/* CARD */
+.shell{
+width:100%;
+max-width:420px;
+background:var(--card);
+border:1px solid #3c4043;
+border-radius:16px;
+padding:20px;
+}
+
+h1{font-size:1.3rem;}
+p{color:var(--muted);font-size:0.9rem;margin-bottom:1rem;}
+
+.row{
+display:flex;
+gap:10px;
+margin-bottom:10px;
+}
+
+input, select{
+flex:1;
+padding:10px;
+border-radius:10px;
+border:1px solid #3c4043;
+background:#202124;
+color:white;
+}
+
+button{
+background:var(--primary);
+border:none;
+color:white;
+padding:10px;
+border-radius:999px;
+cursor:pointer;
+width:100%;
+}
+
+button:hover{background:#1765cc;}
+
+.result{
+margin-top:10px;
+font-size:1rem;
+color:#34a853;
+}
+
+/* DEVICE MODAL */
+.device-modal{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.7);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+.device-box{
+background:#18181b;
+border:1px solid #3c4043;
+padding:20px;
+border-radius:16px;
+text-align:center;
+}
+
+.device-options{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+
+.device-btn{
+flex:1;
+padding:10px;
+background:#202124;
+border-radius:10px;
+cursor:pointer;
+}
+
+.device-btn:hover{background:#2a2b2e;}
+
+.phone-mode .shell{
+max-width:320px;
+font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- DEVICE MODAL -->
+<div id="deviceModal" class="device-modal">
+  <div class="device-box">
+    <h2>Select Mode</h2>
+    <p style="color:#9aa0a6">Optimize UI for your device</p>
+
+    <div class="device-options">
+      <div class="device-btn" onclick="setMode('phone')">📱 Phone</div>
+      <div class="device-btn" onclick="setMode('desktop')">💻 Desktop</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="shell">
+
+<h1>📏 Unit Converter</h1>
+<p>Convert between KM and Miles</p>
+
+<div class="row">
+<input id="value" type="number" placeholder="Enter value">
+</div>
+
+<div class="row">
+<select id="from">
+<option value="km">KM</option>
+<option value="mi">Miles</option>
+</select>
+
+<select id="to">
+<option value="mi">Miles</option>
+<option value="km">KM</option>
+</select>
+</div>
+
+<button onclick="convert()">Convert</button>
+
+<div id="output" class="result"></div>
+
+<div class="row">
+<button onclick="copy()">Copy</button>
+</div>
+
+</main>
+
+<script>
+
+/* DEVICE MODE */
+function setMode(mode){
+localStorage.setItem("deviceMode",mode);
+applyMode();
+document.getElementById("deviceModal").style.display="none";
+}
+
+function applyMode(){
+if(localStorage.getItem("deviceMode")==="phone"){
+document.body.classList.add("phone-mode");
+}else{
+document.body.classList.remove("phone-mode");
+}
+}
+
+window.onload=function(){
+applyMode();
+if(!localStorage.getItem("deviceMode")){
+document.getElementById("deviceModal").style.display="flex";
+}else{
+document.getElementById("deviceModal").style.display="none";
+}
+};
+
+/* CONVERSION */
+function convert(){
+const val=parseFloat(document.getElementById("value").value);
+const from=document.getElementById("from").value;
+const to=document.getElementById("to").value;
+const out=document.getElementById("output");
+
+if(isNaN(val)){
+out.textContent="Enter a valid number";
+return;
+}
+
+let result=val;
+
+if(from==="km" && to==="mi"){
+result=val*0.621371;
+}
+else if(from==="mi" && to==="km"){
+result=val/0.621371;
+}
+
+out.textContent=result.toFixed(4);
+}
+
+/* COPY */
+function copy(){
+navigator.clipboard.writeText(document.getElementById("output").textContent);
+}
+
+</script>
+
+</body>
+</html>

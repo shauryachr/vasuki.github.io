@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Base64 Tool</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--primary:#1a73e8;
+--primary-hover:#1557b0;
+--border:#dadce0;
+--bg:#ffffff;
+--text:#202124;
+--sub:#5f6368;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+font-family:Roboto,system-ui;
+background:#f1f3f4;
+color:var(--text);
+}
+
+/* NAVBAR */
+header{
+background:#fff;
+border-bottom:1px solid var(--border);
+}
+
+nav{
+max-width:900px;
+margin:auto;
+padding:15px;
+font-weight:500;
+color:var(--primary);
+font-size:20px;
+}
+
+/* MAIN */
+main{
+max-width:900px;
+margin:40px auto;
+padding:20px;
+}
+
+.card{
+background:#fff;
+border:1px solid var(--border);
+border-radius:12px;
+padding:25px;
+}
+
+/* TITLE */
+h1{
+font-size:24px;
+margin-bottom:10px;
+}
+
+p{
+color:var(--sub);
+margin-bottom:20px;
+}
+
+/* GRID */
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+/* INPUT */
+textarea{
+width:100%;
+min-height:160px;
+padding:12px;
+border:1px solid var(--border);
+border-radius:8px;
+font-size:14px;
+resize:vertical;
+outline:none;
+}
+
+textarea:focus{
+border-color:var(--primary);
+box-shadow:0 0 0 2px rgba(26,115,232,0.2);
+}
+
+/* BUTTONS */
+.buttons{
+margin-top:10px;
+display:flex;
+gap:10px;
+}
+
+button{
+padding:10px 16px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-weight:500;
+}
+
+.primary{
+background:var(--primary);
+color:#fff;
+}
+
+.primary:hover{
+background:var(--primary-hover);
+}
+
+.secondary{
+background:#f1f3f4;
+}
+
+.secondary:hover{
+background:#e0e0e0;
+}
+
+/* RESULT */
+.result{
+margin-top:10px;
+padding:10px;
+border:1px solid var(--border);
+border-radius:6px;
+background:#fafafa;
+font-family:monospace;
+word-break:break-all;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+.grid{
+grid-template-columns:1fr;
+}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<nav>VASUKI • Base64 Tool</nav>
+</header>
+
+<main>
+
+<div class="card">
+
+<h1>Base64 Encoder / Decoder</h1>
+<p>Encode and decode text easily.</p>
+
+<div class="grid">
+
+<!-- ENCODE -->
+<div>
+<textarea id="encodeInput" placeholder="Enter text..."></textarea>
+
+<div class="buttons">
+<button class="primary" onclick="encode()">Encode</button>
+<button class="secondary" onclick="clearEncode()">Clear</button>
+</div>
+
+<div class="result" id="encodeResult">Encoded output...</div>
+</div>
+
+<!-- DECODE -->
+<div>
+<textarea id="decodeInput" placeholder="Enter Base64..."></textarea>
+
+<div class="buttons">
+<button class="primary" onclick="decode()">Decode</button>
+<button class="secondary" onclick="clearDecode()">Clear</button>
+</div>
+
+<div class="result" id="decodeResult">Decoded output...</div>
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+<script>
+
+function encode(){
+let input=document.getElementById("encodeInput").value;
+
+if(!input.trim()){
+document.getElementById("encodeResult").textContent="Enter text first";
+return;
+}
+
+try{
+let encoded=btoa(unescape(encodeURIComponent(input)));
+document.getElementById("encodeResult").textContent=encoded;
+document.getElementById("decodeInput").value=encoded;
+}catch{
+document.getElementById("encodeResult").textContent="Error encoding";
+}
+}
+
+function decode(){
+let input=document.getElementById("decodeInput").value;
+
+if(!input.trim()){
+document.getElementById("decodeResult").textContent="Enter Base64 first";
+return;
+}
+
+try{
+let decoded=decodeURIComponent(escape(atob(input)));
+document.getElementById("decodeResult").textContent=decoded;
+document.getElementById("encodeInput").value=decoded;
+}catch{
+document.getElementById("decodeResult").textContent="Invalid Base64";
+}
+}
+
+function clearEncode(){
+document.getElementById("encodeInput").value="";
+document.getElementById("encodeResult").textContent="Encoded output...";
+}
+
+function clearDecode(){
+document.getElementById("decodeInput").value="";
+document.getElementById("decodeResult").textContent="Decoded output...";
+}
+
+</script>
+
+</body>
+</html>

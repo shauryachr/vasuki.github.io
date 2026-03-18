@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Advanced Calculator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--primary:#1a73e8;
+--border:#dadce0;
+--bg:#ffffff;
+--text:#202124;
+--surface:#f1f3f4;
+--danger:#ea4335;
+--success:#34a853;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+font-family:Roboto,system-ui;
+background:#f1f3f4;
+color:var(--text);
+}
+
+header{
+background:#fff;
+border-bottom:1px solid var(--border);
+}
+
+nav{
+max-width:900px;
+margin:auto;
+padding:15px;
+font-weight:500;
+color:var(--primary);
+font-size:20px;
+}
+
+main{
+max-width:900px;
+margin:40px auto;
+padding:20px;
+}
+
+.card{
+background:#fff;
+border:1px solid var(--border);
+border-radius:12px;
+padding:25px;
+}
+
+/* DISPLAY */
+.display{
+background:var(--surface);
+border:1px solid var(--border);
+border-radius:8px;
+padding:15px;
+font-size:22px;
+text-align:right;
+margin-bottom:10px;
+word-break:break-all;
+}
+
+.copy-btn{
+margin-bottom:15px;
+background:var(--primary);
+color:#fff;
+border:none;
+padding:8px 12px;
+border-radius:6px;
+cursor:pointer;
+}
+
+/* BUTTONS */
+.buttons{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:10px;
+}
+
+button{
+padding:14px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-weight:500;
+font-size:15px;
+}
+
+.num{background:#fff;border:1px solid var(--border)}
+.op{background:var(--primary);color:#fff}
+.equal{background:var(--success);color:#fff}
+.clear{background:var(--danger);color:#fff}
+
+/* HISTORY */
+.history{
+margin-top:20px;
+}
+
+.history-item{
+background:#fff;
+border:1px solid var(--border);
+padding:8px;
+border-radius:6px;
+margin-bottom:6px;
+font-size:14px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<nav>VASUKI • Advanced Calculator</nav>
+</header>
+
+<main>
+
+<div class="card">
+
+<div class="display" id="display">0</div>
+<button class="copy-btn" onclick="copyResult()">Copy Result</button>
+
+<div class="buttons">
+
+<button class="clear" onclick="clearDisplay()">C</button>
+<button class="op" onclick="append('(')">(</button>
+<button class="op" onclick="append(')')">)</button>
+<button class="op" onclick="append('%')">%</button>
+<button class="op" onclick="back()">⌫</button>
+
+<button class="num" onclick="append('7')">7</button>
+<button class="num" onclick="append('8')">8</button>
+<button class="num" onclick="append('9')">9</button>
+<button class="op" onclick="append('/')">÷</button>
+<button class="op" onclick="append('^')">^</button>
+
+<button class="num" onclick="append('4')">4</button>
+<button class="num" onclick="append('5')">5</button>
+<button class="num" onclick="append('6')">6</button>
+<button class="op" onclick="append('*')">×</button>
+<button class="equal" onclick="calc()">=</button>
+
+<button class="num" onclick="append('1')">1</button>
+<button class="num" onclick="append('2')">2</button>
+<button class="num" onclick="append('3')">3</button>
+<button class="op" onclick="append('-')">−</button>
+
+<button class="num" onclick="append('0')">0</button>
+<button class="num" onclick="append('.')">.</button>
+<button class="op" onclick="append('+')">+</button>
+
+</div>
+
+<div class="history">
+<h3>History</h3>
+<div id="historyList"></div>
+</div>
+
+</div>
+
+</main>
+
+<script>
+
+let exp="0"
+let history=JSON.parse(localStorage.getItem("calcHistory")||"[]")
+
+function update(){
+document.getElementById("display").textContent=exp
+}
+
+function append(val){
+if(exp==="0") exp=val
+else exp+=val
+update()
+}
+
+function clearDisplay(){
+exp="0"
+update()
+}
+
+function back(){
+exp=exp.slice(0,-1) || "0"
+update()
+}
+
+/* PARSER */
+function parseExpression(e){
+return e
+.replace(/\^/g,"**")
+.replace(/(\d+)%/g,"($1/100)")
+}
+
+/* CALCULATE */
+function calc(){
+try{
+let parsed=parseExpression(exp)
+let result=eval(parsed)
+
+history.unshift(exp+" = "+result)
+if(history.length>10) history.pop()
+
+localStorage.setItem("calcHistory",JSON.stringify(history))
+updateHistory()
+
+exp=result.toString()
+update()
+
+}catch{
+exp="Error"
+update()
+setTimeout(()=>{exp="0";update()},1000)
+}
+}
+
+/* HISTORY UI */
+function updateHistory(){
+document.getElementById("historyList").innerHTML=
+history.map(h=>`<div class="history-item">${h}</div>`).join("")
+}
+
+/* COPY */
+function copyResult(){
+navigator.clipboard.writeText(exp)
+}
+
+/* KEYBOARD SUPPORT */
+document.addEventListener("keydown",e=>{
+if((e.key>='0'&&e.key<='9')||['+','-','*','/','.','(',')','%','^'].includes(e.key)){
+append(e.key)
+}
+else if(e.key==="Enter"){
+calc()
+}
+else if(e.key==="Backspace"){
+back()
+}
+else if(e.key==="Escape"){
+clearDisplay()
+}
+})
+
+update()
+updateHistory()
+
+</script>
+
+</body>
+</html>

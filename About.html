@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>About - Vasuki Coder</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--primary:#1a73e8;
+--primary-hover:#1557b0;
+--text:#202124;
+--text-secondary:#5f6368;
+--background:#ffffff;
+--surface:#f8f9fa;
+--border:#dadce0;
+--success:#34a853;
+--warning:#fbbc04;
+--error:#ea4335;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:Roboto,system-ui;
+background:var(--background);
+color:var(--text);
+min-height:100vh;
+}
+
+/* NAVBAR */
+
+header{
+background:var(--background);
+border-bottom:1px solid var(--border);
+box-shadow:0 1px 6px rgba(32,33,36,.08);
+position:sticky;
+top:0;
+z-index:1000;
+}
+
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+max-width:1100px;
+margin:auto;
+padding:16px;
+}
+
+.logo{
+color:var(--primary);
+text-decoration:none;
+font-weight:700;
+font-size:24px;
+transition:all 0.2s ease;
+}
+
+.logo:hover{
+color:var(--primary-hover);
+}
+
+.nav-links{display:flex;gap:18px;align-items:center}
+
+.nav-links a{
+text-decoration:none;
+color:var(--text-secondary);
+font-size:15px;
+font-weight:500;
+padding:8px 12px;
+border-radius:8px;
+transition:all 0.2s ease;
+}
+
+.nav-links a:hover{
+color:var(--primary);
+background:rgba(26,115,232,0.08);
+}
+
+.nav-links a.active{
+color:var(--primary);
+background:rgba(26,115,232,0.12);
+}
+
+/* DROPDOWN */
+
+.dropdown{position:relative}
+
+.dropdown-content{
+display:none;
+position:absolute;
+top:35px;
+right:0;
+background:var(--background);
+border:1px solid var(--border);
+border-radius:8px;
+padding:8px;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+min-width:160px;
+z-index:100;
+}
+
+.dropdown:hover .dropdown-content,
+.dropdown-content:hover{
+display:flex;
+flex-direction:column;
+}
+
+.dropdown-content a{
+padding:10px 14px;
+border-radius:6px;
+text-decoration:none;
+color:var(--text);
+font-size:14px;
+font-weight:500;
+transition:all 0.2s ease;
+}
+
+.dropdown-content a:hover{
+background:var(--surface);
+color:var(--primary);
+}
+
+/* MAIN */
+
+main{
+max-width:1100px;
+margin:auto;
+padding:40px 20px;
+}
+
+.hero-section{
+text-align:center;
+margin-bottom:60px;
+}
+
+.hero-section h1{
+font-size:48px;
+font-weight:700;
+margin-bottom:16px;
+color:var(--text);
+}
+
+.hero-section p{
+font-size:18px;
+color:var(--text-secondary);
+max-width:600px;
+margin:0 auto 32px;
+line-height:1.6;
+}
+
+/* ABOUT CONTENT */
+
+.about-container{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:48px;
+margin-bottom:60px;
+align-items:start;
+}
+
+.about-text{
+max-width:600px;
+}
+
+.about-text h2{
+font-size:32px;
+font-weight:600;
+margin-bottom:16px;
+color:var(--text);
+}
+
+.about-text p{
+font-size:16px;
+line-height:1.7;
+color:var(--text-secondary);
+margin-bottom:20px;
+}
+
+.about-features{
+list-style:none;
+padding:0;
+margin:32px 0;
+}
+
+.about-features li{
+display:flex;
+align-items:center;
+gap:12px;
+padding:12px 0;
+border-bottom:1px solid var(--border);
+font-size:16px;
+color:var(--text);
+}
+
+.about-features li:last-child{
+border-bottom:none;
+}
+
+.feature-icon{
+width:24px;
+height:24px;
+background:var(--primary);
+color:white;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:14px;
+flex-shrink:0;
+}
+
+/* STATS */
+
+.stats-section{
+background:var(--surface);
+border:1px solid var(--border);
+border-radius:12px;
+padding:40px;
+margin-bottom:60px;
+}
+
+.stats-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+gap:32px;
+text-align:center;
+}
+
+.stat-item{
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+.stat-number{
+font-size:48px;
+font-weight:700;
+color:var(--primary);
+margin-bottom:8px;
+}
+
+.stat-label{
+font-size:16px;
+color:var(--text-secondary);
+font-weight:500;
+}
+
+/* TEAM */
+
+.team-section{
+margin-bottom:60px;
+}
+
+.team-section h2{
+font-size:32px;
+font-weight:600;
+margin-bottom:32px;
+text-align:center;
+color:var(--text);
+}
+
+.team-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
+gap:32px;
+}
+
+.team-member{
+background:var(--surface);
+border:1px solid var(--border);
+border-radius:12px;
+padding:32px;
+text-align:center;
+transition:all 0.2s ease;
+}
+
+.team-member:hover{
+box-shadow:0 4px 16px rgba(0,0,0,0.1);
+transform:translateY(-2px);
+}
+
+.member-avatar{
+width:80px;
+height:80px;
+background:var(--primary);
+color:white;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:0 auto 16px;
+font-size:32px;
+font-weight:700;
+}
+
+.member-name{
+font-size:20px;
+font-weight:600;
+color:var(--text);
+margin-bottom:8px;
+}
+
+.member-role{
+font-size:14px;
+color:var(--text-secondary);
+margin-bottom:16px;
+}
+
+.member-bio{
+font-size:14px;
+color:var(--text-secondary);
+line-height:1.6;
+}
+
+/* CTA */
+
+.cta-section{
+background:var(--primary);
+border-radius:12px;
+padding:48px;
+text-align:center;
+color:white;
+margin-bottom:40px;
+}
+
+.cta-section h2{
+font-size:32px;
+font-weight:600;
+margin-bottom:16px;
+}
+
+.cta-section p{
+font-size:18px;
+margin-bottom:32px;
+opacity:0.9;
+}
+
+.cta-button{
+display:inline-block;
+padding:16px 32px;
+background:white;
+color:var(--primary);
+text-decoration:none;
+border-radius:8px;
+font-weight:600;
+font-size:16px;
+transition:all 0.2s ease;
+}
+
+.cta-button:hover{
+transform:translateY(-2px);
+box-shadow:0 4px 16px rgba(0,0,0,0.2);
+}
+
+/* FOOTER */
+
+footer{
+text-align:center;
+padding:20px;
+color:var(--text-secondary);
+border-top:1px solid var(--border);
+margin-top:40px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+.hero-section h1{
+font-size:36px;
+}
+.about-container{
+grid-template-columns:1fr;
+gap:32px;
+}
+.stats-grid{
+grid-template-columns:repeat(2, 1fr);
+}
+.team-grid{
+grid-template-columns:1fr;
+}
+.cta-section{
+padding:32px 20px;
+}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<nav>
+
+<a class="logo" href="index.html">VASUKI</a>
+
+<div class="nav-links">
+
+<a href="General-AI.html">AI</a>
+
+<a href="Wiki-Knowledge.html">Wiki</a>
+
+
+<div class="dropdown">
+
+<a>Tools ▾</a>
+
+<div class="dropdown-content">
+
+<a href="tool-ascii.html">ASCII</a>
+<a href="tool-base64.html">Base64</a>
+<a href="tool-calc.html">Calculator</a>
+<a href="tool-color.html">Color</a>
+<a href="tool-date.html">Date</a>
+<a href="tool-json.html">JSON</a>
+<a href="tool-numbers.html">Numbers</a>
+<a href="tool-password.html">Password</a>
+<a href="tool-regex.html">Regex</a>
+<a href="tool-roman.html">Roman</a>
+<a href="tool-units.html">Units</a>
+
+</div>
+
+</div>
+
+<a href="review.html">Review</a>
+<a href="about.html" class="active">About</a>
+
+</div>
+
+</nav>
+
+</header>
+
+<main>
+
+<section class="hero-section">
+
+<h1>About Vasuki Coder</h1>
+
+<p>A comprehensive developer platform designed to streamline your coding workflow with powerful AI tools, utilities, and resources.</p>
+
+</section>
+
+<div class="about-container">
+
+<div class="about-text">
+
+<h2>Our Mission</h2>
+
+<p>We believe in empowering developers with the right tools to build amazing things. Vasuki Coder brings together everything you need in one clean, intuitive interface.</p>
+
+<p>From AI-powered code assistance to essential developer utilities, we've created a platform that grows with your needs and adapts to your workflow.</p>
+
+<ul class="about-features">
+<li>
+<span class="feature-icon">✓</span>
+<span>AI-powered code generation and assistance</span>
+</li>
+<li>
+<span class="feature-icon">✓</span>
+<span>Comprehensive developer toolkit</span>
+</li>
+<li>
+<span class="feature-icon">✓</span>
+<span>Clean, intuitive interface</span>
+</li>
+<li>
+<span class="feature-icon">✓</span>
+<span>Built for modern development workflows</span>
+</li>
+<li>
+<span class="feature-icon">✓</span>
+<span>Always free and open source</span>
+</li>
+</ul>
+
+</div>
+
+<div class="stats-section">
+
+<div class="stats-grid">
+
+<div class="stat-item">
+<div class="stat-number">10+</div>
+<div class="stat-label">Developer Tools</div>
+</div>
+
+<div class="stat-item">
+<div class="stat-number">24/7</div>
+<div class="stat-label">AI Assistant</div>
+</div>
+
+<div class="stat-item">
+<div class="stat-number">100%</div>
+<div class="stat-label">Free Forever</div>
+</div>
+
+<div class="stat-item">
+<div class="stat-number">∞</div>
+<div class="stat-label">Possibilities</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<section class="team-section">
+
+<h2>Built for Developers, by Developers</h2>
+
+<div class="team-grid">
+
+<div class="team-member">
+<div class="member-avatar">VC</div>
+<div class="member-name">Vasuki Coder</div>
+<div class="member-role">Lead Developer</div>
+<div class="member-bio">Passionate about creating tools that make developers' lives easier and more productive.</div>
+</div>
+
+<div class="team-member">
+<div class="member-avatar">AI</div>
+<div class="member-name">AI Assistant</div>
+<div class="member-role">Code Intelligence</div>
+<div class="member-bio">Always ready to help with code generation, debugging, and optimization.</div>
+</div>
+
+<div class="team-member">
+<div class="member-avatar">UX</div>
+<div class="member-name">Design Team</div>
+<div class="member-role">User Experience</div>
+<div class="member-bio">Focused on creating clean, intuitive interfaces that developers love.</div>
+</div>
+
+</div>
+
+</section>
+
+<section class="cta-section">
+
+<h2>Ready to Boost Your Productivity?</h2>
+
+<p>Join thousands of developers who are already using Vasuki Labs to streamline their workflow.</p>
+
+<a href="General-AI.html" class="cta-button">Get Started Now</a>
+
+</section>
+
+</main>
+
+<footer>
+
+Vasuki Labs • Developer Platform
+
+</footer>
+
+</body>
+</html>
+
+
+
+
+ 
+</p>
+</div>
+
+</div>
+
+
+ 
+
+
+
+
+<footer>
+Vasuki Labs • Developer Platform
+</footer>
+
+</body>
+</html>

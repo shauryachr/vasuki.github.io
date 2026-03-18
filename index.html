@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>वासुकी कोडर</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+
+:root{
+--primary:#007acc;
+--primary-hover:#005a9e;
+--secondary:#ff6b35;
+--success:#4caf50;
+--warning:#ff9800;
+--text:#2d3748;
+--text-secondary:#718096;
+--background:#ffffff;
+--surface:#f7fafc;
+--border:#e2e8f0;
+--code-bg:#1e2024;
+--code-text:#a9b7c6;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+font-family:'Roboto',sans-serif;
+background:transparent;
+color:var(--text);
+overflow-x:hidden;
+}
+
+/* HEADER */
+
+header{
+position:fixed;
+top:0;
+left:0;
+right:0;
+z-index:1000;
+background:transparent;
+border-bottom:1px solid rgba(255,255,255,0.2);
+box-shadow:0 1px 6px rgba(0,0,0,.08);
+}
+
+nav{
+max-width:1200px;
+margin:auto;
+padding:16px 25px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{
+font-size:24px;
+font-weight:700;
+text-decoration:none;
+color:#ffffff;
+}
+
+.nav-links{
+display:flex;
+gap:12px;
+list-style:none;
+}
+
+.nav-links a{
+text-decoration:none;
+color:#ffffff;
+font-weight:500;
+padding:8px 12px;
+border-radius:8px;
+}
+
+.nav-links a:hover{
+color:var(--primary);
+background:rgba(26,115,232,0.08);
+}
+
+/* DROPDOWN */
+
+.dropdown{position:relative;}
+
+.dropdown-menu{
+position:absolute;
+top:100%;
+right:0;
+background:rgba(0,0,0,0.8);
+border:1px solid rgba(255,255,255,0.3);
+border-radius:8px;
+min-width:200px;
+display:none;
+}
+
+.dropdown:hover .dropdown-menu{display:block;}
+
+.dropdown-menu a{
+display:block;
+padding:10px;
+color:#ffffff;
+text-decoration:none;
+}
+
+.dropdown-menu a:hover{
+background:rgba(255,255,255,0.2);
+}
+
+/* HERO */
+
+.hero{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+padding:120px 20px 60px;
+background:transparent;
+color:white;
+}
+
+.hero-content h1{
+font-size:56px;
+margin-bottom:20px;
+text-shadow:2px 2px 4px rgba(0,0,0,0.8);
+}
+
+.hero-content h1 span{
+color:var(--primary);
+}
+
+.hero-content p{
+font-size:20px;
+color:rgba(255,255,255,0.9);
+margin-bottom:40px;
+text-shadow:1px 1px 2px rgba(0,0,0,0.8);
+}
+
+.cta-buttons{
+display:flex;
+gap:16px;
+justify-content:center;
+}
+
+.btn{
+padding:12px 24px;
+border-radius:8px;
+text-decoration:none;
+cursor:pointer;
+}
+
+.btn-primary{
+background:var(--primary);
+color:white;
+}
+
+.btn-secondary{
+background:var(--surface);
+border:1px solid var(--border);
+}
+
+/* FEATURES */
+
+.features{
+padding:80px 20px;
+background:transparent;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+}
+
+.section-title{
+text-align:center;
+font-size:36px;
+margin-bottom:48px;
+font-family:'JetBrains Mono';
+text-shadow:2px 2px 4px rgba(0,0,0,0.8);
+color:white;
+}
+
+.features-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:32px;
+}
+
+.feature-card{
+background:rgba(255,255,255,0.85);
+border:1px solid rgba(255,255,255,0.3);
+border-radius:12px;
+padding:32px;
+text-align:center;
+backdrop-filter:none;
+}
+
+.feature-icon{
+font-size:48px;
+margin-bottom:16px;
+}
+
+/* TOOLS */
+
+.tools{
+padding:80px 20px;
+}
+
+.tools-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:24px;
+}
+
+.tool-card{
+background:var(--surface);
+border:1px solid var(--border);
+border-radius:12px;
+padding:24px;
+text-decoration:none;
+color:var(--text);
+}
+
+/* FOOTER */
+
+footer{
+background:var(--code-bg);
+color:white;
+padding:40px;
+text-align:center;
+}
+
+/* VIDEO BACKGROUND */
+#bg-video{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:-1;
+opacity:1.0;
+min-width:100%;
+min-height:100%;
+}
+
+</style>
+</head>
+
+<body>
+
+<video autoplay muted loop playsinline id="bg-video">
+<source src="Back-Ground-Video.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
+
+<script>
+// Ensure video plays full duration and loops properly
+document.addEventListener('DOMContentLoaded', function() {
+const video = document.getElementById('bg-video');
+  
+video.addEventListener('loadedmetadata', function() {
+console.log('Video duration:', video.duration, 'seconds');
+video.play().catch(e => console.log('Autoplay prevented:', e));
+});
+
+video.addEventListener('ended', function() {
+console.log('Video ended, restarting...');
+video.currentTime = 0;
+video.play();
+});
+
+video.addEventListener('error', function(e) {
+console.error('Video error:', e);
+});
+});
+</script>
+
+<header>
+<nav>
+<a href="index.html" class="logo">VASUKI</a>
+
+<ul class="nav-links">
+<li><a href="General-AI.html">AI</a></li>
+<li><a href="Wiki-Knowledge.html">Wiki</a></li>
+<li><a href="about.html">About</a></li>
+<li><a href="review.html">Review</a></li>
+<li><a href="portfolio.html">Portfolio</a></li>
+
+<li class="dropdown">
+<a>Tools ▾</a>
+<div class="dropdown-menu">
+<a href="tool-ascii.html">ASCII</a>
+<a href="tool-base64.html">Base64</a>
+<a href="tool-calc.html">Calculator</a>
+<a href="tool-color.html">Color</a>
+<a href="tool-date.html">Date</a>
+<a href="tool-json.html">JSON</a>
+<a href="tool-numbers.html">Numbers</a>
+<a href="tool-password.html">Password</a>
+<a href="#" onclick="return false;">Regex - Coming Soon</a>
+<a href="tool-roman.html">Roman</a>
+<a href="tool-units.html">Units</a>
+</div>
+</li>
+
+</ul>
+</nav>
+</header>
+
+<section class="hero">
+<div class="hero-content">
+
+<h1>वासुकी <span>कोडर</span></h1>
+
+<p>Advanced coding platform with AI tools</p>
+
+<div class="cta-buttons">
+<a href="General-AI.html" class="btn btn-primary">AI Assistant</a>
+<a href="#" class="btn btn-secondary">Code Tools</a>
+</div>
+
+</div>
+</section>
+
+<section class="features">
+<div class="container">
+
+<h2 class="section-title">Developer Features</h2>
+
+<div class="features-grid">
+
+<div class="feature-card">
+<div class="feature-icon">🤖</div>
+<h3>AI Code Assistant</h3>
+</div>
+
+<div class="feature-card">
+<div class="feature-icon">💻</div>
+<h3>Code Formatter</h3>
+</div>
+
+</div>
+
+</div>
+</section>
+
+<footer>
+© 2026 वासुकी कोडर
+</footer>
+
+<script>
+
+// FIXED typing effect
+const title = document.querySelector('.hero-content h1');
+const text = title.textContent;
+title.textContent = '';
+
+let i=0;
+function type(){
+if(i<text.length){
+title.textContent += text[i];
+i++;
+setTimeout(type,50);
+}
+}
+type();
+
+</script>
+
+</body>
+</html>

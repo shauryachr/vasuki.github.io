@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>ASCII Converter - Vasuki</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--primary:#1a73e8;
+--primary-hover:#1557b0;
+--text:#202124;
+--text-secondary:#5f6368;
+--background:#ffffff;
+--surface:#f8f9fa;
+--border:#dadce0;
+--success:#34a853;
+--warning:#fbbc04;
+--error:#ea4335;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:Roboto,system-ui;
+background:var(--background);
+color:var(--text);
+}
+
+/* NAVBAR */
+header{
+border-bottom:1px solid var(--border);
+}
+
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+max-width:1100px;
+margin:auto;
+padding:16px;
+}
+
+.logo{
+color:var(--primary);
+font-weight:700;
+font-size:24px;
+text-decoration:none;
+}
+
+.nav-links{
+display:flex;
+gap:18px;
+}
+
+.nav-links a{
+text-decoration:none;
+color:var(--text-secondary);
+padding:8px 12px;
+border-radius:8px;
+}
+
+.nav-links a:hover{
+color:var(--primary);
+background:rgba(26,115,232,0.08);
+}
+
+/* MAIN */
+main{
+max-width:1000px;
+margin:auto;
+padding:40px 20px;
+}
+
+.converter{
+background:var(--surface);
+border:1px solid var(--border);
+border-radius:12px;
+padding:30px;
+}
+
+h1{
+margin-bottom:20px;
+}
+
+/* GRID */
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+/* INPUT */
+textarea{
+width:100%;
+min-height:160px;
+padding:12px;
+border:1px solid var(--border);
+border-radius:8px;
+font-size:15px;
+}
+
+textarea:focus{
+outline:none;
+border-color:var(--primary);
+}
+
+/* BUTTONS */
+.btn-group{
+margin-top:10px;
+display:flex;
+gap:10px;
+}
+
+.btn{
+flex:1;
+padding:12px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+.primary{
+background:var(--primary);
+color:white;
+}
+
+.primary:hover{
+background:var(--primary-hover);
+}
+
+.secondary{
+background:var(--surface);
+border:1px solid var(--border);
+}
+
+/* RESULT */
+.result{
+margin-top:10px;
+padding:10px;
+border:1px solid var(--border);
+border-radius:8px;
+background:white;
+min-height:60px;
+}
+
+/* TABLE */
+table{
+width:100%;
+margin-top:20px;
+border-collapse:collapse;
+}
+
+th,td{
+border-bottom:1px solid var(--border);
+padding:8px;
+text-align:left;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+.grid{grid-template-columns:1fr}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<nav>
+<a class="logo">VASUKI</a>
+<div class="nav-links">
+<a href="#">AI</a>
+<a href="#">Wiki</a>
+<a href="#">Speed</a>
+</div>
+</nav>
+</header>
+
+<main>
+
+<div class="converter">
+
+<h1>ASCII Converter</h1>
+
+<div class="grid">
+
+<div>
+<textarea id="textInput" placeholder="Enter text"></textarea>
+
+<div class="btn-group">
+<button class="btn primary" onclick="textToAscii()">Text → ASCII</button>
+<button class="btn secondary" onclick="clearText()">Clear</button>
+</div>
+
+<div class="result" id="asciiResult"></div>
+</div>
+
+<div>
+<textarea id="asciiInput" placeholder="Enter ASCII (e.g. 72 101 108)"></textarea>
+
+<div class="btn-group">
+<button class="btn primary" onclick="asciiToText()">ASCII → Text</button>
+<button class="btn secondary" onclick="clearAscii()">Clear</button>
+</div>
+
+<div class="result" id="textResult"></div>
+</div>
+
+</div>
+
+<table>
+<tr><th>Char</th><th>Decimal</th></tr>
+<tr><td>A</td><td>65</td></tr>
+<tr><td>a</td><td>97</td></tr>
+<tr><td>0</td><td>48</td></tr>
+<tr><td>Space</td><td>32</td></tr>
+</table>
+
+</div>
+
+</main>
+
+<script>
+
+function textToAscii(){
+let text=document.getElementById("textInput").value
+
+if(!text) return alert("Enter text")
+
+let res=[...text].map(c=>c.charCodeAt(0)).join(" ")
+document.getElementById("asciiResult").innerText=res
+document.getElementById("asciiInput").value=res
+}
+
+function asciiToText(){
+let input=document.getElementById("asciiInput").value.trim()
+
+if(!input) return alert("Enter ASCII")
+
+let arr=input.split(/\s+/)
+let text=""
+
+for(let n of arr){
+let num=parseInt(n)
+if(isNaN(num)||num<0||num>127) return alert("Invalid ASCII")
+text+=String.fromCharCode(num)
+}
+
+document.getElementById("textResult").innerText=text
+document.getElementById("textInput").value=text
+}
+
+function clearText(){
+textInput.value=""
+asciiResult.innerText=""
+}
+
+function clearAscii(){
+asciiInput.value=""
+textResult.innerText=""
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,191 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Vasuki Admin</title>
+
+<style>
+
+body{
+font-family:system-ui;
+background:#0b0c10;
+color:white;
+margin:0;
+display:flex;
+align-items:center;
+justify-content:center;
+height:100vh;
+}
+
+/* CARD */
+
+.card{
+background:#111;
+border:1px solid #333;
+border-radius:14px;
+padding:30px;
+width:380px;
+box-shadow:0 20px 50px rgba(0,0,0,.6);
+}
+
+/* INPUT */
+
+input{
+width:100%;
+padding:10px;
+margin-top:12px;
+background:#000;
+border:1px solid #333;
+border-radius:8px;
+color:white;
+}
+
+/* BUTTON */
+
+button{
+margin-top:14px;
+padding:10px 20px;
+background:#1a73e8;
+border:none;
+border-radius:8px;
+color:white;
+cursor:pointer;
+width:100%;
+}
+
+/* DASHBOARD */
+
+#dashboard{
+display:none;
+}
+
+.panel{
+margin-top:15px;
+padding:15px;
+background:#0c0c0c;
+border:1px solid #333;
+border-radius:10px;
+}
+
+a{
+color:#9aa0a6;
+text-decoration:none;
+}
+
+a:hover{
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<!-- LOGIN -->
+
+<div id="login">
+
+<h2>Admin Login</h2>
+
+<input type="password" id="pass" placeholder="Enter Admin Password">
+
+<button onclick="login()">Login</button>
+
+<p id="error" style="color:red"></p>
+
+</div>
+
+<!-- DASHBOARD -->
+
+<div id="dashboard">
+
+<h2>Vasuki Admin Panel</h2>
+
+<div class="panel">
+<h3>Site Control</h3>
+<p>Manage your platform.</p>
+</div>
+
+<div class="panel">
+<h3>Tools</h3>
+<p>Control developer tools pages.</p>
+</div>
+
+<div class="panel">
+<h3>Reviews</h3>
+<p>Moderate user reviews.</p>
+</div>
+
+<div class="panel">
+<h3>Quick Links</h3>
+
+<p><a href="General-AI.html">AI Page</a></p>
+<p><a href="Wiki-Knowledge.html">Wiki Page</a></p>
+<p><a href="speedtest.html">Speed Test</a></p>
+
+</div>
+
+<button onclick="logout()">Logout</button>
+
+</div>
+
+</div>
+
+<script>
+
+const password="vasuki123"
+
+function login(){
+
+let input=document.getElementById("pass").value
+
+if(input===password){
+
+localStorage.setItem("admin","true")
+
+showDashboard()
+
+}else{
+
+document.getElementById("error").innerText="Wrong password"
+
+}
+
+}
+
+function showDashboard(){
+
+document.getElementById("login").style.display="none"
+
+document.getElementById("dashboard").style.display="block"
+
+}
+
+function logout(){
+
+localStorage.removeItem("admin")
+
+location.reload()
+
+}
+
+/* AUTO LOGIN */
+
+if(localStorage.getItem("admin")==="true"){
+
+showDashboard()
+
+}
+
+</script>
+
+</body>
+</html>
+```
