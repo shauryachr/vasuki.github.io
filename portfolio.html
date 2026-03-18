@@ -31,57 +31,37 @@ box-sizing:border-box;
 }
 
 body{
-font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+font-family:'Inter', sans-serif;
 background:var(--bg);
 color:var(--text);
 overflow-x:hidden;
-line-height:1.6;
 }
 
-/* SCROLLBAR */
-::-webkit-scrollbar{
-width:8px;
-}
-
-::-webkit-scrollbar-track{
-background:var(--surface);
-}
-
-::-webkit-scrollbar-thumb{
-background:var(--primary);
-border-radius:4px;
-}
-
-/* NAVIGATION */
+/* NAV */
 nav{
 position:fixed;
 top:0;
-left:0;
-right:0;
-z-index:1000;
+width:100%;
 background:rgba(10,10,10,0.8);
 backdrop-filter:blur(20px);
 border-bottom:1px solid var(--border);
+z-index:1000;
 }
 
 .nav-container{
 max-width:1200px;
-margin:0 auto;
+margin:auto;
 padding:1rem 2rem;
 display:flex;
 justify-content:space-between;
-align-items:center;
 }
 
 .logo{
 font-size:1.5rem;
 font-weight:800;
-color:var(--text);
-text-decoration:none;
 background:var(--gradient);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
-background-clip:text;
 }
 
 .nav-links{
@@ -93,78 +73,34 @@ list-style:none;
 .nav-links a{
 color:var(--text-secondary);
 text-decoration:none;
-font-weight:500;
-transition:all 0.3s ease;
-position:relative;
 }
 
-.nav-links a:hover{
-color:var(--text);
-}
-
-.nav-links a::after{
-content:'';
-position:absolute;
-bottom:-5px;
-left:0;
-width:0;
-height:2px;
-background:var(--gradient);
-transition:width 0.3s ease;
-}
-
-.nav-links a:hover::after{
-width:100%;
-}
-
-/* HERO SECTION */
+/* HERO */
 .hero{
 min-height:100vh;
 display:flex;
 align-items:center;
 justify-content:center;
 padding:4rem 2rem;
-position:relative;
-background:radial-gradient(circle at 20% 50%, rgba(26,115,232,0.1) 0%, transparent 50%),
-radial-gradient(circle at 80% 50%, rgba(255,107,53,0.1) 0%, transparent 50%);
 }
 
 .hero-content{
-max-width:1200px;
-width:100%;
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:4rem;
 align-items:center;
+max-width:1200px;
 }
 
 .hero-text h1{
-font-size:clamp(2.5rem, 8vw, 4.5rem);
-font-weight:900;
-line-height:1.1;
-margin-bottom:1.5rem;
+font-size:3rem;
 background:var(--gradient);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
-background-clip:text;
-}
-
-.hero-text .subtitle{
-font-size:1.5rem;
-color:var(--text-secondary);
-margin-bottom:2rem;
-font-weight:400;
-}
-
-.hero-text .description{
-font-size:1.1rem;
-color:var(--text-muted);
-margin-bottom:3rem;
-line-height:1.8;
-max-width:600px;
 }
 
 .hero-buttons{
+margin-top:2rem;
 display:flex;
 gap:1rem;
 flex-wrap:wrap;
@@ -175,367 +111,88 @@ padding:1rem 2rem;
 border-radius:8px;
 text-decoration:none;
 font-weight:600;
-transition:all 0.3s ease;
 display:inline-flex;
 align-items:center;
 gap:0.5rem;
-border:none;
-cursor:pointer;
-font-size:1rem;
 }
 
 .btn-primary{
 background:var(--gradient);
 color:white;
-box-shadow:0 4px 20px rgba(26,115,232,0.3);
-}
-
-.btn-primary:hover{
-transform:translateY(-2px);
-box-shadow:0 6px 30px rgba(26,115,232,0.4);
 }
 
 .btn-secondary{
-background:transparent;
-color:var(--text);
-border:2px solid var(--border);
+border:1px solid var(--border);
+color:white;
 }
 
-.btn-secondary:hover{
-border-color:var(--primary);
-color:var(--primary);
-}
-
-.hero-image{
-position:relative;
-display:flex;
-justify-content:center;
-align-items:center;
-}
-
+/* PROFILE CARD */
 .profile-card{
 background:var(--surface);
-border:1px solid var(--border);
 border-radius:20px;
 padding:3rem;
 text-align:center;
-position:relative;
-overflow:hidden;
-}
-
-.profile-card::before{
-content:'';
-position:absolute;
-top:0;
-left:0;
-right:0;
-height:4px;
-background:var(--gradient);
+border:1px solid var(--border);
 }
 
 .profile-img{
 width:150px;
 height:150px;
 border-radius:50%;
+overflow:hidden;
 margin:0 auto 2rem;
-background:var(--gradient);
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:4rem;
-color:white;
 }
 
-.profile-info h3{
-font-size:1.5rem;
-margin-bottom:0.5rem;
-}
-
-.profile-info p{
-color:var(--text-secondary);
-margin-bottom:1.5rem;
+.profile-img img{
+width:100%;
+height:100%;
+object-fit:cover;
+border-radius:50%;
+box-shadow:0 0 25px rgba(26,115,232,0.6);
 }
 
 .social-links{
 display:flex;
 gap:1rem;
 justify-content:center;
+margin-top:1rem;
 }
 
 .social-links a{
 width:40px;
 height:40px;
+background:#2a2a2a;
+display:flex;
+align-items:center;
+justify-content:center;
 border-radius:50%;
-background:var(--surface-light);
-display:flex;
-align-items:center;
-justify-content:center;
-color:var(--text-secondary);
-text-decoration:none;
-transition:all 0.3s ease;
-}
-
-.social-links a:hover{
-background:var(--primary);
-color:white;
-transform:translateY(-2px);
-}
-
-/* ABOUT SECTION */
-.about{
-padding:6rem 2rem;
-background:var(--surface);
-}
-
-.container{
-max-width:1200px;
-margin:0 auto;
-}
-
-.section-title{
-font-size:2.5rem;
-font-weight:800;
-text-align:center;
-margin-bottom:3rem;
-background:var(--gradient);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-background-clip:text;
-}
-
-.about-content{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:4rem;
-align-items:center;
-}
-
-.about-text p{
-font-size:1.1rem;
-color:var(--text-secondary);
-line-height:1.8;
-margin-bottom:1.5rem;
-}
-
-.skills-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));
-gap:1rem;
-margin-top:2rem;
-}
-
-.skill-item{
-background:var(--surface-light);
-border:1px solid var(--border);
-border-radius:12px;
-padding:1.5rem;
-text-align:center;
-transition:all 0.3s ease;
-}
-
-.skill-item:hover{
-transform:translateY(-2px);
-border-color:var(--primary);
-}
-
-.skill-icon{
-font-size:2rem;
-margin-bottom:0.5rem;
-color:var(--primary);
-}
-
-/* PROJECTS SECTION */
-.projects{
-padding:6rem 2rem;
-}
-
-.projects-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit, minmax(350px, 1fr));
-gap:2rem;
-}
-
-.project-card{
-background:var(--surface);
-border:1px solid var(--border);
-border-radius:16px;
-overflow:hidden;
-transition:all 0.3s ease;
-}
-
-.project-card:hover{
-transform:translateY(-4px);
-border-color:var(--primary);
-box-shadow:0 10px 40px rgba(26,115,232,0.1);
-}
-
-.project-image{
-height:200px;
-background:var(--gradient);
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:3rem;
 color:white;
 }
 
-.project-content{
-padding:2rem;
-}
-
-.project-content h3{
-font-size:1.3rem;
-margin-bottom:1rem;
-}
-
-.project-content p{
-color:var(--text-secondary);
-margin-bottom:1.5rem;
-line-height:1.6;
-}
-
-.project-tags{
-display:flex;
-gap:0.5rem;
-flex-wrap:wrap;
-}
-
-.tag{
-background:var(--surface-light);
-color:var(--text-secondary);
-padding:0.3rem 0.8rem;
-border-radius:20px;
-font-size:0.85rem;
-border:1px solid var(--border);
-}
-
-/* CONTACT SECTION */
-.contact{
-padding:6rem 2rem;
-background:var(--surface);
+/* SECTION */
+section{
+padding:5rem 2rem;
 text-align:center;
-}
-
-.contact-form{
-max-width:600px;
-margin:0 auto;
-}
-
-.form-group{
-margin-bottom:1.5rem;
-text-align:left;
-}
-
-.form-group label{
-display:block;
-margin-bottom:0.5rem;
-color:var(--text-secondary);
-font-weight:500;
-}
-
-.form-group input,
-.form-group textarea{
-width:100%;
-padding:1rem;
-background:var(--bg);
-border:1px solid var(--border);
-border-radius:8px;
-color:var(--text);
-font-family:inherit;
-transition:all 0.3s ease;
-}
-
-.form-group input:focus,
-.form-group textarea:focus{
-outline:none;
-border-color:var(--primary);
-}
-
-.form-group textarea{
-min-height:120px;
-resize:vertical;
-}
-
-/* FOOTER */
-footer{
-padding:3rem 2rem;
-background:var(--bg);
-border-top:1px solid var(--border);
-text-align:center;
-}
-
-.footer-content{
-max-width:1200px;
-margin:0 auto;
-}
-
-.footer-links{
-display:flex;
-gap:2rem;
-justify-content:center;
-margin-bottom:2rem;
-}
-
-.footer-links a{
-color:var(--text-secondary);
-text-decoration:none;
-transition:color 0.3s ease;
-}
-
-.footer-links a:hover{
-color:var(--primary);
 }
 
 /* RESPONSIVE */
 @media(max-width:768px){
 .hero-content{
 grid-template-columns:1fr;
-gap:2rem;
 text-align:center;
 }
-
-.about-content{
-grid-template-columns:1fr;
-gap:2rem;
-}
-
 .nav-links{
 display:none;
 }
-
-.hero-buttons{
-justify-content:center;
-}
-
-.projects-grid{
-grid-template-columns:1fr;
-}
-}
-
-/* ANIMATIONS */
-@keyframes fadeInUp{
-from{
-opacity:0;
-transform:translateY(30px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-
-.fade-in-up{
-animation:fadeInUp 0.8s ease-out;
 }
 </style>
-
 </head>
+
 <body>
 
-<!-- NAVIGATION -->
 <nav>
 <div class="nav-container">
-<a href="#" class="logo">Vasuki iTech</a>
+<div class="logo">Vasuki iTech</div>
 <ul class="nav-links">
 <li><a href="#home">Home</a></li>
 <li><a href="#about">About</a></li>
@@ -545,250 +202,53 @@ animation:fadeInUp 0.8s ease-out;
 </div>
 </nav>
 
-<!-- HERO SECTION -->
 <section id="home" class="hero">
-<div class="hero-content fade-in-up">
+<div class="hero-content">
+
 <div class="hero-text">
-<h1>Building Digital<br/>Experiences</h1>
-<p class="subtitle">Full Stack Developer & UI/UX Designer</p>
-<p class="description">
-Passionate about creating innovative web solutions that blend cutting-edge technology with intuitive design. Specializing in modern JavaScript frameworks and responsive design.
-</p>
+<h1>Building Digital Experiences</h1>
+<p>Full Stack Developer & UI/UX Designer</p>
+
 <div class="hero-buttons">
-<a href="#projects" class="btn btn-primary">
-<i class="fas fa-briefcase"></i> View Projects
-</a>
-<a href="#contact" class="btn btn-secondary">
-<i class="fas fa-envelope"></i> Get In Touch
-</a>
-<a href="https://www.linkedin.com/in/shaurya-chauhan-1307742bb/" target="_blank" class="btn btn-primary" style="background:linear-gradient(135deg, #ff6b35, #f093fb);">
-<i class="fas fa-user"></i> SHAURYA CHAUHAN
-</a>
-<a href="https://www.linkedin.com/in/adamya-r-khairwal-8b51b235b/" target="_blank" class="btn btn-primary" style="background:linear-gradient(135deg, #4caf50, #8bc34a);">
-<i class="fas fa-user"></i> ADAMYA KHAIRWAL
-</a>
+<a href="#projects" class="btn btn-primary">Projects</a>
+<a href="#contact" class="btn btn-secondary">Contact</a>
 </div>
 </div>
-<div class="hero-image">
+
 <div class="profile-card">
+
 <div class="profile-img">
-<i class="fas fa-code"></i>
+<img src="WhatsApp Image 2026-03-18 at 10.58.25.jpeg" alt="Profile">
 </div>
-<div class="profile-info">
+
 <h3>Vasuki iTech</h3>
 <p>Developer & Designer</p>
+
 <div class="social-links">
-<a href="https://github.com/shauryachr" target="_blank"><i class="fab fa-github"></i></a>
-<a href="https://www.linkedin.com/company/vasuki-itech/posts/?feedView=all" target="_blank"><i class="fab fa-linkedin"></i></a>
-<a href="https://vasuki-cloud.codeclutch-adamyarao.workers.dev/" target="_blank"><i class="fas fa-globe"></i></a>
+<a href="https://github.com/shauryachr"><i class="fab fa-github"></i></a>
+<a href="https://www.linkedin.com/company/vasuki-itech/posts/?feedView=all"><i class="fab fa-linkedin"></i></a>
+<a href="https://vasuki-cloud.codeclutch-adamyarao.workers.dev/"><i class="fas fa-globe"></i></a>
 </div>
+
 </div>
-</div>
-</div>
+
 </div>
 </section>
 
-<!-- ABOUT SECTION -->
-<section id="about" class="about">
-<div class="container">
-<h2 class="section-title">About Me</h2>
-<div class="about-content">
-<div class="about-text">
-<p>
-I'm a passionate full-stack developer with expertise in modern web technologies. I love turning ideas into reality through clean, efficient code and beautiful user interfaces.
-</p>
-<p>
-With a strong foundation in both frontend and backend development, I create comprehensive solutions that address real-world problems. My approach combines technical excellence with creative problem-solving.
-</p>
-<div class="skills-grid">
-<div class="skill-item">
-<div class="skill-icon"><i class="fab fa-react"></i></div>
-<div>React</div>
-</div>
-<div class="skill-item">
-<div class="skill-icon"><i class="fab fa-node-js"></i></div>
-<div>Node.js</div>
-</div>
-<div class="skill-item">
-<div class="skill-icon"><i class="fab fa-python"></i></div>
-<div>Python</div>
-</div>
-<div class="skill-item">
-<div class="skill-icon"><i class="fas fa-database"></i></div>
-<div>Database</div>
-</div>
-<div class="skill-item">
-<div class="skill-icon"><i class="fab fa-css3-alt"></i></div>
-<div>CSS3</div>
-</div>
-<div class="skill-item">
-<div class="skill-icon"><i class="fab fa-git-alt"></i></div>
-<div>Git</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+<section id="about">
+<h2>About Me</h2>
+<p>Passionate developer building modern web experiences.</p>
 </section>
 
-<!-- PROJECTS SECTION -->
-<section id="projects" class="projects">
-<div class="container">
-<h2 class="section-title">Featured Projects</h2>
-<div class="projects-grid">
-<div class="project-card">
-<div class="project-image">
-<i class="fas fa-robot"></i>
-</div>
-<div class="project-content">
-<h3>AI Assistant Platform</h3>
-<p>Advanced AI-powered assistant with natural language processing and machine learning capabilities for intelligent user interactions.</p>
-<div class="project-tags">
-<span class="tag">React</span>
-<span class="tag">Node.js</span>
-<span class="tag">AI/ML</span>
-</div>
-</div>
-</div>
-<div class="project-card">
-<div class="project-image">
-<i class="fas fa-tools"></i>
-</div>
-<div class="project-content">
-<h3>Developer Tools Suite</h3>
-<p>Comprehensive collection of developer tools including converters, formatters, and utilities to streamline the development workflow.</p>
-<div class="project-tags">
-<span class="tag">JavaScript</span>
-<span class="tag">HTML5</span>
-<span class="tag">CSS3</span>
-</div>
-</div>
-</div>
-<div class="project-card">
-<div class="project-image">
-<i class="fas fa-tachometer-alt"></i>
-</div>
-<div class="project-content">
-<h3>Network Speed Test</h3>
-<p>Real-time network performance testing tool with detailed metrics and analytics for connection speed and quality assessment.</p>
-<div class="project-tags">
-<span class="tag">Web APIs</span>
-<span class="tag">Analytics</span>
-<span class="tag">Performance</span>
-</div>
-</div>
-</div>
-</div>
-</div>
+<section id="projects">
+<h2>Projects</h2>
+<p>Showcase of my work.</p>
 </section>
 
-<!-- CONTACT SECTION -->
-<section id="contact" class="contact">
-<div class="container">
-<h2 class="section-title">Get In Touch</h2>
-<div class="contact-form">
-<form onsubmit="handleSubmit(event)">
-<div class="form-group">
-<label for="name">Name</label>
-<input type="text" id="name" name="name" required>
-</div>
-<div class="form-group">
-<label for="email">Email</label>
-<input type="email" id="email" name="email" required>
-</div>
-<div class="form-group">
-<label for="message">Message</label>
-<textarea id="message" name="message" required></textarea>
-</div>
-<button type="submit" class="btn btn-primary">
-<i class="fas fa-paper-plane"></i> Send Message
-</button>
-</form>
-</div>
-</div>
+<section id="contact">
+<h2>Contact</h2>
+<p>Get in touch.</p>
 </section>
-
-<!-- FOOTER -->
-<footer>
-<div class="footer-content">
-<div class="footer-links">
-<a href="#home">Home</a>
-<a href="#about">About</a>
-<a href="#projects">Projects</a>
-<a href="#contact">Contact</a>
-</div>
-<p style="color:var(--text-secondary); margin-top:2rem;">
-© 2024 Vasuki iTech. All rights reserved.
-</p>
-</div>
-</footer>
-
-<script>
-// Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-anchor.addEventListener('click', function (e) {
-e.preventDefault();
-const target = document.querySelector(this.getAttribute('href'));
-if (target) {
-target.scrollIntoView({
-behavior: 'smooth',
-block: 'start'
-});
-}
-});
-});
-
-// Form submission handler
-function handleSubmit(event) {
-event.preventDefault();
-const formData = new FormData(event.target);
-const data = Object.fromEntries(formData);
-console.log('Form submitted:', data);
-alert('Thank you for your message! I\'ll get back to you soon.');
-event.target.reset();
-}
-
-// Add scroll animations
-const observerOptions = {
-threshold: 0.1,
-rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-entries.forEach(entry => {
-if (entry.isIntersecting) {
-entry.target.classList.add('fade-in-up');
-}
-});
-}, observerOptions);
-
-// Observe all sections
-document.querySelectorAll('section').forEach(section => {
-observer.observe(section);
-});
-
-// Active navigation highlighting
-window.addEventListener('scroll', () => {
-const sections = document.querySelectorAll('section');
-const navLinks = document.querySelectorAll('.nav-links a');
- 
-let current = '';
-sections.forEach(section => {
-const sectionTop = section.offsetTop;
-const sectionHeight = section.clientHeight;
-if (scrollY >= (sectionTop - 200)) {
-current = section.getAttribute('id');
-}
-});
-
-navLinks.forEach(link => {
-link.classList.remove('active');
-if (link.getAttribute('href').slice(1) === current) {
-link.classList.add('active');
-}
-});
-});
-</script>
 
 </body>
 </html>
