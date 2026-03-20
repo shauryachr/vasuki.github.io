@@ -1,222 +1,368 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
+<html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Vasuki Labs</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
 <style>
+*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
-margin:0;
-font-family:'Roboto',sans-serif;
-background:#0b0c10;
-color:white;
-overflow:hidden;
+  font-family:'Roboto',sans-serif;
+  background:#0b0c10;
+  color:white;
+  overflow-x:hidden;
 }
 
 /* HEADER */
-
 header{
-position:fixed;
-top:0;
-width:100%;
-display:flex;
-justify-content:space-between;
-padding:14px 40px;
-z-index:10;
-background:rgba(0,0,0,0.3);
-backdrop-filter:blur(10px);
+  position:fixed;
+  top:0;
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 40px;
+  z-index:100;
+  background:rgba(11,12,16,0.6);
+  backdrop-filter:blur(12px);
 }
 
 .logo{
-font-weight:600;
+  font-weight:600;
+  font-size:18px;
+  letter-spacing:1px;
 }
 
 .nav-links{
-display:flex;
-gap:20px;
+  display:flex;
+  gap:24px;
 }
 
 .nav-links a{
-color:#ccc;
-text-decoration:none;
+  color:#aaa;
+  text-decoration:none;
+  font-size:14px;
+  font-weight:400;
+  transition:color 0.2s;
 }
 
 .nav-links a:hover{
-color:white;
+  color:white;
 }
 
 /* HERO */
-
 .hero{
-position:relative;
-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
+  position:relative;
+  width:100%;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  background:#0b0c10;
 }
 
-/* CANVAS */
-
-#flowCanvas{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
+/* HERO CONTENT */
+.hero-content{
+  position:relative;
+  z-index:10;
+  text-align:center;
+  pointer-events:none;
 }
 
-/* CONTENT */
-
-.hero{
-position:relative;
-height:100vh;
-overflow:hidden;
-background:#0b0c10;
-display:flex;
-align-items:center;
-justify-content:center;
-color:white;
+.hero-content h1{
+  font-family:'Roboto',sans-serif;
+  font-size:clamp(48px, 8vw, 96px);
+  font-weight:700;
+  letter-spacing:-2px;
+  background:linear-gradient(135deg, #ffffff 0%, #f0a0d0 40%, #a8c8ff 80%, #ffffff 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:16px;
 }
 
-/* WAVE BASE */
+.hero-content p{
+  font-size:clamp(16px, 2vw, 22px);
+  color:rgba(255,255,255,0.6);
+  font-weight:300;
+  letter-spacing:1px;
+}
 
-.wave{
-position:absolute;
-bottom:0;
-width:200%;
-height:300px;
-border-radius:40%;
-filter:blur(60px);
-opacity:0.5;
-transition:transform 0.6s ease, margin-left 0.2s ease;
+/* WAVE ANIMATION CONTAINER */
+.hero__animation{
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  pointer-events:none;
+}
+
+/* WAVE BASE STYLES */
+.hero__animation__wave{
+  position:absolute;
+  bottom:-10%;
+  left:0;
+  width:100%;
+  height:60%;
+  transform-origin:center bottom;
 }
 
 /* PINK WAVE */
-
-.wave-pink{
-background:radial-gradient(circle at 50% 50%, #ff4ecd, transparent 70%);
-animation:waveMove 18s linear infinite;
+.hero__animation__wave--pink{
+  z-index:3;
+  transition:margin-left 200ms ease-in-out 0s, transform 700ms ease-out 0s;
 }
 
-/* BLUE WAVE */
-
-.wave-blue{
-background:radial-gradient(circle at 50% 50%, #4ecbff, transparent 70%);
-animation:waveMove 25s linear infinite reverse;
-opacity:0.4;
+.hero__animation__wave--pink svg{
+  width:300%;
+  height:100%;
+  fill:none;
 }
 
-/* FLOATING ANIMATION */
-
-@keyframes waveMove{
-0%{transform:translateX(0);}
-100%{transform:translateX(-50%);}
+.hero__animation__wave--pink .wave-fill{
+  fill:rgba(255,78,205,0.25);
+  filter:blur(2px);
 }
 
-/* CONTENT */
-
-.hero-content{
-position:relative;
-z-index:2;
-text-align:center;
+/* WHITE / LIGHT WAVE */
+.hero__animation__wave--white{
+  z-index:2;
+  transition:margin-left 200ms ease-in-out 0s, transform 700ms ease-out 0s;
 }
 
-.hero h1{
-font-size:80px;
-background:linear-gradient(90deg,#fff,#ff9ae6,#a1c4fd);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+.hero__animation__wave--white svg{
+  width:400%;
+  height:100%;
+  fill:none;
+}
+
+.hero__animation__wave--white .wave-fill{
+  fill:rgba(255,255,255,0.07);
+  filter:blur(1px);
+}
+
+/* BLUE ACCENT WAVE */
+.hero__animation__wave--blue{
+  z-index:1;
+  transition:margin-left 200ms ease-in-out 0s, transform 700ms ease-out 0s;
+}
+
+.hero__animation__wave--blue svg{
+  width:350%;
+  height:100%;
+  fill:none;
+}
+
+.hero__animation__wave--blue .wave-fill{
+  fill:rgba(78,203,255,0.15);
+  filter:blur(3px);
+}
+
+/* GLOW EFFECTS */
+.hero__glow{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(120px);
+  pointer-events:none;
+  opacity:0.4;
+  transition:opacity 1s ease;
+}
+
+.hero__glow--pink{
+  width:600px;
+  height:400px;
+  background:radial-gradient(circle, rgba(255,78,205,0.5) 0%, transparent 70%);
+  bottom:0;
+  left:20%;
+  z-index:1;
+}
+
+.hero__glow--blue{
+  width:500px;
+  height:350px;
+  background:radial-gradient(circle, rgba(78,150,255,0.4) 0%, transparent 70%);
+  bottom:5%;
+  right:15%;
+  z-index:1;
+}
+
+/* FLOATING WAVE KEYFRAMES */
+@keyframes waveFloat{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-33.33%);}
+}
+
+@keyframes waveFloatSlow{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-25%);}
+}
+
+.hero__animation__wave--pink svg{
+  animation:waveFloat 20s linear infinite;
+}
+
+.hero__animation__wave--white svg{
+  animation:waveFloatSlow 30s linear infinite;
+}
+
+.hero__animation__wave--blue svg{
+  animation:waveFloat 25s linear infinite reverse;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  header{padding:12px 20px;}
+  .hero__glow--pink{width:300px;height:200px;left:5%;}
+  .hero__glow--blue{width:250px;height:180px;right:5%;}
 }
 </style>
-
 </head>
-
 <body>
 
 <header>
-<div class="logo">VASUKI LABS</div>
-
-<div class="nav-links">
-<a href="#">Wiki</a>
-<a href="#">Tools</a>
-<a href="#">About</a>
-</div>
+  <div class="logo">VASUKI LABS</div>
+  <div class="nav-links">
+    <a href="#">Wiki</a>
+    <a href="#">Tools</a>
+    <a href="#">About</a>
+  </div>
 </header>
 
 <div class="hero">
 
-<canvas id="flowCanvas"></canvas>
+  <!-- Glow effects behind waves -->
+  <div class="hero__glow hero__glow--pink"></div>
+  <div class="hero__glow hero__glow--blue"></div>
 
-<div class="hero">
+  <!-- Wave animation container (labs.google style) -->
+  <div class="hero__animation">
 
-<div class="wave wave-pink"></div>
-<div class="wave wave-blue"></div>
+    <!-- Pink wave -->
+    <div class="hero__animation__wave hero__animation__wave--pink" style="margin-left: -38.0251px; transform: scaleY(0.295449);">
+      <svg viewBox="0 0 3600 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path class="wave-fill" d="M0,300 C150,200 350,400 600,300 C850,200 1050,400 1200,300 C1450,200 1650,400 1800,300 C2050,200 2250,400 2400,300 C2650,200 2850,400 3100,300 C3250,200 3450,400 3600,300 L3600,600 L0,600 Z"></path>
+      </svg>
+    </div>
 
-<div class="hero-content">
-<h1>Vasuki Labs</h1>
-<p>Build. Experiment. Create.</p>
-</div>
+    <!-- White wave -->
+    <div class="hero__animation__wave hero__animation__wave--white" style="margin-left: -53.2351px; transform: scaleY(0.193633);">
+      <svg viewBox="0 0 4800 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path class="wave-fill" d="M0,350 C200,250 400,450 600,350 C800,250 1000,450 1200,350 C1400,250 1600,450 1800,350 C2000,250 2200,450 2400,350 C2600,250 2800,450 3000,350 C3200,250 3400,450 3600,350 C3800,250 4000,450 4200,350 C4400,250 4600,450 4800,350 L4800,600 L0,600 Z"></path>
+      </svg>
+    </div>
 
-</div>
+    <!-- Blue accent wave -->
+    <div class="hero__animation__wave hero__animation__wave--blue" style="margin-left: -26.6175px; transform: scaleY(0.183179);">
+      <svg viewBox="0 0 4200 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path class="wave-fill" d="M0,320 C175,220 375,420 700,320 C1025,220 1225,420 1400,320 C1575,220 1775,420 2100,320 C2425,220 2625,420 2800,320 C2975,220 3175,420 3500,320 C3825,220 4025,420 4200,320 L4200,600 L0,600 Z"></path>
+      </svg>
+    </div>
+
+  </div>
+
+  <!-- Hero text content -->
+  <div class="hero-content">
+    <h1>Vasuki Labs</h1>
+    <p>Build. Experiment. Create.</p>
+  </div>
+
 </div>
 
 <script>
+(function(){
+  const pinkWave  = document.querySelector('.hero__animation__wave--pink');
+  const whiteWave = document.querySelector('.hero__animation__wave--white');
+  const blueWave  = document.querySelector('.hero__animation__wave--blue');
 
-const waves = document.querySelectorAll('.wave');
+  if (!pinkWave || !whiteWave || !blueWave) return;
 
-window.addEventListener('mousemove', (e) => {
+  /* Track mouse position normalized 0-1 */
+  let mouseX = 0.5;
+  let mouseY = 0.5;
+  let targetX = 0.5;
+  let targetY = 0.5;
 
-let x = e.clientX / window.innerWidth;
-let y = e.clientY / window.innerHeight;
+  window.addEventListener('mousemove', function(e){
+    targetX = e.clientX / window.innerWidth;
+    targetY = e.clientY / window.innerHeight;
+  });
 
-waves.forEach((wave, i) => {
+  /* Smooth interpolation for fluid movement */
+  function lerp(a, b, t){ return a + (b - a) * t; }
 
-/* horizontal movement like margin-left */
-let moveX = (x - 0.5) * 200;
+  function animate(){
+    mouseX = lerp(mouseX, targetX, 0.05);
+    mouseY = lerp(mouseY, targetY, 0.05);
 
-/* vertical squash/stretch */
-let scaleY = 0.6 + (1 - y) * 0.8;
+    /* Calculate wave parameters like labs.google */
+    /* Pink wave - most reactive, closest to viewer */
+    var pinkMarginLeft = (mouseX - 0.5) * -500;
+    var pinkScaleY = 0.05 + (1 - mouseY) * 0.6;
 
-/* apply */
-wave.style.marginLeft = moveX + 'px';
-wave.style.transform = `scaleY(${scaleY})`;
+    /* White wave - medium reactivity */
+    var whiteMarginLeft = (mouseX - 0.5) * -700;
+    var whiteScaleY = 0.03 + (1 - mouseY) * 0.4;
 
-});
+    /* Blue wave - slowest, background depth */
+    var blueMarginLeft = (mouseX - 0.5) * -350;
+    var blueScaleY = 0.04 + (1 - mouseY) * 0.35;
 
-});
+    pinkWave.style.marginLeft  = pinkMarginLeft + 'px';
+    pinkWave.style.transform   = 'scaleY(' + pinkScaleY + ')';
 
-</script><script>
+    whiteWave.style.marginLeft = whiteMarginLeft + 'px';
+    whiteWave.style.transform  = 'scaleY(' + whiteScaleY + ')';
 
-const waves = document.querySelectorAll('.wave');
+    blueWave.style.marginLeft  = blueMarginLeft + 'px';
+    blueWave.style.transform   = 'scaleY(' + blueScaleY + ')';
 
-window.addEventListener('mousemove', (e) => {
+    requestAnimationFrame(animate);
+  }
 
-let x = e.clientX / window.innerWidth;
-let y = e.clientY / window.innerHeight;
+  animate();
 
-waves.forEach((wave, i) => {
+  /* Touch support for mobile */
+  window.addEventListener('touchmove', function(e){
+    if (e.touches.length > 0){
+      targetX = e.touches[0].clientX / window.innerWidth;
+      targetY = e.touches[0].clientY / window.innerHeight;
+    }
+  });
 
-/* horizontal movement like margin-left */
-let moveX = (x - 0.5) * 200;
+  /* Auto-animate when no mouse input (idle animation) */
+  var idleTimer;
+  var isIdle = true;
 
-/* vertical squash/stretch */
-let scaleY = 0.6 + (1 - y) * 0.8;
+  function startIdle(){
+    isIdle = true;
+    var startTime = Date.now();
+    function idleLoop(){
+      if (!isIdle) return;
+      var t = (Date.now() - startTime) / 1000;
+      targetX = 0.5 + Math.sin(t * 0.3) * 0.15;
+      targetY = 0.5 + Math.cos(t * 0.2) * 0.1;
+      requestAnimationFrame(idleLoop);
+    }
+    idleLoop();
+  }
 
-/* apply */
-wave.style.marginLeft = moveX + 'px';
-wave.style.transform = `scaleY(${scaleY})`;
+  function resetIdle(){
+    isIdle = false;
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(startIdle, 3000);
+  }
 
-});
+  window.addEventListener('mousemove', resetIdle);
+  window.addEventListener('touchmove', resetIdle);
 
-});
-
+  /* Start idle animation initially */
+  startIdle();
+})();
 </script>
 
-</body>
-</html>
+
+
+</body></html>
