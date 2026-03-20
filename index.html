@@ -73,6 +73,54 @@ height:100%;
 
 /* CONTENT */
 
+.hero{
+position:relative;
+height:100vh;
+overflow:hidden;
+background:#0b0c10;
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+}
+
+/* WAVE BASE */
+
+.wave{
+position:absolute;
+bottom:0;
+width:200%;
+height:300px;
+border-radius:40%;
+filter:blur(60px);
+opacity:0.5;
+transition:transform 0.6s ease, margin-left 0.2s ease;
+}
+
+/* PINK WAVE */
+
+.wave-pink{
+background:radial-gradient(circle at 50% 50%, #ff4ecd, transparent 70%);
+animation:waveMove 18s linear infinite;
+}
+
+/* BLUE WAVE */
+
+.wave-blue{
+background:radial-gradient(circle at 50% 50%, #4ecbff, transparent 70%);
+animation:waveMove 25s linear infinite reverse;
+opacity:0.4;
+}
+
+/* FLOATING ANIMATION */
+
+@keyframes waveMove{
+0%{transform:translateX(0);}
+100%{transform:translateX(-50%);}
+}
+
+/* CONTENT */
+
 .hero-content{
 position:relative;
 z-index:2;
@@ -81,19 +129,10 @@ text-align:center;
 
 .hero h1{
 font-size:80px;
-font-weight:600;
-letter-spacing:-1px;
-background:linear-gradient(90deg,#fff,#8ab4f8,#c2e9fb);
+background:linear-gradient(90deg,#fff,#ff9ae6,#a1c4fd);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
-
-.hero p{
-opacity:0.6;
-margin-top:10px;
-font-size:16px;
-}
-
 </style>
 
 </head>
@@ -114,73 +153,68 @@ font-size:16px;
 
 <canvas id="flowCanvas"></canvas>
 
+<div class="hero">
+
+<div class="wave wave-pink"></div>
+<div class="wave wave-blue"></div>
+
 <div class="hero-content">
 <h1>Vasuki Labs</h1>
 <p>Build. Experiment. Create.</p>
 </div>
 
 </div>
+</div>
 
 <script>
 
-/* CANVAS SETUP */
+const waves = document.querySelectorAll('.wave');
 
-const canvas = document.getElementById("flowCanvas");
-const ctx = canvas.getContext("2d");
+window.addEventListener('mousemove', (e) => {
 
-let w, h;
+let x = e.clientX / window.innerWidth;
+let y = e.clientY / window.innerHeight;
 
-function resize(){
-w = canvas.width = window.innerWidth;
-h = canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
+waves.forEach((wave, i) => {
 
-/* MOUSE TRACK */
+/* horizontal movement like margin-left */
+let moveX = (x - 0.5) * 200;
 
-let mouse = { x: w/2, y: h/2 };
+/* vertical squash/stretch */
+let scaleY = 0.6 + (1 - y) * 0.8;
 
-window.addEventListener("mousemove", e=>{
-mouse.x = e.clientX;
-mouse.y = e.clientY;
+/* apply */
+wave.style.marginLeft = moveX + 'px';
+wave.style.transform = `scaleY(${scaleY})`;
+
 });
 
-/* ANIMATION */
+});
 
-let t = 0;
+</script><script>
 
-function draw(){
-ctx.clearRect(0,0,w,h);
+const waves = document.querySelectorAll('.wave');
 
-for(let i=0;i<4;i++){
-ctx.beginPath();
+window.addEventListener('mousemove', (e) => {
 
-for(let x=0;x<w;x++){
+let x = e.clientX / window.innerWidth;
+let y = e.clientY / window.innerHeight;
 
-let baseY = Math.sin(x*0.002 + t + i)*50 + h/2;
+waves.forEach((wave, i) => {
 
-let dx = x - mouse.x;
-let dy = baseY - mouse.y;
-let dist = Math.sqrt(dx*dx + dy*dy);
+/* horizontal movement like margin-left */
+let moveX = (x - 0.5) * 200;
 
-let force = Math.max(0, 120 - dist) / 120;
+/* vertical squash/stretch */
+let scaleY = 0.6 + (1 - y) * 0.8;
 
-let y = baseY + (dy * force * 0.6);
+/* apply */
+wave.style.marginLeft = moveX + 'px';
+wave.style.transform = `scaleY(${scaleY})`;
 
-ctx.lineTo(x, y);
-}
+});
 
-ctx.strokeStyle = `rgba(120,170,255,${0.15 - i*0.03})`;
-ctx.lineWidth = 2;
-ctx.stroke();
-}
-
-t += 0.01;
-requestAnimationFrame(draw);
-}
-
-draw();
+});
 
 </script>
 
