@@ -5,63 +5,90 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Vasuki AI - Real Auth</title>
+<title>Vasuki Labs - AI</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
 <style>
 
-/* ===== UI SAME ===== */
+/* ===== ORIGINAL LIGHT THEME ===== */
+
+:root{
+--primary:#1a73e8;
+--primary-hover:#1557b0;
+--text:#202124;
+--text-secondary:#5f6368;
+--background:#ffffff;
+--surface:#f8f9fa;
+--border:#dadce0;
+}
 
 body{
-margin:0;
 font-family:Roboto;
-background:#020617;
-color:#e5e7eb;
+background:var(--background);
+color:var(--text);
+margin:0;
 display:flex;
 height:100vh;
 }
 
+/* SIDEBAR */
+
 .sidebar{
-width:250px;
-background:#0f172a;
+width:240px;
+border-right:1px solid var(--border);
 padding:15px;
 display:flex;
 flex-direction:column;
 }
 
-.logo{color:#06b6d4;font-weight:700;margin-bottom:15px}
+.logo{
+color:var(--primary);
+font-weight:700;
+font-size:20px;
+margin-bottom:15px;
+}
 
 .new-chat{
-background:#7c3aed;
+background:var(--primary);
+color:white;
 border:none;
 padding:10px;
-border-radius:10px;
-color:white;
+border-radius:8px;
 cursor:pointer;
 }
 
 .chat-item{
 padding:8px;
+border-radius:6px;
 cursor:pointer;
-border-radius:8px;
 }
 
-.chat-item:hover{background:rgba(255,255,255,0.05)}
+.chat-item:hover{
+background:var(--surface);
+}
 
-.main{flex:1;display:flex;flex-direction:column}
+/* MAIN */
+
+.main{
+flex:1;
+display:flex;
+flex-direction:column;
+}
 
 header{
 padding:10px;
-border-bottom:1px solid #222;
+border-bottom:1px solid var(--border);
 display:flex;
 justify-content:space-between;
 }
 
+/* CHAT */
+
 #chatArea{
 flex:1;
-padding:15px;
 overflow:auto;
+padding:20px;
 display:flex;
 flex-direction:column;
 gap:10px;
@@ -69,28 +96,28 @@ gap:10px;
 
 .user-msg{
 align-self:flex-end;
-background:#7c3aed33;
+background:var(--surface);
 padding:10px;
-border-radius:10px;
+border-radius:12px;
 }
 
 .bot-msg{
 align-self:flex-start;
-white-space:pre-wrap;
 }
+
+/* INPUT */
 
 .input-box{
 padding:10px;
-border-top:1px solid #222;
+border-top:1px solid var(--border);
 }
 
 input{
 width:100%;
-padding:10px;
-border-radius:10px;
-border:none;
-background:#111;
-color:white;
+padding:12px;
+border-radius:20px;
+border:1px solid var(--border);
+outline:none;
 }
 
 /* AUTH */
@@ -98,21 +125,23 @@ color:white;
 .auth{
 position:fixed;
 inset:0;
-background:#000c;
+background:#0004;
 display:flex;
 justify-content:center;
 align-items:center;
 }
 
 .auth-box{
-background:#0f172a;
+background:white;
 padding:20px;
-border-radius:10px;
+border-radius:8px;
 display:flex;
 flex-direction:column;
 gap:10px;
-width:250px;
+width:260px;
 }
+
+button{cursor:pointer}
 
 </style>
 
@@ -123,17 +152,22 @@ width:250px;
 <!-- AUTH -->
 <div class="auth" id="authBox">
 <div class="auth-box">
-<h3>Login with Vasuki</h3>
+<h3>Login</h3>
 <input id="email" placeholder="Email">
 <input id="password" type="password" placeholder="Password">
-<button onclick="login()">Login</button>
+<button id="loginBtn">Login</button>
+
+<p style="font-size:12px;color:#666">
+No account? <a href="https://vasuki.cloud" target="_blank">Create on Vasuki.cloud</a>
+</p>
+
 </div>
 </div>
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-<div class="logo">VASUKI AI</div>
-<button class="new-chat" onclick="newChat()">+ New Chat</button>
+<div class="logo">VASUKI LABS</div>
+<button class="new-chat" id="newChatBtn">+ New Chat</button>
 <div id="chatList"></div>
 </div>
 
@@ -141,7 +175,7 @@ width:250px;
 <div class="main">
 
 <header>
-<div>⚡ Vasuki AI</div>
+<div>AI Assistant</div>
 <div id="userInfo"></div>
 </header>
 
@@ -159,56 +193,90 @@ import Vasuki from "https://cdn.jsdelivr.net/npm/vasuki-db/+esm";
 
 const vdb = new Vasuki();
 
-/* ===== AI ===== */
+/* ELEMENTS */
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+const loginBtn = document.getElementById("loginBtn");
+const authBox = document.getElementById("authBox");
+const userInfo = document.getElementById("userInfo");
+const chatList = document.getElementById("chatList");
+const chatArea = document.getElementById("chatArea");
+const query = document.getElementById("query");
+const newChatBtn = document.getElementById("newChatBtn");
+
+/* AI */
 const API_URL = "https://adamyakhairwal2011-vasuki-ai.hf.space/research";
 
-/* ===== AUTH ===== */
+/* AUTH */
 
-let currentUser = null;
+let currentUser=null;
 
-window.login = async ()=>{
+loginBtn.onclick = async ()=>{
 
 try{
-await vdb.login(email.value, password.value);
+await vdb.login(email.value,password.value);
 
-currentUser = email.value;
-userInfo.innerText = "👤 " + currentUser;
+currentUser=email.value;
+userInfo.innerText="👤 "+currentUser;
 
 authBox.style.display="none";
 
-/* load user chats */
-loadChats();
+await loadChats();
+
+if(chats.length===0) newChat();
 
 }catch{
-alert("Login failed");
+alert("No account found. Create one on Vasuki.cloud");
 }
 
 };
 
-/* ===== CHAT STORAGE IN VASUKI ===== */
+/* CHAT STORAGE */
 
 async function saveChat(chat){
+
+const all = await vdb.fetchTable("Main","Chats");
+
+for(const c of all){
+if(c.user===currentUser && c.chatId===chat.id){
+await vdb.delete("Main","Chats",c.id);
+}
+}
+
 await vdb.insert("Main","Chats",{
-user: currentUser,
-chat
+user:currentUser,
+chatId:chat.id,
+messages:JSON.stringify(chat.messages)
 });
+
 }
 
 async function loadChats(){
 
-const data = await vdb.fetchTable("Main","Chats");
+const data=await vdb.fetchTable("Main","Chats");
 
-const userChats = data.filter(c=>c.user===currentUser);
+const userChats=data.filter(c=>c.user===currentUser);
 
-chats = userChats.map(c=>c.chat);
+const map={};
+
+userChats.forEach(c=>{
+if(!map[c.chatId]){
+map[c.chatId]={id:c.chatId,messages:[]};
+}
+map[c.chatId].messages=JSON.parse(c.messages);
+});
+
+chats=Object.values(map);
 
 renderChats();
 }
 
-/* ===== CHAT SYSTEM ===== */
+/* CHAT SYSTEM */
 
 let chats=[];
 let currentChat=null;
+
+newChatBtn.onclick=newChat;
 
 function newChat(){
 const chat={id:Date.now(),messages:[]};
@@ -237,11 +305,16 @@ addMessage(m.text,m.type);
 });
 }
 
-/* ===== SEND ===== */
+/* ENTER */
 
 query.addEventListener("keydown",e=>{
-if(e.key==="Enter") sendMessage();
+if(e.key==="Enter"){
+e.preventDefault();
+sendMessage();
+}
 });
+
+/* SEND */
 
 async function sendMessage(){
 
@@ -249,7 +322,7 @@ const text=query.value.trim();
 if(!text || !currentChat) return;
 
 addMessage(text,"user");
-currentChat.messages.push({text,type:"user"});
+currentChat.messages.push({text:text,type:"user"});
 query.value="";
 
 const botMsg=addMessage("","bot");
@@ -267,30 +340,28 @@ mode:"research"
 
 const data=await res.json();
 
-stream(botMsg,data.result);
+const reply=data.result || "No response";
 
-currentChat.messages.push({text:data.result,type:"bot"});
+stream(botMsg,reply);
 
-/* SAVE TO VASUKI */
+currentChat.messages.push({text:reply,type:"bot"});
+
 await saveChat(currentChat);
 
 }catch{
-botMsg.innerText="⚠️ AI Error";
+botMsg.innerText="AI Error";
 }
 
 }
 
-/* ===== UI ===== */
+/* UI */
 
 function addMessage(text,type){
-
 const d=document.createElement("div");
 d.className=type==="user"?"user-msg":"bot-msg";
 d.innerText=text;
-
 chatArea.appendChild(d);
 chatArea.scrollTop=chatArea.scrollHeight;
-
 return d;
 }
 
