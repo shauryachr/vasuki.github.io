@@ -3,171 +3,130 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Vasuki Coder - AI Code Assistant</title>
+<title>Vasuki Labs</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
 <style>
 
 :root{
---primary:#1a73e8;
---text:#202124;
---background:#f1f3f4;
---surface:#ffffff;
 --border:#e0e3e7;
 }
 
 body{
 margin:0;
 font-family:'Roboto',sans-serif;
-background:linear-gradient(180deg,#f8f9fa,#eef2f5);
-color:var(--text);
+background:#0b0c10;
+color:white;
+overflow:hidden;
 }
 
 /* HEADER */
 
 header{
+position:fixed;
+top:0;
+width:100%;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:12px 40px;
-background:#fff;
-border-bottom:1px solid var(--border);
-}
-
-.nav-left{
-display:flex;
-align-items:center;
-gap:30px;
+padding:14px 40px;
+z-index:10;
+background:rgba(0,0,0,0.3);
+backdrop-filter:blur(10px);
+border-bottom:1px solid rgba(255,255,255,0.08);
 }
 
 .logo{
 font-weight:600;
-text-decoration:none;
-color:#000;
+font-size:18px;
 }
 
 .nav-links{
 display:flex;
 gap:20px;
-align-items:center;
 }
 
 .nav-links a{
+color:#ccc;
 text-decoration:none;
-color:#444;
 font-size:14px;
 }
 
-/* DROPDOWN */
+.nav-links a:hover{
+color:white;
+}
 
-.dropdown{
+/* HERO */
+
+.hero{
 position:relative;
-cursor:pointer;
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
 }
 
-.dropdown-content{
-display:none;
+/* FLOW CANVAS */
+
+#flowCanvas{
 position:absolute;
-top:28px;
-background:white;
-border:1px solid var(--border);
-border-radius:8px;
-padding:10px;
-min-width:150px;
-box-shadow:0 8px 20px rgba(0,0,0,0.08);
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:0;
 }
 
-.dropdown-content a{
-display:block;
-padding:6px;
-font-size:13px;
-}
+/* CONTENT */
 
-.dropdown:hover .dropdown-content{
-display:block;
-}
-
-/* MAIN */
-
-.container{
-margin-top:120px;
+.hero-content{
+position:relative;
+z-index:2;
 text-align:center;
 }
 
-.greeting{
-font-size:36px;
-margin-bottom:30px;
+.hero h1{
+font-size:72px;
+font-weight:600;
+letter-spacing:-1px;
+background:linear-gradient(90deg,#fff,#8ab4f8,#c2e9fb);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.hero p{
+opacity:0.7;
+margin-top:10px;
+font-size:16px;
 }
 
 /* INPUT */
 
 .input-wrapper{
-width:500px;
-max-width:90%;
-margin:auto;
-background:#fff;
+margin-top:30px;
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.2);
 border-radius:30px;
-padding:15px 20px;
-box-shadow:0 6px 20px rgba(0,0,0,0.06);
+padding:14px 22px;
+backdrop-filter:blur(12px);
+display:inline-block;
 }
 
-.input-top{
-display:flex;
-align-items:center;
-}
-
-#query{
-flex:1;
+.input-wrapper input{
+background:transparent;
 border:none;
 outline:none;
+color:white;
 font-size:16px;
+width:280px;
 }
 
-/* CHIPS */
-
-.chips-container{
-margin-top:30px;
-display:flex;
-justify-content:center;
-gap:12px;
-flex-wrap:wrap;
-}
-
-.chip{
-background:white;
-border:1px solid var(--border);
-padding:10px 15px;
-border-radius:20px;
-cursor:pointer;
-font-size:13px;
-transition:.2s;
-}
-
-.chip:hover{
-background:#f0f4ff;
-}
-
-/* CHAT */
-
-#chatArea{
-max-width:800px;
-margin:40px auto;
-padding:10px;
-}
-
-.user-msg{
-background:#e8f0fe;
-padding:10px;
-border-radius:12px;
-margin:10px 0;
-}
-
-.bot-msg{
-margin:10px 0;
+.input-wrapper input::placeholder{
+color:#bbb;
 }
 
 </style>
@@ -177,59 +136,73 @@ margin:10px 0;
 <body>
 
 <header>
-
-<div class="nav-left">
-<a class="logo" href="#">VASUKI LABS</a>
+<div class="logo">VASUKI LABS</div>
 
 <div class="nav-links">
 <a href="#">Wiki</a>
-<a href="#">Speed</a>
-
-<div class="dropdown">
-<span>Tools ▾</span>
-<div class="dropdown-content">
-<a href="#">ASCII</a>
-<a href="#">Base64</a>
-<a href="#">Calculator</a>
-</div>
-</div>
-
-<a href="#">Review</a>
+<a href="#">Tools</a>
 <a href="#">About</a>
 </div>
-</div>
-
 </header>
 
-<div class="container">
+<div class="hero">
 
-<div class="greeting">
-Hi Developer 👋 <br> Welcome to Vasuki Labs
-</div>
+<canvas id="flowCanvas"></canvas>
+
+<div class="hero-content">
+<h1>Vasuki Labs</h1>
+<p>Build. Experiment. Create.</p>
 
 <div class="input-wrapper">
-<div class="input-top">
-<input type="text" id="query" placeholder="Ask for code help...">
-</div>
-</div>
-
-<div class="chips-container">
-
-<div class="chip" onclick="handleQuickAction('React component')">React</div>
-<div class="chip" onclick="handleQuickAction('Debug JS')">Debug</div>
-<div class="chip" onclick="handleQuickAction('Optimize code')">Optimize</div>
-<div class="chip" onclick="handleQuickAction('Python script')">Python</div>
-
+<input type="text" placeholder="Ask for code help...">
 </div>
 
 </div>
 
-<div id="chatArea"></div>
+</div>
 
 <script>
-function handleQuickAction(text){
-document.getElementById("query").value = text;
+
+/* FLOWING ANIMATION */
+
+const canvas = document.getElementById("flowCanvas");
+const ctx = canvas.getContext("2d");
+
+let w, h;
+
+function resize(){
+w = canvas.width = window.innerWidth;
+h = canvas.height = window.innerHeight;
 }
+resize();
+window.addEventListener("resize", resize);
+
+let t = 0;
+
+function draw(){
+ctx.clearRect(0,0,w,h);
+
+/* MULTIPLE WAVES */
+
+for(let i=0;i<4;i++){
+ctx.beginPath();
+
+for(let x=0;x<w;x++){
+let y = Math.sin((x * 0.002) + t + i) * (40 + i*10) + h/2;
+ctx.lineTo(x,y);
+}
+
+ctx.strokeStyle = `rgba(120,170,255,${0.12 - i*0.02})`;
+ctx.lineWidth = 2;
+ctx.stroke();
+}
+
+t += 0.01;
+requestAnimationFrame(draw);
+}
+
+draw();
+
 </script>
 
 </body>
