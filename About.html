@@ -1,589 +1,376 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en" style="--brand:#000000;"><head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="extras.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&amp;family=Google+Sans:wght@400;700&amp;family=Tektur:wght@400..900&amp;display=swap" rel="stylesheet">
+    
+    <script type="module">
+        import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+        const supabase = createClient(
+            "https://aitckloahlwemlekaour.supabase.co",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpdGNrbG9haGx3ZW1sZWthb3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYyOTQ3MTMsImV4cCI6MjA3MTg3MDcxM30.uQjQLSz0mQuuArPQ_F8u-suQ-6T0e9bF11ahQtSw6yA"
+        );
 
-<title>About - Vasuki Coder</title>
+        const orgId = new URLSearchParams(location.search).get("org");
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+        async function init() {
+            if (!orgId) { 
+                document.body.innerHTML = "<div class='status-screen'><h1>404</h1><p>Identity not found.</p></div>"; 
+                return; 
+            }
+            const { data, error } = await supabase.from("startups").select("*").eq("id", orgId).single();
+            if (error || !data) { 
+                document.body.innerHTML = "<div class='status-screen'><h1>Private</h1><p>Node restricted.</p></div>"; 
+                return; 
+            }
+            render(data);
+        }
 
+        function render(org) {
+            const brand = org.theme_color || "#1a1a1a";
+            document.documentElement.style.setProperty("--brand", brand);
+            
+            const parse = (v, fallback) => {
+                try { return typeof v === "string" ? JSON.parse(v) : (v || fallback); } catch(e) { return fallback; }
+            };
+
+            const services = org.services || [];
+            const buttons = parse(org.buttons, []);
+            const contacts = parse(org.contacts, {});
+            const coverImg = org.cover_base64 || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070';
+            document.title = `${org.name} | ${org.tagline || 'Designing the Future of Form.'}`;
+            document.body.innerHTML = `
 <style>
+    :root {
+        --brand: ${brand};
+        --bg: #ffffff;
+        --text: #050505;
+        --text-dim: #666666;
+        --border: #eeeeee;
+    }
 
-:root{
---primary:#1a73e8;
---primary-hover:#1557b0;
---text:#202124;
---text-secondary:#5f6368;
---background:#ffffff;
---surface:#f8f9fa;
---border:#dadce0;
---success:#34a853;
---warning:#fbbc04;
---error:#ea4335;
-}
+    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; margin: 0; padding: 0; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+    
+    body { background: var(--bg); color: var(--text); font-family: 'Google Sans', sans-serif; overflow-x: hidden; }
+    body.menu-open { overflow: hidden; }
 
-*{box-sizing:border-box;margin:0;padding:0}
+    /* --- NAVIGATION --- */
+    header {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 20px 5%; position: fixed; width: 100%; top: 0; z-index: 1001;
+        background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+    }
+    .logo-area { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; z-index: 1002; }
+    .logo-img { width: 28px; height: 28px; object-fit: contain; }
+    .logo-name { font-weight: 800; font-size: 15px; letter-spacing: 1px; text-transform: uppercase; }
 
-body{
-font-family:Roboto,system-ui;
-background:var(--background);
-color:var(--text);
-min-height:100vh;
-}
+    .nav-links { display: flex; align-items: center; gap: 24px; }
+    .nav-btn {
+        text-decoration: none; color: var(--text-dim); font-size: 12px; 
+        font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .nav-btn:hover { color: var(--brand); }
+    .nav-btn.primary-link { color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 4px; }
 
-/* NAVBAR */
+    /* --- HAMBURGER --- */
+    .menu-toggle {
+        display: none; flex-direction: column; gap: 6px; cursor: pointer; border: none; background: none; z-index: 1002; padding: 10px;
+    }
+    .bar { width: 24px; height: 2px; background: var(--text); transition: 0.3s; transform-origin: center; }
+    
+    /* Hamburger Transform */
+    .menu-open .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .menu-open .bar:nth-child(2) { opacity: 0; }
+    .menu-open .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-header{
-background:var(--background);
-border-bottom:1px solid var(--border);
-box-shadow:0 1px 6px rgba(32,33,36,.08);
-position:sticky;
-top:0;
-z-index:1000;
-}
+    /* --- MOBILE MENU --- */
+    .mobile-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+        background: #fff; z-index: 1000; display: flex; flex-direction: column;
+        justify-content: center; align-items: center; gap: 30px;
+        transform: translateY(-100%); opacity: 0; pointer-events: none;
+    }
+    .menu-open .mobile-overlay { transform: translateY(0); opacity: 1; pointer-events: all; }
+    .mobile-link { font-size: 32px; font-weight: 800; text-decoration: none; color: var(--text); letter-spacing: -1px; }
 
-nav{
-display:flex;
-justify-content:space-between;
-align-items:center;
-max-width:1100px;
-margin:auto;
-padding:16px;
-}
+    /* --- HERO & CONTENT --- */
+    .hero-section { padding: 160px 5% 80px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: center; }
+    .hero-content h1 { font-size: clamp(40px, 5vw, 85px); font-weight: 100; line-height: 0.95; letter-spacing: -4px; margin-bottom: 30px; }
+    .hero-content p { font-size: 20px; color: var(--text-dim); line-height: 1.5; max-width: 450px; border-left: 3px solid var(--brand); padding-left: 25px; }
+    .hero-image-container { position: relative; width: 100%; height: 600px; overflow: hidden; border-radius: 4px; background: #f9f9f9; }
+    .hero-image { width: 100%; height: 100%; object-fit: cover; }
 
-.logo{
-color:var(--primary);
-text-decoration:none;
-font-weight:700;
-font-size:24px;
-transition:all 0.2s ease;
-}
+    /* --- SERVICES GRID --- */
+    .section-label { padding: 100px 5% 40px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 4px; color: var(--text-dim); }
+    .content-grid { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--border); }
+    .service-item { padding: 80px 10%; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .service-item:nth-child(2n) { border-right: none; }
+    .service-item h3 { font-size: 32px; font-weight: 700; margin-bottom: 20px; letter-spacing: -1px; }
 
-.logo:hover{
-color:var(--primary-hover);
-}
+    /* --- FOOTER --- */
+    footer { padding: 120px 5% 60px; background: #000; color: #fff; display: grid; grid-template-columns: 1fr 1fr; }
+    .footer-left h2 { font-size: 60px; font-weight: 100; letter-spacing: -3px; }
+    .cta-button { display: inline-block; margin-top: 40px; padding: 20px 50px; background: #fff; color: #000; text-decoration: none; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
 
-.nav-links{display:flex;gap:18px;align-items:center}
-
-.nav-links a{
-text-decoration:none;
-color:var(--text-secondary);
-font-size:15px;
-font-weight:500;
-padding:8px 12px;
-border-radius:8px;
-transition:all 0.2s ease;
-}
-
-.nav-links a:hover{
-color:var(--primary);
-background:rgba(26,115,232,0.08);
-}
-
-.nav-links a.active{
-color:var(--primary);
-background:rgba(26,115,232,0.12);
-}
-
-/* DROPDOWN */
-
-.dropdown{position:relative}
-
-.dropdown-content{
-display:none;
-position:absolute;
-top:35px;
-right:0;
-background:var(--background);
-border:1px solid var(--border);
-border-radius:8px;
-padding:8px;
-box-shadow:0 2px 10px rgba(0,0,0,0.1);
-min-width:160px;
-z-index:100;
-}
-
-.dropdown:hover .dropdown-content,
-.dropdown-content:hover{
-display:flex;
-flex-direction:column;
-}
-
-.dropdown-content a{
-padding:10px 14px;
-border-radius:6px;
-text-decoration:none;
-color:var(--text);
-font-size:14px;
-font-weight:500;
-transition:all 0.2s ease;
-}
-
-.dropdown-content a:hover{
-background:var(--surface);
-color:var(--primary);
-}
-
-/* MAIN */
-
-main{
-max-width:1100px;
-margin:auto;
-padding:40px 20px;
-}
-
-.hero-section{
-text-align:center;
-margin-bottom:60px;
-}
-
-.hero-section h1{
-font-size:48px;
-font-weight:700;
-margin-bottom:16px;
-color:var(--text);
-}
-
-.hero-section p{
-font-size:18px;
-color:var(--text-secondary);
-max-width:600px;
-margin:0 auto 32px;
-line-height:1.6;
-}
-
-/* ABOUT CONTENT */
-
-.about-container{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:48px;
-margin-bottom:60px;
-align-items:start;
-}
-
-.about-text{
-max-width:600px;
-}
-
-.about-text h2{
-font-size:32px;
-font-weight:600;
-margin-bottom:16px;
-color:var(--text);
-}
-
-.about-text p{
-font-size:16px;
-line-height:1.7;
-color:var(--text-secondary);
-margin-bottom:20px;
-}
-
-.about-features{
-list-style:none;
-padding:0;
-margin:32px 0;
-}
-
-.about-features li{
-display:flex;
-align-items:center;
-gap:12px;
-padding:12px 0;
-border-bottom:1px solid var(--border);
-font-size:16px;
-color:var(--text);
-}
-
-.about-features li:last-child{
-border-bottom:none;
-}
-
-.feature-icon{
-width:24px;
-height:24px;
-background:var(--primary);
-color:white;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:14px;
-flex-shrink:0;
-}
-
-/* STATS */
-
-.stats-section{
-background:var(--surface);
-border:1px solid var(--border);
-border-radius:12px;
-padding:40px;
-margin-bottom:60px;
-}
-
-.stats-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
-gap:32px;
-text-align:center;
-}
-
-.stat-item{
-display:flex;
-flex-direction:column;
-align-items:center;
-}
-
-.stat-number{
-font-size:48px;
-font-weight:700;
-color:var(--primary);
-margin-bottom:8px;
-}
-
-.stat-label{
-font-size:16px;
-color:var(--text-secondary);
-font-weight:500;
-}
-
-/* TEAM */
-
-.team-section{
-margin-bottom:60px;
-}
-
-.team-section h2{
-font-size:32px;
-font-weight:600;
-margin-bottom:32px;
-text-align:center;
-color:var(--text);
-}
-
-.team-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
-gap:32px;
-}
-
-.team-member{
-background:var(--surface);
-border:1px solid var(--border);
-border-radius:12px;
-padding:32px;
-text-align:center;
-transition:all 0.2s ease;
-}
-
-.team-member:hover{
-box-shadow:0 4px 16px rgba(0,0,0,0.1);
-transform:translateY(-2px);
-}
-
-.member-avatar{
-width:80px;
-height:80px;
-background:var(--primary);
-color:white;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-margin:0 auto 16px;
-font-size:32px;
-font-weight:700;
-}
-
-.member-name{
-font-size:20px;
-font-weight:600;
-color:var(--text);
-margin-bottom:8px;
-}
-
-.member-role{
-font-size:14px;
-color:var(--text-secondary);
-margin-bottom:16px;
-}
-
-.member-bio{
-font-size:14px;
-color:var(--text-secondary);
-line-height:1.6;
-}
-
-/* CTA */
-
-.cta-section{
-background:var(--primary);
-border-radius:12px;
-padding:48px;
-text-align:center;
-color:white;
-margin-bottom:40px;
-}
-
-.cta-section h2{
-font-size:32px;
-font-weight:600;
-margin-bottom:16px;
-}
-
-.cta-section p{
-font-size:18px;
-margin-bottom:32px;
-opacity:0.9;
-}
-
-.cta-button{
-display:inline-block;
-padding:16px 32px;
-background:white;
-color:var(--primary);
-text-decoration:none;
-border-radius:8px;
-font-weight:600;
-font-size:16px;
-transition:all 0.2s ease;
-}
-
-.cta-button:hover{
-transform:translateY(-2px);
-box-shadow:0 4px 16px rgba(0,0,0,0.2);
-}
-
-/* FOOTER */
-
-footer{
-text-align:center;
-padding:20px;
-color:var(--text-secondary);
-border-top:1px solid var(--border);
-margin-top:40px;
-}
-
-/* RESPONSIVE */
-
-@media(max-width:768px){
-.hero-section h1{
-font-size:36px;
-}
-.about-container{
-grid-template-columns:1fr;
-gap:32px;
-}
-.stats-grid{
-grid-template-columns:repeat(2, 1fr);
-}
-.team-grid{
-grid-template-columns:1fr;
-}
-.cta-section{
-padding:32px 20px;
-}
-}
-
+    @media (max-width: 900px) {
+        .hero-section { grid-template-columns: 1fr; padding-top: 120px; }
+        .hero-image-container { height: 400px; order: -1; }
+        .content-grid { grid-template-columns: 1fr; }
+        .service-item { border-right: none; }
+        .nav-links { display: none; }
+        .menu-toggle { display: flex; }
+        footer { grid-template-columns: 1fr; gap: 60px; text-align: center; }
+        .footer-left h2 { font-size: 40px; }
+    }
 </style>
 
-</head>
-
-<body>
-
 <header>
+    <a href="#" class="logo-area">
+        ${org.logo_base64 ? `<img src="${org.logo_base64}" class="logo-img">` : ''}
+        <span class="logo-name">${org.name}</span>
+    </a>
+    
+    <nav class="nav-links">
+        ${buttons.map(btn => `<a href="${btn.url}" class="nav-btn" target="_blank">${btn.label}</a>`).join('')}
+        ${org.website ? `<a href="${org.website}" class="nav-btn primary-link">Visit Studio</a>` : ""}
+    </nav>
 
-<nav>
-
-<a class="logo" href="index.html">VASUKI</a>
-
-<div class="nav-links">
-
-<a href="General-AI.html">AI</a>
-
-<a href="Wiki-Knowledge.html">Wiki</a>
-
-
-<div class="dropdown">
-
-<a>Tools ▾</a>
-
-<div class="dropdown-content">
-
-<a href="tool-ascii.html">ASCII</a>
-<a href="tool-base64.html">Base64</a>
-<a href="tool-calc.html">Calculator</a>
-<a href="tool-color.html">Color</a>
-<a href="tool-date.html">Date</a>
-<a href="tool-json.html">JSON</a>
-<a href="tool-numbers.html">Numbers</a>
-<a href="tool-password.html">Password</a>
-<a href="tool-regex.html">Regex</a>
-<a href="tool-roman.html">Roman</a>
-<a href="tool-units.html">Units</a>
-
-</div>
-
-</div>
-
-<a href="review.html">Review</a>
-<a href="about.html" class="active">About</a>
-
-</div>
-
-</nav>
-
+    <button class="menu-toggle" onclick="document.body.classList.toggle('menu-open')">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </button>
 </header>
 
-<main>
+<div class="mobile-overlay">
+    ${buttons.map(btn => `<a href="${btn.url}" class="mobile-link" onclick="document.body.classList.remove('menu-open')">${btn.label}</a>`).join('')}
+    ${org.website ? `<a href="${org.website}" class="mobile-link" style="color:var(--brand)">Visit Studio</a>` : ""}
+</div>
 
 <section class="hero-section">
-
-<h1>About Vasuki Coder</h1>
-
-<p>A comprehensive developer platform designed to streamline your coding workflow with powerful AI tools, utilities, and resources.</p>
-
+    <div class="hero-content">
+        <h1>${org.tagline || 'Designing the Future of Form.'}</h1>
+        <p>${org.about || 'A Vasuki iTech specialized entity.'}</p>
+    </div>
+    <div class="hero-image-container">
+        <img src="${coverImg}" class="hero-image" alt="Featured Architecture">
+    </div>
 </section>
 
-<div class="about-container">
+<div class="section-label">Selected Expertise</div>
 
-<div class="about-text">
-
-<h2>Our Mission</h2>
-
-<p>We believe in empowering developers with the right tools to build amazing things. Vasuki Coder brings together everything you need in one clean, intuitive interface.</p>
-
-<p>From AI-powered code assistance to essential developer utilities, we've created a platform that grows with your needs and adapts to your workflow.</p>
-
-<ul class="about-features">
-<li>
-<span class="feature-icon">✓</span>
-<span>AI-powered code generation and assistance</span>
-</li>
-<li>
-<span class="feature-icon">✓</span>
-<span>Comprehensive developer toolkit</span>
-</li>
-<li>
-<span class="feature-icon">✓</span>
-<span>Clean, intuitive interface</span>
-</li>
-<li>
-<span class="feature-icon">✓</span>
-<span>Built for modern development workflows</span>
-</li>
-<li>
-<span class="feature-icon">✓</span>
-<span>Always free and open source</span>
-</li>
-</ul>
-
-</div>
-
-<div class="stats-section">
-
-<div class="stats-grid">
-
-<div class="stat-item">
-<div class="stat-number">10+</div>
-<div class="stat-label">Developer Tools</div>
-</div>
-
-<div class="stat-item">
-<div class="stat-number">24/7</div>
-<div class="stat-label">AI Assistant</div>
-</div>
-
-<div class="stat-item">
-<div class="stat-number">100%</div>
-<div class="stat-label">Free Forever</div>
-</div>
-
-<div class="stat-item">
-<div class="stat-number">∞</div>
-<div class="stat-label">Possibilities</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<section class="team-section">
-
-<h2>Built for Developers, by Developers</h2>
-
-<div class="team-grid">
-
-<div class="team-member">
-<div class="member-avatar">VC</div>
-<div class="member-name">Vasuki Coder</div>
-<div class="member-role">Lead Developer</div>
-<div class="member-bio">Passionate about creating tools that make developers' lives easier and more productive.</div>
-</div>
-
-<div class="team-member">
-<div class="member-avatar">AI</div>
-<div class="member-name">AI Assistant</div>
-<div class="member-role">Code Intelligence</div>
-<div class="member-bio">Always ready to help with code generation, debugging, and optimization.</div>
-</div>
-
-<div class="team-member">
-<div class="member-avatar">UX</div>
-<div class="member-name">Design Team</div>
-<div class="member-role">User Experience</div>
-<div class="member-bio">Focused on creating clean, intuitive interfaces that developers love.</div>
-</div>
-
-</div>
-
-</section>
-
-<section class="cta-section">
-
-<h2>Ready to Boost Your Productivity?</h2>
-
-<p>Join thousands of developers who are already using Vasuki Labs to streamline their workflow.</p>
-
-<a href="General-AI.html" class="cta-button">Get Started Now</a>
-
-</section>
-
+<main class="content-grid">
+    ${services.length > 0 ? services.map(s => `
+        <div class="service-item">
+            <h3>${s}</h3>
+            <p style="color:var(--text-dim); line-height:1.7;">Bespoke execution of ${s.toLowerCase()} frameworks, prioritizing structural integrity.</p>
+        </div>
+    `).join("") : `<div class="service-item"><h3>Innovation</h3></div>`}
 </main>
 
 <footer>
-
-Vasuki Labs • Developer Platform
-
+    <div class="footer-left">
+        <p style="letter-spacing:3px; font-size:11px; margin-bottom:20px; font-weight:700;">READY TO BUILD?</p>
+        <h2>Work with ${org.name}</h2>
+        <a href="mailto:${contacts.email}" class="cta-button">Start Inquiry</a>
+    </div>
+    <div style="text-align: right; display: flex; flex-direction: column; justify-content: flex-end;">
+        <p style="font-size: 18px; font-weight: 300; opacity: 0.7; margin-bottom: 5px;">${org.location || 'Global Headquarters'}</p>
+        <p style="font-size: 11px; opacity: 0.3; letter-spacing: 5px; margin-top: 60px;">EST. 2026 // POWERED BY VASUKI ITECH SYSTEM</p>
+    </div>
 </footer>
+`;
+        }
 
-</body>
-</html>
+        init();
+    </script>
+<title>Vasuki iTech - India | Global AI and Cloud based tech firm</title></head>
+<body>
+<style>
+    :root {
+        --brand: #000000;
+        --bg: #ffffff;
+        --text: #050505;
+        --text-dim: #666666;
+        --border: #eeeeee;
+    }
 
+    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; margin: 0; padding: 0; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+    
+    body { background: var(--bg); color: var(--text); font-family: 'Google Sans', sans-serif; overflow-x: hidden; }
+    body.menu-open { overflow: hidden; }
 
+    /* --- NAVIGATION --- */
+    header {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 20px 5%; position: fixed; width: 100%; top: 0; z-index: 1001;
+        background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+    }
+    .logo-area { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; z-index: 1002; }
+    .logo-img { width: 28px; height: 28px; object-fit: contain; }
+    .logo-name { font-weight: 800; font-size: 15px; letter-spacing: 1px; text-transform: uppercase; }
 
+    .nav-links { display: flex; align-items: center; gap: 24px; }
+    .nav-btn {
+        text-decoration: none; color: var(--text-dim); font-size: 12px; 
+        font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .nav-btn:hover { color: var(--brand); }
+    .nav-btn.primary-link { color: var(--text); border-bottom: 2px solid var(--brand); padding-bottom: 4px; }
 
- 
-</p>
+    /* --- HAMBURGER --- */
+    .menu-toggle {
+        display: none; flex-direction: column; gap: 6px; cursor: pointer; border: none; background: none; z-index: 1002; padding: 10px;
+    }
+    .bar { width: 24px; height: 2px; background: var(--text); transition: 0.3s; transform-origin: center; }
+    
+    /* Hamburger Transform */
+    .menu-open .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .menu-open .bar:nth-child(2) { opacity: 0; }
+    .menu-open .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+    /* --- MOBILE MENU --- */
+    .mobile-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+        background: #fff; z-index: 1000; display: flex; flex-direction: column;
+        justify-content: center; align-items: center; gap: 30px;
+        transform: translateY(-100%); opacity: 0; pointer-events: none;
+    }
+    .menu-open .mobile-overlay { transform: translateY(0); opacity: 1; pointer-events: all; }
+    .mobile-link { font-size: 32px; font-weight: 800; text-decoration: none; color: var(--text); letter-spacing: -1px; }
+
+    /* --- HERO & CONTENT --- */
+    .hero-section { padding: 160px 5% 80px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: center; }
+    .hero-content h1 { font-size: clamp(40px, 5vw, 85px); font-weight: 100; line-height: 0.95; letter-spacing: -4px; margin-bottom: 30px; }
+    .hero-content p { font-size: 20px; color: var(--text-dim); line-height: 1.5; max-width: 450px; border-left: 3px solid var(--brand); padding-left: 25px; }
+    .hero-image-container { position: relative; width: 100%; height: 600px; overflow: hidden; border-radius: 4px; background: #f9f9f9; }
+    .hero-image { width: 100%; height: 100%; object-fit: cover; }
+
+    /* --- SERVICES GRID --- */
+    .section-label { padding: 100px 5% 40px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 4px; color: var(--text-dim); }
+    .content-grid { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--border); }
+    .service-item { padding: 80px 10%; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .service-item:nth-child(2n) { border-right: none; }
+    .service-item h3 { font-size: 32px; font-weight: 700; margin-bottom: 20px; letter-spacing: -1px; }
+
+    /* --- FOOTER --- */
+    footer { padding: 120px 5% 60px; background: #000; color: #fff; display: grid; grid-template-columns: 1fr 1fr; }
+    .footer-left h2 { font-size: 60px; font-weight: 100; letter-spacing: -3px; }
+    .cta-button { display: inline-block; margin-top: 40px; padding: 20px 50px; background: #fff; color: #000; text-decoration: none; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
+
+    @media (max-width: 900px) {
+        .hero-section { grid-template-columns: 1fr; padding-top: 120px; }
+        .hero-image-container { height: 400px; order: -1; }
+        .content-grid { grid-template-columns: 1fr; }
+        .service-item { border-right: none; }
+        .nav-links { display: none; }
+        .menu-toggle { display: flex; }
+        footer { grid-template-columns: 1fr; gap: 60px; text-align: center; }
+        .footer-left h2 { font-size: 40px; }
+    }
+</style>
+
+<header>
+    <a href="#" class="logo-area">
+        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAHYAdgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiisLxx440L4beE9T8TeJtTg0fQtNhM91e3DYWNc4A9WYkhVUAlmIABJAo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SOCRjEalQUJP27RRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABX5Nf8Faf2SV8Man/wALq8KWccOm6jMlv4htbaE/urps7bs4G0LIQEcnb+8Kn5mlOP1lrE8beDNG+IvhHV/DHiGxj1LRNVtntLu1k6PGwweRyCOoI5BAIwRQB/Mspyo9cUtex/tO/sr+Mv2ZPiHf6Fq9jdXui+d/xLNfjtmFrfRHJUg8hZMA7o8kqQeowx8jWxuT/wAu8xH+4abAgoq0NNuv+faY/wDbM/4UHTbr/n2m/wC/ZpAVaKs/2Zd4/wCPab/v2aDpl0P+Xab/AL9mgCrz6UvPcVa/s66P/LtN/wB+zTTpt2P+Xab/AL9n/CgCvRVgaddn/l1m/wC/Zpf7OugebWb/AL9mgCtRVn+zroc/Zpv+/Zo/s26P/LtL/wB+zQBWoqdtPuh1t5gf9w1FLZ3Ijb9xKMg/wGgDqPhd8MNf+M3xA0Pwb4atzcaxq90lvFuVikQJ+aWQqrERouXZsHCqT2r+ib4OfCzSPgr8MfDvgrRIkSx0i0S381IljNxIB+8mYDje7bnJ9WNfIH/BLb9j27+C3gu4+InjDT5rHxn4gh8i0sbnKvYWBKth4yBslkZQxByQqxj5SXFfeVAgooooGFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFJilooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA/9k=" class="logo-img">
+        <span class="logo-name">Vasuki iTech - India</span>
+    </a>
+    
+    <nav class="nav-links">
+        <a href="https://www.vasuki.cloud" class="nav-btn" target="_blank">website</a><a href="https://www.vasuki.cloud/view-form.html?id=1g580tdmpeh" class="nav-btn" target="_blank">Request Access To Argon</a><a href="https://vasuki.cloud/vypaar" class="nav-btn" target="_blank">Launch Vypaar</a><a href="https://vasuki.cloud/ai" class="nav-btn" target="_blank">Vasuki Vaimanika</a>
+        
+    </nav>
+
+    <button class="menu-toggle" onclick="document.body.classList.toggle('menu-open')">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </button>
+</header>
+
+<div class="mobile-overlay">
+    <a href="https://www.vasuki.cloud" class="mobile-link" onclick="document.body.classList.remove('menu-open')">website</a><a href="https://www.vasuki.cloud/view-form.html?id=1g580tdmpeh" class="mobile-link" onclick="document.body.classList.remove('menu-open')">Request Access To Argon</a><a href="https://vasuki.cloud/vypaar" class="mobile-link" onclick="document.body.classList.remove('menu-open')">Launch Vypaar</a><a href="https://vasuki.cloud/ai" class="mobile-link" onclick="document.body.classList.remove('menu-open')">Vasuki Vaimanika</a>
+    
 </div>
 
-</div>
+<section class="hero-section">
+    <div class="hero-content">
+        <h1>Global AI and Cloud based tech firm</h1>
+        <p>  </p><div class="about-card">
+    <div class="about-title">About Vasuki iTech</div>
+    <div class="about-subtitle">Startup Ecosystem &amp; Innovation Network</div>
 
+    <p class="about-text">
+      Vasuki iTech focuses on building scalable digital products, AI systems,
+      and startup infrastructure for founders.
+    </p>
 
- 
+    <div class="badge-row">
+      <div class="badge">AI</div>
+      <div class="badge">Cloud</div>
+      <div class="badge">SaaS</div>
+      <div class="badge">Startups</div>
+    </div>
 
+    <div class="feature-grid">
+      <div class="feature-box"><b>12+</b><span>Products</span></div>
+      <div class="feature-box"><b>30+</b><span>Clients</span></div>
+      <div class="feature-box"><b>2025</b><span>Founded</span></div>
+<div class="feature-box"><b>12k+</b><span>Revenue 2025</span></div>
+    </div>
 
+    <div class="highlight-box">
+      Building India’s next-generation startup operating system.
+    </div>
+  </div>
 
+<p></p>
+    </div>
+    <div class="hero-image-container">
+        <img src="https://cdn.sanity.io/images/599r6htc/regionalized/69d0a8e52134d8214a81cab2f3985cc06d162115-1440x720.png?w=1440&amp;h=720&amp;q=75&amp;fit=max&amp;auto=format" class="hero-image" alt="Featured Architecture">
+    </div>
+</section>
+
+<div class="section-label">Selected Expertise</div>
+
+<main class="content-grid">
+    
+        <div class="service-item">
+            <h3>web development</h3>
+            <p style="color:var(--text-dim); line-height:1.7;">Bespoke execution of web development frameworks, prioritizing structural integrity.</p>
+        </div>
+    
+        <div class="service-item">
+            <h3>web design</h3>
+            <p style="color:var(--text-dim); line-height:1.7;">Bespoke execution of web design frameworks, prioritizing structural integrity.</p>
+        </div>
+    
+        <div class="service-item">
+            <h3>cloud computing</h3>
+            <p style="color:var(--text-dim); line-height:1.7;">Bespoke execution of cloud computing frameworks, prioritizing structural integrity.</p>
+        </div>
+    
+        <div class="service-item">
+            <h3>ai system design</h3>
+            <p style="color:var(--text-dim); line-height:1.7;">Bespoke execution of ai system design frameworks, prioritizing structural integrity.</p>
+        </div>
+    
+</main>
 
 <footer>
-Vasuki Labs • Developer Platform
+    <div class="footer-left">
+        <p style="letter-spacing:3px; font-size:11px; margin-bottom:20px; font-weight:700;">READY TO BUILD?</p>
+        <h2>Work with Vasuki iTech - India</h2>
+        <a href="mailto:codeclutch.adamyarao@gmail.com" class="cta-button">Start Inquiry</a>
+    </div>
+    <div style="text-align: right; display: flex; flex-direction: column; justify-content: flex-end;">
+        <p style="font-size: 18px; font-weight: 300; opacity: 0.7; margin-bottom: 5px;">Global Headquarters</p>
+        <p style="font-size: 11px; opacity: 0.3; letter-spacing: 5px; margin-top: 60px;">EST. 2026 // POWERED BY VASUKI ITECH SYSTEM</p>
+    </div>
 </footer>
-
-</body>
-</html>
+</body></html>
