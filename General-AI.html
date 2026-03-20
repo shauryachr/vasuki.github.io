@@ -7,141 +7,217 @@
 
 <title>Vasuki Labs - AI</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 
-/* ===== ORIGINAL LIGHT THEME ===== */
+/* ===== YELLOW-GRAY THEME ===== */
 
 :root{
---primary:#1a73e8;
---primary-hover:#1557b0;
+--primary:#fbbc05;
+--primary-hover:#e2a800;
 --text:#202124;
 --text-secondary:#5f6368;
---background:#ffffff;
---surface:#f8f9fa;
+--background:#f1f3f4;
+--surface:#ffffff;
 --border:#dadce0;
 }
 
+*{box-sizing:border-box;margin:0;padding:0}
+
 body{
-font-family:Roboto;
+font-family:Roboto,system-ui;
 background:var(--background);
 color:var(--text);
-margin:0;
+min-height:100vh;
 display:flex;
-height:100vh;
+flex-direction:column;
+align-items:center;
 }
 
-/* SIDEBAR */
+/* HEADER */
 
-.sidebar{
-width:240px;
-border-right:1px solid var(--border);
-padding:15px;
+header{
+width:100%;
+padding:16px 24px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:absolute;
+top:0;
+z-index:10;
+background:var(--surface);
+border-bottom:1px solid var(--border);
+box-shadow:0 1px 6px rgba(0,0,0,.05);
+}
+
+.nav-left{display:flex;align-items:center;gap:20px}
+
+.logo{
+color:var(--primary);
+text-decoration:none;
+font-weight:700;
+font-size:24px;
+}
+
+.nav-links{display:flex;gap:12px;align-items:center}
+
+.nav-links a{
+text-decoration:none;
+color:var(--text-secondary);
+font-size:15px;
+font-weight:500;
+padding:8px 12px;
+border-radius:8px;
+transition:0.2s;
+}
+
+.nav-links a:hover{
+color:#000;
+background:rgba(251,188,5,0.15);
+}
+
+/* DROPDOWN */
+
+.dropdown{position:relative}
+
+.dropdown-content{
+display:none;
+position:absolute;
+top:40px;
+right:0;
+background:var(--surface);
+border:1px solid var(--border);
+border-radius:8px;
+padding:8px;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+.dropdown:hover .dropdown-content{
 display:flex;
 flex-direction:column;
 }
 
-.logo{
-color:var(--primary);
-font-weight:700;
-font-size:20px;
-margin-bottom:15px;
-}
-
-.new-chat{
-background:var(--primary);
-color:white;
-border:none;
+.dropdown-content a{
 padding:10px;
-border-radius:8px;
-cursor:pointer;
-}
-
-.chat-item{
-padding:8px;
 border-radius:6px;
-cursor:pointer;
+color:var(--text);
 }
 
-.chat-item:hover{
-background:var(--surface);
+.dropdown-content a:hover{
+background:rgba(251,188,5,0.1);
+color:#000;
 }
 
 /* MAIN */
 
-.main{
-flex:1;
-display:flex;
-flex-direction:column;
+.container{
+margin-top:15vh;
+width:100%;
+max-width:800px;
+text-align:center;
 }
 
-header{
-padding:10px;
-border-bottom:1px solid var(--border);
-display:flex;
-justify-content:space-between;
+.greeting{
+font-size:36px;
+margin-top:10vh;
+}
+
+.greeting span{
+font-size:18px;
+color:var(--text-secondary);
+}
+
+/* INPUT */
+
+.input-wrapper{
+width:90%;
+max-width:720px;
+background:var(--surface);
+border:1px solid var(--border);
+border-radius:24px;
+padding:12px 24px;
+margin:24px auto;
+box-shadow:0 2px 6px rgba(0,0,0,0.05);
+}
+
+input{
+width:100%;
+border:none;
+outline:none;
+font-size:16px;
+background:transparent;
+}
+
+/* BUTTONS */
+
+.tool-btn{
+background:rgba(251,188,5,0.15);
+color:#000;
+padding:6px 12px;
+border-radius:16px;
+font-size:13px;
+}
+
+/* MODE */
+
+#modeLabel{
+background:rgba(251,188,5,0.15);
+padding:6px 12px;
+border-radius:16px;
+cursor:pointer;
+}
+
+.mode-dropdown{
+background:var(--surface);
+border:1px solid var(--border);
+}
+
+/* CHIPS */
+
+.chip{
+border:1px solid var(--border);
+padding:10px 18px;
+border-radius:16px;
+cursor:pointer;
+}
+
+.chip:hover{
+background:rgba(251,188,5,0.15);
+border-color:var(--primary);
 }
 
 /* CHAT */
 
 #chatArea{
-flex:1;
-overflow:auto;
-padding:20px;
-display:flex;
+width:100%;
+max-width:800px;
+display:none;
 flex-direction:column;
-gap:10px;
+gap:20px;
+margin-top:80px;
+padding:20px;
 }
 
 .user-msg{
 align-self:flex-end;
-background:var(--surface);
-padding:10px;
-border-radius:12px;
+background:rgba(251,188,5,0.2);
+padding:12px;
+border-radius:16px;
 }
 
 .bot-msg{
 align-self:flex-start;
 }
 
-/* INPUT */
+/* CODE */
 
-.input-box{
-padding:10px;
-border-top:1px solid var(--border);
-}
-
-input{
-width:100%;
-padding:12px;
-border-radius:20px;
+pre{
+background:#eee;
 border:1px solid var(--border);
-outline:none;
-}
-
-/* AUTH */
-
-.auth{
-position:fixed;
-inset:0;
-background:#0004;
-display:flex;
-justify-content:center;
-align-items:center;
-}
-
-.auth-box{
-background:white;
-padding:20px;
+padding:15px;
 border-radius:8px;
-display:flex;
-flex-direction:column;
-gap:10px;
-width:260px;
 }
-
-button{cursor:pointer}
 
 </style>
 
@@ -149,212 +225,78 @@ button{cursor:pointer}
 
 <body>
 
-<!-- AUTH -->
-<div class="auth" id="authBox">
-<div class="auth-box">
-<h3>Login</h3>
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-<button id="loginBtn">Login</button>
-
-<p style="font-size:12px;color:#666">
-No account? <a href="https://vasuki.cloud" target="_blank">Create on Vasuki.cloud</a>
-</p>
-
-</div>
-</div>
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-<div class="logo">VASUKI LABS</div>
-<button class="new-chat" id="newChatBtn">+ New Chat</button>
-<div id="chatList"></div>
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
 <header>
-<div>AI Assistant</div>
-<div id="userInfo"></div>
+
+<div class="nav-left">
+
+<a class="logo" href="#">VASUKI LABS</a>
+
+<div class="nav-links">
+<a href="#">Wiki</a>
+<a href="#">Speed</a>
+
+<div class="dropdown">
+<a>Tools ▾</a>
+<div class="dropdown-content">
+<a href="#">ASCII</a>
+<a href="#">Base64</a>
+<a href="#">Calculator</a>
+</div>
+</div>
+
+<a href="#">Review</a>
+<a href="#">About</a>
+
+</div>
+
+</div>
+
 </header>
+
+<div class="container" id="homeUI">
+
+<div class="greeting">
+<span>✦ Hi Developer</span>
+Welcome to Vasuki Labs
+</div>
+
+<div class="input-wrapper">
+<input id="query" placeholder="Ask for code help...">
+</div>
+
+</div>
 
 <div id="chatArea"></div>
 
-<div class="input-box">
-<input id="query" placeholder="Ask anything...">
-</div>
+<script>
 
-</div>
-
-<script type="module">
-
-import Vasuki from "https://cdn.jsdelivr.net/npm/vasuki-db/+esm";
-
-const vdb = new Vasuki();
-
-/* ELEMENTS */
-const email = document.getElementById("email");
-const password = document.getElementById("password");
-const loginBtn = document.getElementById("loginBtn");
-const authBox = document.getElementById("authBox");
-const userInfo = document.getElementById("userInfo");
-const chatList = document.getElementById("chatList");
-const chatArea = document.getElementById("chatArea");
 const query = document.getElementById("query");
-const newChatBtn = document.getElementById("newChatBtn");
+const chatArea = document.getElementById("chatArea");
+const homeUI = document.getElementById("homeUI");
 
-/* AI */
-const API_URL = "https://adamyakhairwal2011-vasuki-ai.hf.space/research";
-
-/* AUTH */
-
-let currentUser=null;
-
-loginBtn.onclick = async ()=>{
-
-try{
-await vdb.login(email.value,password.value);
-
-currentUser=email.value;
-userInfo.innerText="👤 "+currentUser;
-
-authBox.style.display="none";
-
-await loadChats();
-
-if(chats.length===0) newChat();
-
-}catch{
-alert("No account found. Create one on Vasuki.cloud");
-}
-
-};
-
-/* CHAT STORAGE */
-
-async function saveChat(chat){
-
-const all = await vdb.fetchTable("Main","Chats");
-
-for(const c of all){
-if(c.user===currentUser && c.chatId===chat.id){
-await vdb.delete("Main","Chats",c.id);
-}
-}
-
-await vdb.insert("Main","Chats",{
-user:currentUser,
-chatId:chat.id,
-messages:JSON.stringify(chat.messages)
-});
-
-}
-
-async function loadChats(){
-
-const data=await vdb.fetchTable("Main","Chats");
-
-const userChats=data.filter(c=>c.user===currentUser);
-
-const map={};
-
-userChats.forEach(c=>{
-if(!map[c.chatId]){
-map[c.chatId]={id:c.chatId,messages:[]};
-}
-map[c.chatId].messages=JSON.parse(c.messages);
-});
-
-chats=Object.values(map);
-
-renderChats();
-}
-
-/* CHAT SYSTEM */
-
-let chats=[];
-let currentChat=null;
-
-newChatBtn.onclick=newChat;
-
-function newChat(){
-const chat={id:Date.now(),messages:[]};
-chats.push(chat);
-currentChat=chat;
-renderChats();
-renderMessages();
-}
-
-function renderChats(){
-chatList.innerHTML="";
-chats.forEach(c=>{
-const d=document.createElement("div");
-d.className="chat-item";
-d.innerText="Chat "+c.id;
-d.onclick=()=>{currentChat=c;renderMessages()};
-chatList.appendChild(d);
-});
-}
-
-function renderMessages(){
-chatArea.innerHTML="";
-if(!currentChat) return;
-currentChat.messages.forEach(m=>{
-addMessage(m.text,m.type);
-});
-}
-
-/* ENTER */
-
-query.addEventListener("keydown",e=>{
+query.addEventListener("keydown", e=>{
 if(e.key==="Enter"){
 e.preventDefault();
 sendMessage();
 }
 });
 
-/* SEND */
+function sendMessage(){
 
-async function sendMessage(){
+const text = query.value.trim();
+if(!text) return;
 
-const text=query.value.trim();
-if(!text || !currentChat) return;
+homeUI.style.display="none";
+chatArea.style.display="flex";
 
 addMessage(text,"user");
-currentChat.messages.push({text:text,type:"user"});
+
+setTimeout(()=>{
+addMessage("⚡ Sample AI Response","bot");
+},500);
+
 query.value="";
-
-const botMsg=addMessage("","bot");
-
-try{
-
-const res=await fetch(API_URL,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-topic:text,
-mode:"research"
-})
-});
-
-const data=await res.json();
-
-const reply=data.result || "No response";
-
-stream(botMsg,reply);
-
-currentChat.messages.push({text:reply,type:"bot"});
-
-await saveChat(currentChat);
-
-}catch{
-botMsg.innerText="AI Error";
 }
-
-}
-
-/* UI */
 
 function addMessage(text,type){
 const d=document.createElement("div");
@@ -362,17 +304,6 @@ d.className=type==="user"?"user-msg":"bot-msg";
 d.innerText=text;
 chatArea.appendChild(d);
 chatArea.scrollTop=chatArea.scrollHeight;
-return d;
-}
-
-function stream(el,text){
-let i=0;
-(function t(){
-if(i<text.length){
-el.innerText+=text[i++];
-setTimeout(t,10);
-}
-})();
 }
 
 </script>
