@@ -5,288 +5,622 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Vasuki AI</title>
+<title>Vasuki Coder - AI Code Assistant</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
 
 <style>
+
 :root{
---primary:#fbbc05;
---background:#f1f3f4;
---surface:#fff;
---border:#dadce0;
+--primary:#1a73e8;
+--primary-hover:#1557b0;
 --text:#202124;
+--text-secondary:#5f6368;
+--background:#ffffff;
+--surface:#f8f9fa;
+--border:#dadce0;
 }
 
+*{box-sizing:border-box;margin:0;padding:0}
+
 body{
-margin:0;
-font-family:Roboto;
+font-family:Roboto,system-ui;
 background:var(--background);
 color:var(--text);
+min-height:100vh;
 display:flex;
 flex-direction:column;
 align-items:center;
 }
 
 /* HEADER */
+
 header{
 width:100%;
-padding:16px;
-background:var(--surface);
+padding:16px 24px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:absolute;
+top:0;
+z-index:10;
+background:var(--background);
 border-bottom:1px solid var(--border);
+box-shadow:0 1px 6px rgba(0,0,0,.08);
 }
 
-/* INPUT */
-.input-wrapper{
-margin-top:120px;
+.nav-left{display:flex;align-items:center;gap:20px}
+
+.logo{
+color:var(--primary);
+text-decoration:none;
+font-weight:700;
+font-size:24px;
+transition:all 0.2s ease;
+font-family:Roboto, sans-serif;
+}
+
+.logo:hover{
+color:var(--primary-hover);
+}
+
+.nav-links{display:flex;gap:12px;align-items:center;flex-wrap:nowrap}
+
+.nav-links a{
+text-decoration:none;
+color:var(--text-secondary);
+font-size:15px;
+font-weight:500;
+padding:8px 12px;
+border-radius:8px;
+transition:all 0.2s ease;
+font-family:Roboto, sans-serif;
+}
+
+.nav-links a:hover{
+color:var(--primary);
+background:rgba(26,115,232,0.08);
+}
+
+/* DROPDOWN */
+
+.dropdown{position:relative}
+
+.dropdown-content{
+display:none;
+position:absolute;
+top:40px;
+right:0;
+background:var(--background);
+border:1px solid var(--border);
+border-radius:8px;
+padding:8px;
+box-shadow:0 4px 12px rgba(0,0,0,0.15);
+min-width:160px;
+z-index:1000;
+}
+
+.dropdown:hover .dropdown-content,
+.dropdown-content:hover{
+display:flex;
+flex-direction:column;
+}
+
+.dropdown-content a{
+padding:10px 14px;
+border-radius:6px;
+text-decoration:none;
+color:var(--text);
+font-size:14px;
+font-weight:500;
+transition:all 0.2s ease;
+font-family:Roboto, sans-serif;
+}
+
+.dropdown-content a:hover{
 background:var(--surface);
+color:var(--primary);
+}
+
+/* HEADER RIGHT */
+
+.header-right{display:flex;align-items:center;gap:16px}
+
+/* MAIN CONTAINER */
+
+.container{
+margin-top:15vh;
+height:55vh;
+width:100%;
+max-width:800px;
+display:flex;
+flex-direction:column;
+align-items:center;
+text-align:center;
+transition:all 0.5s ease;
+}
+
+.greeting{
+font-size:36px;
+font-weight:400;
+margin-bottom:8px;
+color:var(--text);
+margin-top:10vh;
+font-family:Roboto, sans-serif;
+}
+
+.greeting span{
+display:block;
+font-size:18px;
+color:var(--text-secondary);
+margin-bottom:4px;
+}
+
+/* INPUT WRAPPER */
+
+.input-wrapper{
+width:90%;
+max-width:720px;
+background:var(--background);
 border:1px solid var(--border);
 border-radius:24px;
-padding:12px 20px;
-width:600px;
+padding:12px 24px;
+margin-top:24px;
+box-shadow:0 2px 8px rgba(0,0,0,0.08);
+display:flex;
+flex-direction:column;
+transition:all 0.2s ease;
 }
 
-input{
-width:100%;
+.input-wrapper:hover{
+box-shadow:0 4px 12px rgba(0,0,0,0.12);
+}
+
+.input-top{display:flex;align-items:center;width:100%;gap:10px}
+
+input#query{
+flex:1;
 border:none;
 outline:none;
+font-size:16px;
+padding:12px 0;
+color:var(--text);
+background:transparent;
+font-family:Roboto, sans-serif;
 }
 
-/* CHAT */
-#chatArea{
+input#query::placeholder{
+color:var(--text-secondary);
+}
+
+.stop-btn-container{
+position:relative;
+display:none;
+align-items:center;
+justify-content:center;
+width:32px;
+height:32px;
+}
+
+.loader-ring{
+position:absolute;
+width:100%;
+height:100%;
+border:2px solid var(--border);
+border-top:2px solid var(--primary);
+border-radius:50%;
+animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+0%{transform:rotate(0deg)}
+100%{transform:rotate(360deg)}
+}
+
+#stopBtn{
+position:relative;
+width:10px;
+height:10px;
+background:var(--text);
+border:none;
+border-radius:2px;
+cursor:pointer;
+z-index:2;
+transition:all 0.2s ease;
+}
+
+#stopBtn:hover{
+background:#ea4335;
+}
+
+.input-bottom{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding-top:8px;
+margin-top:4px;
+}
+
+.tools-group{
+display:flex;
+align-items:center;
+gap:16px;
+color:var(--text-secondary);
+font-size:14px;
+}
+
+.tool-btn{
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:6px;
+padding:6px 10px;
+border-radius:16px;
+transition:0.2s;
+background-color:var(--surface);
+color:var(--primary);
+font-weight:500;
+font-size:13px;
+font-family:Roboto, sans-serif;
+}
+
+.tool-btn:hover{
+background:var(--border);
+}
+
+/* MODE SELECTOR */
+
+.mode-select-container{position:relative;display:flex;align-items:center;gap:10px}
+
+#modeLabel{
+font-size:13px;
+color:var(--primary);
+font-weight:500;
+cursor:pointer;
+padding:6px 12px;
+border-radius:16px;
+background:var(--surface);
+transition:all 0.2s ease;
+font-family:Roboto, sans-serif;
+}
+
+#modeLabel:hover{
+background:var(--border);
+}
+
+.mode-dropdown{
+position:absolute;
+bottom:110%;
+right:0;
+background:var(--background);
+border:1px solid var(--border);
+border-radius:8px;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
 display:none;
 flex-direction:column;
-width:600px;
-margin-top:20px;
-gap:10px;
+width:100px;
+overflow:hidden;
+z-index:100;
+}
+
+.mode-option{
+padding:10px 12px;
+font-size:13px;
+cursor:pointer;
+text-align:left;
+color:var(--text);
+transition:all 0.2s ease;
+font-family:Roboto, sans-serif;
+}
+
+.mode-option:hover{
+background:var(--surface);
+color:var(--primary);
+}
+
+/* CHIPS */
+
+.chips-container{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:12px;
+margin-top:32px;
+max-width:700px;
+}
+
+.chip{
+background:var(--background);
+border:1px solid var(--border);
+padding:10px 18px;
+border-radius:16px;
+font-size:14px;
+color:var(--text);
+cursor:pointer;
+transition:0.2s;
+display:flex;
+align-items:center;
+gap:8px;
+font-family:Roboto, sans-serif;
+}
+
+.chip:hover{
+background:var(--surface);
+border-color:var(--primary);
+}
+
+.chip svg{
+width:18px;
+height:18px;
+fill:none;
+stroke:var(--primary);
+stroke-width:2;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+/* CHAT AREA */
+
+#chatArea{
+width:100%;
+max-width:800px;
+overflow-y:auto;
+display:none;
+flex-direction:column;
+gap:24px;
+margin-top:80px;
+padding:40px 20px;
+height:calc(100vh - 240px);
+}
+
+.message{
+max-width:100%;
+line-height:1.6;
+font-size:16px;
+position:relative;
 }
 
 .user-msg{
 align-self:flex-end;
-background:#ffe082;
-padding:10px;
-border-radius:12px;
+color:var(--text);
+font-size:16px;
+font-weight:400;
+text-align:right;
+background:var(--surface);
+padding:12px 16px;
+border-radius:18px;
+border-bottom-right-radius:4px;
+font-family:Roboto, sans-serif;
 }
 
 .bot-msg{
 align-self:flex-start;
-white-space:pre-wrap;
+color:var(--text);
+width:100%;
+text-align:left;
 }
 
-/* LOGIN */
-#loginPopup{
-position:fixed;
-inset:0;
-background:#0006;
+.action-row{
+display:flex;
+gap:8px;
+margin-top:12px;
+opacity:0.6;
+transition:opacity 0.3s;
+}
+
+.bot-msg:hover .action-row{opacity:1}
+
+.action-btn{
+background:transparent;
+border:none;
+cursor:pointer;
+padding:6px;
+border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
+transition:all 0.2s;
+color:var(--text-secondary);
 }
 
-#loginBox{
-background:#fff;
-padding:20px;
-border-radius:10px;
-width:280px;
+.action-btn:hover{
+background:var(--surface);
+color:var(--primary);
 }
 
-#loginBox input{
+.action-btn svg{
+width:18px;
+height:18px;
+fill:none;
+stroke:currentColor;
+stroke-width:2;
+}
+
+/* CODE BLOCKS */
+
+pre{
+position:relative;
+padding:16px !important;
+border-radius:8px !important;
+margin:16px 0 !important;
+overflow-x:auto;
+background:#f8f9fa !important;
+border:1px solid var(--border) !important;
+}
+
+.code-copy-btn{
+position:absolute;
+top:8px;
+right:8px;
+padding:6px 10px;
+background:var(--background);
+color:var(--text);
+border:1px solid var(--border);
+border-radius:4px;
+font-size:12px;
+cursor:pointer;
+opacity:0;
+transition:all 0.2s;
+z-index:5;
+font-family:Roboto, sans-serif;
+}
+
+pre:hover .code-copy-btn{
+opacity:1;
+}
+
+.code-copy-btn:hover{
+background:var(--surface);
+}
+
+/* DOCKED FOOTER */
+
+.docked-footer{
+position:fixed;
+bottom:24px;
 width:100%;
-margin-bottom:10px;
-padding:10px;
+display:flex;
+justify-content:center;
+background:transparent;
+z-index:10;
 }
 
-#loginBox button{
-width:100%;
-padding:10px;
-background:#fbbc05;
-border:none;
-}
+.hidden{display:none}
 
-/* STOP */
-#stopBtn{
-display:none;
-margin-top:10px;
+/* RESPONSIVE */
+
+@media(max-width:768px){
+.greeting{font-size:28px}
+.input-wrapper{width:95%}
+.chips-container{gap:8px}
+.chip{font-size:12px;padding:8px 14px}
 }
 
 </style>
+
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="loginPopup">
-<div id="loginBox">
-<h3>Login</h3>
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-<button id="loginBtn">Login</button>
+<header>
+
+<div class="nav-left">
+
+<a class="logo" href="index.html">VASUKI LABS</a>
+
+<div class="nav-links">
+
+<a href="Wiki-Knowledge.html">Wiki</a>
+
+<a href="speedtest.html">Speed</a>
+
+<div class="dropdown">
+
+<a>Tools ▾</a>
+
+<div class="dropdown-content">
+
+<a href="tool-ascii.html">ASCII</a>
+<a href="tool-base64.html">Base64</a>
+<a href="tool-calc.html">Calculator</a>
+<a href="tool-color.html">Color</a>
+<a href="tool-date.html">Date</a>
+<a href="tool-json.html">JSON</a>
+<a href="tool-numbers.html">Numbers</a>
+<a href="tool-password.html">Password</a>
+<a href="tool-regex.html">Regex</a>
+<a href="tool-roman.html">Roman</a>
+<a href="tool-units.html">Units</a>
+
+</div>
+
+</div>
+
+<a href="review.html">Review</a>
+<a href="about.html">About</a>
+
+</div>
+
+</div>
+
+<div class="header-right">
+
+</div>
+
+</header>
+
+<div class="container" id="homeUI">
+
+<div class="greeting">
+<span id="userName">✦ Hi Developer</span>
+Welcome to Vasuki Labs
+</div>
+
+<div class="input-wrapper" id="mainInput">
+
+<div class="input-top">
+<input type="text" id="query" placeholder="Ask for code help..." autocomplete="off">
+<div class="stop-btn-container" id="stopContainer">
+<div class="loader-ring"></div>
+<button id="stopBtn" onclick="stopAIResponse()" title="Stop response"></button>
 </div>
 </div>
 
-<header>VASUKI LABS</header>
-
-<div class="input-wrapper">
-<input id="query" placeholder="Ask...">
+<div class="input-bottom">
+<div class="tools-group">
+<div class="tool-btn">Vasuki Labs</div>
+</div>
+<div class="mode-select-container">
+<div id="modeLabel" onclick="toggleModeDropdown()">Code ▾</div>
+<div class="mode-dropdown" id="modeDropdown">
+<div class="mode-option" onclick="setMode('ask')">Ask</div>
+<div class="mode-option" onclick="setMode('debug')">Debug</div>
+<div class="mode-option" onclick="setMode('optimize')">Optimize</div>
+</div>
+</div>
 </div>
 
-<button id="stopBtn">Stop</button>
+</div>
+
+<div class="chips-container">
+
+<div class="chip" onclick="handleQuickAction('Write a React component with TypeScript')">
+<svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+React Component
+</div>
+
+<div class="chip" onclick="handleQuickAction('Debug this JavaScript function: function sum(a,b){return a+b;}')">
+<svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+Debug Function
+</div>
+
+<div class="chip" onclick="handleQuickAction('Optimize this algorithm for better performance')">
+<svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+Optimize Code
+</div>
+
+<div class="chip" onclick="handleQuickAction('Generate Python code for data analysis')">
+<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+Python Script
+</div>
+
+</div>
+
+</div>
 
 <div id="chatArea"></div>
+<div id="footerDock" class="hidden docked-footer"></div>
 
-<script type="module">
-
-import Vasuki from "https://cdn.jsdelivr.net/npm/vasuki-db/+esm";
-
-const vdb = new Vasuki();
-
-/* ELEMENTS */
-const query = document.getElementById("query");
-const chatArea = document.getElementById("chatArea");
-const loginBtn = document.getElementById("loginBtn");
-const loginPopup = document.getElementById("loginPopup");
-const stopBtn = document.getElementById("stopBtn");
-
-/* STATE */
-let currentUser=null;
-let currentChat={id:Date.now(),messages:[]};
-
-/* LOGIN */
-loginBtn.onclick = async ()=>{
-try{
-await vdb.login(email.value,password.value);
-currentUser=email.value;
-loginPopup.style.display="none";
-
-await loadChats();
-
-}catch{
-alert("Create account on vasuki.cloud");
-}
-};
-
-/* LOAD CHAT HISTORY */
-async function loadChats(){
-
-const data = await vdb.fetchTable("Main","Chats");
-
-/* FILTER USER */
-const userChats = data.filter(c=>c.user===currentUser);
-
-if(userChats.length>0){
-
-const last = userChats[userChats.length-1];
-
-currentChat = {
-id:last.chatId,
-messages:JSON.parse(last.messages)
-};
-
-/* RENDER */
-currentChat.messages.forEach(m=>{
-addMessage(m.text,m.type);
-});
-
-}
-
-}
-
-/* SAVE CHAT */
-async function saveChat(){
-
-await vdb.insert("Main","Chats",{
-user:currentUser,
-chatId:currentChat.id,
-messages:JSON.stringify(currentChat.messages)
-});
-
-}
-
-/* ENTER */
-query.addEventListener("keydown",e=>{
-if(e.key==="Enter"){
-e.preventDefault();
-sendMessage();
-}
-});
-
-/* AI */
-let controller=null;
-
-async function sendMessage(){
-
-const text=query.value.trim();
-if(!text) return;
-
-chatArea.style.display="flex";
-
-addMessage(text,"user");
-currentChat.messages.push({text,type:"user"});
-
-query.value="";
-
-const bot=addMessage("","bot");
-
-if(controller) controller.abort();
-controller=new AbortController();
-
-stopBtn.style.display="block";
-
-try{
-
-const res = await fetch(
-`https://adamyakhairwal2011-vasuki-ai.hf.space/research?topic=${encodeURIComponent(text)}&mode=research`,
-{signal:controller.signal}
-);
-
-const data = await res.json();
-
-const reply=data.result || "No response";
-
-stream(bot,reply);
-
-currentChat.messages.push({text:reply,type:"bot"});
-
-await saveChat();
-
-}catch(err){
-
-if(err.name==="AbortError"){
-bot.innerText="Stopped";
-}else{
-bot.innerText="Error";
-}
-
-}
-
-stopBtn.style.display="none";
-}
-
-/* STOP */
-stopBtn.onclick=()=>{
-if(controller) controller.abort();
-};
-
-/* UI */
-function addMessage(t,type){
-const d=document.createElement("div");
-d.className=type==="user"?"user-msg":"bot-msg";
-d.innerText=t;
-chatArea.appendChild(d);
-return d;
-}
-
-function stream(el,text){
-let i=0;
-(function(){
-if(i<text.length){
-el.innerText+=text[i++];
-setTimeout(arguments.callee,10);
-}
-})();
-}
-
-</script>
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
