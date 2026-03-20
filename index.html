@@ -47,6 +47,10 @@ color:#ccc;
 text-decoration:none;
 }
 
+.nav-links a:hover{
+color:white;
+}
+
 /* HERO */
 
 .hero{
@@ -76,31 +80,18 @@ text-align:center;
 }
 
 .hero h1{
-font-size:72px;
+font-size:80px;
+font-weight:600;
+letter-spacing:-1px;
 background:linear-gradient(90deg,#fff,#8ab4f8,#c2e9fb);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
 
 .hero p{
-opacity:0.7;
-}
-
-/* INPUT */
-
-.input-wrapper{
-margin-top:25px;
-background:rgba(255,255,255,0.08);
-padding:12px 20px;
-border-radius:30px;
-backdrop-filter:blur(10px);
-}
-
-input{
-background:transparent;
-border:none;
-outline:none;
-color:white;
+opacity:0.6;
+margin-top:10px;
+font-size:16px;
 }
 
 </style>
@@ -111,6 +102,7 @@ color:white;
 
 <header>
 <div class="logo">VASUKI LABS</div>
+
 <div class="nav-links">
 <a href="#">Wiki</a>
 <a href="#">Tools</a>
@@ -125,16 +117,13 @@ color:white;
 <div class="hero-content">
 <h1>Vasuki Labs</h1>
 <p>Build. Experiment. Create.</p>
-
-<div class="input-wrapper">
-<input type="text" placeholder="Ask for code help...">
-</div>
-
 </div>
 
 </div>
 
 <script>
+
+/* CANVAS SETUP */
 
 const canvas = document.getElementById("flowCanvas");
 const ctx = canvas.getContext("2d");
@@ -148,7 +137,7 @@ h = canvas.height = window.innerHeight;
 resize();
 window.addEventListener("resize", resize);
 
-/* MOUSE */
+/* MOUSE TRACK */
 
 let mouse = { x: w/2, y: h/2 };
 
@@ -171,15 +160,12 @@ for(let x=0;x<w;x++){
 
 let baseY = Math.sin(x*0.002 + t + i)*50 + h/2;
 
-/* DISTANCE FROM MOUSE */
 let dx = x - mouse.x;
 let dy = baseY - mouse.y;
 let dist = Math.sqrt(dx*dx + dy*dy);
 
-/* FORCE EFFECT */
 let force = Math.max(0, 120 - dist) / 120;
 
-/* APPLY DISTORTION */
 let y = baseY + (dy * force * 0.6);
 
 ctx.lineTo(x, y);
