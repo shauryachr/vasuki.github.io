@@ -1,559 +1,325 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vasuki Coder - AI Code Assistant</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vasuki Coder - AI Code Assistant</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
 
-<style>
-:root {
-    --primary:      #fbbc05;       /* yellow */
-    --primary-hover:#f4b400;       /* darker yellow */
-    --text:         #202124;
-    --text-secondary:#e0e0e0;
-    --background:   #1e1e1e;       /* dark grey */
-    --surface:      #2d2d2d;       /* lighter grey */
-    --border:       #444;
-}
+    <style>
+    :root {
+        --primary:       #f5c518;      /* golden yellow */
+        --primary-hover: #e6b800;      /* deeper gold on hover */
+        --text:          #1d1d1f;      /* near-black / dark charcoal */
+        --text-secondary:#6e6e73;      /* medium grey */
+        --background:    #f5f5f7;      /* light cool grey */
+        --surface:       #ffffff;      /* pure white cards */
+        --surface-hover: #f0f0f5;
+        --border:        #d2d2d7;      /* very light grey */
+        --shadow-sm:     0 1px 3px rgba(0,0,0,0.08);
+        --shadow-md:     0 4px 14px rgba(0,0,0,0.10);
+    }
 
-* { box-sizing:border-box; margin:0; padding:0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-    font-family: Roboto, system-ui;
-    background: var(--background);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    body {
+        font-family: 'Roboto', system-ui, sans-serif;
+        background: var(--background);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-/* HEADER */
-header {
-    width: 100%;
-    padding: 16px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: absolute;
-    top: 0;
-    z-index: 10;
-    background: var(--background);
-    border-bottom: 1px solid var(--border);
-    box-shadow: 0 1px 6px rgba(0,0,0,.3);
-}
+    header {
+        width: 100%;
+        padding: 16px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        z-index: 100;
+        background: rgba(245,245,247,0.92);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+    }
 
-.nav-left { display: flex; align-items: center; gap: 20px; }
+    .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 36px;
+    }
 
-.logo {
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 24px;
-    transition: all 0.2s ease;
-}
+    .logo {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 26px;
+        letter-spacing: -0.4px;
+    }
 
-.logo:hover { color: var(--primary-hover); }
+    .logo:hover { color: var(--primary-hover); }
 
-.nav-links {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: nowrap;
-}
+    .nav-links {
+        display: flex;
+        gap: 8px;
+    }
 
-.nav-links a {
-    text-decoration: none;
-    color: var(--text-secondary);
-    font-size: 15px;
-    font-weight: 500;
-    padding: 8px 12px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-}
+    .nav-links a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 500;
+        padding: 8px 14px;
+        border-radius: 10px;
+        transition: all 0.18s ease;
+    }
 
-.nav-links a:hover {
-    color: var(--primary);
-    background: rgba(251,188,5,0.12);
-}
+    .nav-links a:hover {
+        color: var(--primary);
+        background: rgba(245,197,24,0.08);
+    }
 
-/* DROPDOWN */
-.dropdown { position: relative; }
+    .container {
+        margin-top: 140px;
+        width: 100%;
+        max-width: 820px;
+        padding: 0 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
 
-.dropdown-content {
-    display: none;
-    position: absolute;
-    top: 40px;
-    right: 0;
-    background: var(--background);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    min-width: 160px;
-    z-index: 1000;
-}
+    .greeting {
+        font-size: 44px;
+        font-weight: 400;
+        letter-spacing: -0.8px;
+        margin-bottom: 12px;
+    }
 
-.dropdown:hover .dropdown-content,
-.dropdown-content:hover {
-    display: flex;
-    flex-direction: column;
-}
+    .greeting span {
+        display: block;
+        font-size: 21px;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+    }
 
-.dropdown-content a {
-    padding: 10px 14px;
-    border-radius: 6px;
-    text-decoration: none;
-    color: var(--text);
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
+    .input-wrapper {
+        width: 100%;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 12px 16px 12px 24px;
+        margin: 32px 0 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: var(--shadow-md);
+        transition: all 0.22s ease;
+    }
 
-.dropdown-content a:hover {
-    background: var(--surface);
-    color: var(--primary);
-}
+    .input-wrapper:focus-within,
+    .input-wrapper:hover {
+        border-color: var(--primary);
+        box-shadow: 0 6px 24px rgba(245,197,24,0.18);
+    }
 
-/* HEADER RIGHT */
-.header-right { display: flex; align-items: center; gap: 16px; }
+    input#query {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 17px;
+        color: var(--text);
+        padding: 10px 0;
+    }
 
-/* MAIN CONTAINER */
-.container {
-    margin-top: 15vh;
-    height: 55vh;
-    width: 100%;
-    max-width: 800px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    transition: all 0.5s ease;
-}
+    input#query::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.75;
+    }
 
-.greeting {
-    font-size: 36px;
-    font-weight: 400;
-    margin-bottom: 8px;
-    color: var(--text);
-    margin-top: 10vh;
-}
+    #sendBtn {
+        background: var(--primary);
+        color: #000;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(245,197,24,0.3);
+    }
 
-.greeting span {
-    display: block;
-    font-size: 18px;
-    color: var(--text-secondary);
-    margin-bottom: 4px;
-}
+    #sendBtn:hover {
+        background: var(--primary-hover);
+        transform: scale(1.06);
+        box-shadow: 0 4px 16px rgba(230,184,0,0.35);
+    }
 
-/* INPUT WRAPPER */
-.input-wrapper {
-    width: 90%;
-    max-width: 720px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 12px 16px;
-    margin-top: 24px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    transition: all 0.2s ease;
-}
+    #sendBtn svg {
+        width: 26px;
+        height: 26px;
+        fill: #000;
+    }
 
-.input-wrapper:hover {
-    box-shadow: 0 4px 12px rgba(251,188,5,0.18);
-}
+    .stop-btn-container {
+        width: 38px;
+        height: 38px;
+        position: relative;
+        display: none;
+    }
 
-.input-top {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    .loader-ring {
+        position: absolute;
+        inset: 0;
+        border: 3px solid var(--border);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
 
-input#query {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    padding: 12px 0;
-    color: var(--text);
-    background: transparent;
-}
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-input#query::placeholder {
-    color: var(--text-secondary);
-}
+    #stopBtn {
+        width: 14px;
+        height: 14px;
+        background: var(--text);
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
 
-.stop-btn-container {
-    position: relative;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-}
+    #stopBtn:hover { background: #ff3b30; }
 
-.loader-ring {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border: 2px solid var(--border);
-    border-top: 2px solid var(--primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
+    .input-bottom {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 12px;
+        color: var(--text-secondary);
+        font-size: 14px;
+    }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+    .tool-btn {
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: rgba(245,197,24,0.08);
+        color: var(--primary);
+        font-weight: 500;
+        font-size: 13.5px;
+        cursor: default;
+    }
 
-#stopBtn {
-    position: relative;
-    width: 10px;
-    height: 10px;
-    background: var(--text);
-    border: none;
-    border-radius: 2px;
-    cursor: pointer;
-    z-index: 2;
-}
+    .chips-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 44px;
+    }
 
-#stopBtn:hover { background: #ea4335; }
+    .chip {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 12px 22px;
+        border-radius: 999px;
+        font-size: 15px;
+        color: var(--text);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: var(--shadow-sm);
+    }
 
-/* NEW SEND BUTTON */
-#sendBtn {
-    background: var(--primary);
-    color: #000;
-    border: none;
-    border-radius: 50%;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-}
+    .chip:hover {
+        border-color: var(--primary);
+        background: rgba(245,197,24,0.06);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(245,197,24,0.15);
+    }
 
-#sendBtn:hover {
-    background: var(--primary-hover);
-    transform: scale(1.08);
-}
+    .chip svg {
+        width: 20px;
+        height: 20px;
+        stroke: var(--primary);
+        stroke-width: 2.2;
+        fill: none;
+    }
 
-#sendBtn svg {
-    width: 24px;
-    height: 24px;
-    fill: #000;
-}
+    #chatArea {
+        width: 100%;
+        max-width: 820px;
+        padding: 100px 24px 180px;
+        display: none;
+        flex-direction: column;
+        gap: 32px;
+    }
 
-/* BOTTOM ROW (mode selector etc) */
-.input-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding-top: 8px;
-    margin-top: 4px;
-}
-
-.tools-group {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    color: var(--text-secondary);
-    font-size: 14px;
-}
-
-.tool-btn {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    border-radius: 16px;
-    transition: 0.2s;
-    background-color: var(--background);
-    color: var(--primary);
-    font-weight: 500;
-    font-size: 13px;
-}
-
-.tool-btn:hover {
-    background: var(--surface);
-}
-
-/* MODE SELECTOR */
-.mode-select-container { position: relative; display: flex; align-items: center; gap: 10px; }
-
-#modeLabel {
-    font-size: 13px;
-    color: var(--primary);
-    font-weight: 500;
-    cursor: pointer;
-    padding: 6px 12px;
-    border-radius: 16px;
-    background: var(--background);
-    transition: all 0.2s ease;
-}
-
-#modeLabel:hover {
-    background: var(--surface);
-}
-
-/* CHIPS */
-.chips-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 32px;
-    max-width: 700px;
-}
-
-.chip {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 10px 18px;
-    border-radius: 16px;
-    font-size: 14px;
-    color: var(--text);
-    cursor: pointer;
-    transition: 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.chip:hover {
-    background: rgba(251,188,5,0.12);
-    border-color: var(--primary);
-}
-
-.chip svg {
-    width: 18px;
-    height: 18px;
-    fill: none;
-    stroke: var(--primary);
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-/* CHAT AREA */
-#chatArea {
-    width: 100%;
-    max-width: 800px;
-    overflow-y: auto;
-    display: none;
-    flex-direction: column;
-    gap: 24px;
-    margin-top: 80px;
-    padding: 40px 20px;
-    height: calc(100vh - 240px);
-}
-
-.message {
-    max-width: 100%;
-    line-height: 1.6;
-    font-size: 16px;
-    position: relative;
-}
-
-.user-msg {
-    align-self: flex-end;
-    color: var(--text);
-    background: var(--surface);
-    padding: 12px 16px;
-    border-radius: 18px;
-    border-bottom-right-radius: 4px;
-}
-
-.bot-msg {
-    align-self: flex-start;
-    color: var(--text);
-    width: 100%;
-}
-
-.action-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-    opacity: 0.6;
-    transition: opacity 0.3s;
-}
-
-.bot-msg:hover .action-row { opacity: 1; }
-
-/* ... rest of styles unchanged ... */
-
-pre {
-    position: relative;
-    padding: 16px !important;
-    border-radius: 8px !important;
-    margin: 16px 0 !important;
-    overflow-x: auto;
-    background: #2d2d2d !important;
-    border: 1px solid var(--border) !important;
-}
-
-.code-copy-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    padding: 6px 10px;
-    background: var(--background);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
-    opacity: 0;
-    transition: all 0.2s;
-}
-
-pre:hover .code-copy-btn { opacity: 1; }
-
-/* DOCKED FOOTER */
-.docked-footer {
-    position: fixed;
-    bottom: 24px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    background: transparent;
-    z-index: 10;
-}
-
-.hidden { display: none; }
-</style>
+    /* Keep your existing message, code block, prism styles — they should work well on light bg */
+    </style>
 </head>
-
 <body>
 
 <header>
     <div class="nav-left">
-        <a class="logo" href="index.html">VASUKI LABS</a>
+        <a class="logo" href="#">VASUKI LABS</a>
         <div class="nav-links">
-            <a href="Wiki-Knowledge.html">Wiki</a>
-            <a href="speedtest.html">Speed</a>
-            <div class="dropdown">
-                <a>Tools ▾</a>
-                <div class="dropdown-content">
-                    <a href="tool-ascii.html">ASCII</a>
-                    <a href="tool-base64.html">Base64</a>
-                    <a href="tool-calc.html">Calculator</a>
-                    <a href="tool-color.html">Color</a>
-                    <a href="tool-date.html">Date</a>
-                    <a href="tool-json.html">JSON</a>
-                    <a href="tool-numbers.html">Numbers</a>
-                    <a href="tool-password.html">Password</a>
-                    <a href="tool-regex.html">Regex</a>
-                    <a href="tool-roman.html">Roman</a>
-                    <a href="tool-units.html">Units</a>
-                </div>
-            </div>
-            <a href="review.html">Review</a>
-            <a href="about.html">About</a>
+            <a href="#">Wiki</a>
+            <a href="#">Speed</a>
+            <a>Tools ▾</a>
+            <a href="#">Review</a>
+            <a href="#">About</a>
         </div>
     </div>
-    <div class="header-right"></div>
 </header>
 
 <div class="container" id="homeUI">
     <div class="greeting">
-        <span id="userName">✦ Hi Developer</span>
+        <span>✦ Hi Developer</span>
         Welcome to Vasuki Labs
     </div>
 
-    <div class="input-wrapper" id="mainInput">
-        <div class="input-top">
-            <input type="text" id="query" placeholder="Ask for code help..." autocomplete="off">
-            <div class="stop-btn-container" id="stopContainer">
-                <div class="loader-ring"></div>
-                <button id="stopBtn" onclick="stopAIResponse()" title="Stop response"></button>
-            </div>
-            <!-- Added Send button -->
-            <button id="sendBtn" onclick="sendMessage()" title="Send">
-                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-            </button>
+    <div class="input-wrapper">
+        <input type="text" id="query" placeholder="Ask anything about code..." autocomplete="off">
+        <div class="stop-btn-container" id="stopContainer">
+            <div class="loader-ring"></div>
+            <button id="stopBtn" title="Stop"></button>
         </div>
+        <button id="sendBtn" title="Send">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+    </div>
 
-        <div class="input-bottom">
-            <div class="tools-group">
-                <div class="tool-btn">Vasuki Labs</div>
-            </div>
-            <div class="mode-select-container">
-                <div id="modeLabel" onclick="toggleModeDropdown()">Code ▾</div>
-                <div class="mode-dropdown" id="modeDropdown">
-                    <div class="mode-option" onclick="setMode('ask')">Ask</div>
-                    <div class="mode-option" onclick="setMode('debug')">Debug</div>
-                    <div class="mode-option" onclick="setMode('optimize')">Optimize</div>
-                </div>
-            </div>
-        </div>
+    <div class="input-bottom">
+        <div class="tool-btn">Vasuki Labs</div>
+        <div>Code mode  ▾</div>
     </div>
 
     <div class="chips-container">
-        <div class="chip" onclick="handleQuickAction('Write a React component with TypeScript')">
-            <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-            React Component
-        </div>
-        <div class="chip" onclick="handleQuickAction('Debug this JavaScript function: function sum(a,b){return a+b;}')">
-            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            Debug Function
-        </div>
-        <div class="chip" onclick="handleQuickAction('Optimize this algorithm for better performance')">
-            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-            Optimize Code
-        </div>
-        <div class="chip" onclick="handleQuickAction('Generate Python code for data analysis')">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
-            Python Script
-        </div>
+        <div class="chip">React Component</div>
+        <div class="chip">Debug Function</div>
+        <div class="chip">Optimize Code</div>
+        <div class="chip">Python Script</div>
     </div>
 </div>
 
 <div id="chatArea"></div>
-<div id="footerDock" class="hidden docked-footer"></div>
-
-<script type="module" src="script.js"></script>
-
-<!-- Minimal JS to make send button work (you can expand it) -->
-<script>
-function sendMessage() {
-    const input = document.getElementById('query');
-    if (input.value.trim() === '') return;
-    
-    // Call the same function chips use
-    if (typeof handleQuickAction === 'function') {
-        handleQuickAction(input.value);
-    } else if (typeof submitQuery === 'function') {
-        submitQuery();
-    } else {
-        // fallback - at least trigger enter-like behavior
-        input.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter'}));
-    }
-    
-    // Optional: clear input after send
-    // input.value = '';
-}
-</script>
 
 </body>
 </html>
