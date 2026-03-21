@@ -120,6 +120,94 @@ header {
 .dropdown-menu a:hover { background: var(--primary); color: #5d4037; }
 .dropdown-menu a:hover span.status { color: #5d4037; background: rgba(0,0,0,0.1); }
 
+/* HAMBURGER BUTTON */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 38px;
+  height: 38px;
+  background: rgba(255,255,255,0.4);
+  border: 1px solid var(--glass-stroke);
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 1100;
+  transition: background 0.2s;
+}
+.hamburger:hover { background: rgba(255,202,40,0.25); }
+.hamburger span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: #5d4037;
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* MOBILE MENU OVERLAY */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 999;
+  background: rgba(224,224,224,0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 100px 32px 40px;
+  overflow-y: auto;
+}
+.mobile-menu.open { display: flex; }
+
+.mobile-menu a, .mobile-menu .mobile-section-title {
+  font-family: 'Anta', sans-serif;
+  font-size: 15px;
+  color: rgba(0,0,0,0.65);
+  text-decoration: none;
+  padding: 12px 28px;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+  transition: background 0.2s, color 0.2s;
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(255,255,255,0.7);
+}
+.mobile-menu a:hover { background: var(--primary); color: #5d4037; }
+
+.mobile-section-title {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.35) !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 14px 0 4px !important;
+  cursor: default;
+}
+
+.mobile-tools-list {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  header { padding: 12px 20px; }
+}
+
 /* HERO */
 .hero {
   position: relative;
@@ -203,7 +291,7 @@ header {
   <div class="nav-links">
     <a href="https://shauryachr.github.io/vasuki.github.io/General-AI">AI</a>
     <a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Wiki</a>
-    
+
     <div class="dropdown">
       <span class="drop-trigger">Tools</span>
       <div class="dropdown-menu">
@@ -227,12 +315,44 @@ header {
         <a href="https://www.linkedin.com/in/adamya-r-khairwal-8b51b235b/" target="_blank">Adamya Khairwal</a>
       </div>
     </div>
-    
+
     <a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Review</a>
     <a href="contact-us.html">Contact Us</a>
     <a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a>
   </div>
+
+  <!-- Hamburger Button -->
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </header>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="https://shauryachr.github.io/vasuki.github.io/General-AI">AI</a>
+  <a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Wiki</a>
+  <a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Review</a>
+  <a href="contact-us.html">Contact Us</a>
+  <a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a>
+
+  <span class="mobile-section-title">Tools</span>
+  <div class="mobile-tools-list">
+    <a href="#">ASCII <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
+    <a href="#">Base64 <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
+    <a href="#">Calculator <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
+    <a href="#">Color <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
+    <a href="#">Date <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
+    <a href="#">JSON <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
+    <a href="#">Numbers <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
+    <a href="#">Password <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
+    <a href="#">Regex <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
+    <a href="#">Roman <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
+  </div>
+
+  <span class="mobile-section-title">Team</span>
+  <a href="https://www.linkedin.com/in/shaurya-chauhan-1307742bb/" target="_blank">Shaurya Chauhan</a>
+  <a href="https://www.linkedin.com/in/adamya-r-khairwal-8b51b235b/" target="_blank">Adamya Khairwal</a>
+</div>
 
 <div class="hero">
   <div class="hero__animation">
@@ -253,6 +373,27 @@ header {
     <p>Build • Experiment • Create</p>
   </div>
 </div>
+
+<script>
+// Hamburger Menu Toggle
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+});
+
+// Close menu when a link is clicked
+mobileMenu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+</script>
 
 <script>
 (function(){
