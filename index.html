@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vasuki Labs - Liquid Glass Edition</title>
+<title>Vasuki Labs - Team Edition</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,11 +11,12 @@
 
 <style>
 :root {
-  --primary: #ffca28; /* Golden Yellow */
+  --primary: #ffca28; 
   --text: #333333;
-  --bg-light: #e0e0e0; /* Light Grey */
+  --bg-light: #e0e0e0;
   --glass-fill: rgba(255, 255, 255, 0.45);
   --glass-stroke: rgba(255, 255, 255, 0.6);
+  --glass-dropdown: rgba(240, 240, 240, 0.9);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; cursor: default; }
@@ -28,7 +29,7 @@ body {
   min-height: 100vh;
 }
 
-/* LIQUID GLASS HEADER */
+/* HEADER */
 header {
   position: fixed;
   top: 15px;
@@ -38,7 +39,7 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 14px 40px;
-  z-index: 100;
+  z-index: 1000;
   background: var(--glass-fill);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
@@ -51,14 +52,13 @@ header {
   font-family: 'Anta', sans-serif;
   color: #b8860b;
   text-decoration: none;
-  font-weight: 400;
   font-size: 20px;
   letter-spacing: 1px;
 }
 
-.nav-links { display: flex; gap: 15px; }
+.nav-links { display: flex; gap: 10px; align-items: center; }
 
-.nav-links a {
+.nav-links a, .drop-trigger {
   font-family: 'Anta', sans-serif;
   color: rgba(0,0,0,0.6);
   text-decoration: none;
@@ -68,9 +68,44 @@ header {
   transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.nav-links a:hover {
+.nav-links a:hover, .dropdown:hover .drop-trigger {
   background: rgba(255, 255, 255, 0.3);
   color: #000;
+}
+
+/* TEAM DROPDOWN LOGIC */
+.dropdown { position: relative; }
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--glass-dropdown);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-stroke);
+  border-radius: 18px;
+  min-width: 180px;
+  padding: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.dropdown:hover .dropdown-menu { display: block; }
+
+.dropdown-menu a {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  text-align: center;
+  color: #444;
+  font-size: 13px;
+  border-radius: 10px;
+}
+
+.dropdown-menu a:hover {
+  background: var(--primary);
+  color: #5d4037;
 }
 
 /* HERO SECTION */
@@ -104,12 +139,11 @@ header {
 .hero-content p {
   font-size: 18px;
   color: rgba(0,0,0,0.5);
-  font-weight: 400;
   letter-spacing: 2px;
   text-transform: uppercase;
 }
 
-/* INTERACTIVE WAVE STYLES */
+/* WAVES */
 .hero__animation {
   position: absolute;
   bottom: 0;
@@ -127,20 +161,16 @@ header {
   left: 0;
   width: 100%;
   height: 50%;
-  transform-origin: center bottom;
 }
 
 .hero__animation__wave--pink .wave-fill { fill: rgba(255, 202, 40, 0.2); filter: blur(4px); }
 .hero__animation__wave--white .wave-fill { fill: rgba(255, 255, 255, 0.4); filter: blur(2px); }
-.hero__animation__wave--blue .wave-fill { fill: rgba(184, 134, 11, 0.1); filter: blur(6px); }
 
-/* FLOATING ANIMATION */
 @keyframes liquidFloat {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-8px); }
 }
 
-/* WAVE SCROLL ANIMATION */
 @keyframes waveRun {
   0% { transform: translateX(0); }
   100% { transform: translateX(-33.33%); }
@@ -151,7 +181,6 @@ header {
   height: 100%;
   animation: waveRun 25s linear infinite;
 }
-
 </style>
 </head>
 <body>
@@ -161,6 +190,15 @@ header {
   <div class="nav-links">
     <a href="General-AI.html">AI</a>
     <a href="Wiki-Knowledge.html">Wiki</a>
+    
+    <div class="dropdown">
+      <span class="drop-trigger">Team</span>
+      <div class="dropdown-menu">
+        <a href="#">Shaurya Chauhan</a>
+        <a href="#">Adamya Khairwal</a>
+      </div>
+    </div>
+
     <a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Review</a>
     <a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a>
   </div>
@@ -182,7 +220,7 @@ header {
 
   <div class="hero-content">
     <h1>Vasuki Labs</h1>
-    <p>Build  Experiment  Create</p>
+    <p>Build • Experiment • Create</p>
   </div>
 </div>
 
