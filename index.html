@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vasuki Labs - Team Edition</title>
+<title>Vasuki Labs - Fixed Flow</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,6 @@
   --bg-light: #e0e0e0;
   --glass-fill: rgba(255, 255, 255, 0.45);
   --glass-stroke: rgba(255, 255, 255, 0.6);
-  --glass-dropdown: rgba(240, 240, 240, 0.9);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; cursor: default; }
@@ -29,7 +28,7 @@ body {
   min-height: 100vh;
 }
 
-/* HEADER */
+/* FIXED GLASS HEADER */
 header {
   position: fixed;
   top: 15px;
@@ -73,16 +72,15 @@ header {
   color: #000;
 }
 
-/* TEAM DROPDOWN LOGIC */
+/* TEAM DROPDOWN */
 .dropdown { position: relative; }
-
 .dropdown-menu {
   display: none;
   position: absolute;
   top: 100%;
   left: 50%;
   transform: translateX(-50%) translateY(10px);
-  background: var(--glass-dropdown);
+  background: rgba(245, 245, 245, 0.95);
   backdrop-filter: blur(15px);
   border: 1px solid var(--glass-stroke);
   border-radius: 18px;
@@ -90,9 +88,7 @@ header {
   padding: 8px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
-
 .dropdown:hover .dropdown-menu { display: block; }
-
 .dropdown-menu a {
   display: block;
   width: 100%;
@@ -102,13 +98,9 @@ header {
   font-size: 13px;
   border-radius: 10px;
 }
+.dropdown-menu a:hover { background: var(--primary); color: #5d4037; }
 
-.dropdown-menu a:hover {
-  background: var(--primary);
-  color: #5d4037;
-}
-
-/* HERO SECTION */
+/* HERO */
 .hero {
   position: relative;
   width: 100%;
@@ -116,13 +108,14 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(at 0% 0%, #f9f9f9 0, transparent 50%), 
-              radial-gradient(at 100% 100%, #cfcfcf 0, transparent 50%);
+  background: radial-gradient(at 0% 0%, #ffffff 0, transparent 50%), 
+              radial-gradient(at 100% 100%, #d6d6d6 0, transparent 50%);
+  overflow: hidden;
 }
 
 .hero-content {
   position: relative;
-  z-index: 10;
+  z-index: 50;
   text-align: center;
   pointer-events: none;
 }
@@ -136,14 +129,7 @@ header {
   margin-bottom: 10px;
 }
 
-.hero-content p {
-  font-size: 18px;
-  color: rgba(0,0,0,0.5);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-/* WAVES */
+/* REPAIRED WAVE SYSTEM */
 .hero__animation {
   position: absolute;
   bottom: 0;
@@ -152,19 +138,20 @@ header {
   height: 100%;
   overflow: hidden;
   pointer-events: none;
-  opacity: 0.6;
 }
 
 .hero__animation__wave {
   position: absolute;
-  bottom: -5%;
+  bottom: -2px; /* Fixed the bottom leak */
   left: 0;
   width: 100%;
   height: 50%;
+  transform-origin: center bottom; /* Anchor to bottom to prevent glitch */
+  will-change: transform, margin-left;
 }
 
-.hero__animation__wave--pink .wave-fill { fill: rgba(255, 202, 40, 0.2); filter: blur(4px); }
-.hero__animation__wave--white .wave-fill { fill: rgba(255, 255, 255, 0.4); filter: blur(2px); }
+.hero__animation__wave--pink .wave-fill { fill: rgba(255, 202, 40, 0.25); filter: blur(3px); }
+.hero__animation__wave--white .wave-fill { fill: rgba(255, 255, 255, 0.5); filter: blur(2px); }
 
 @keyframes liquidFloat {
   0%, 100% { transform: translateY(0px); }
@@ -172,25 +159,24 @@ header {
 }
 
 @keyframes waveRun {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-33.33%); }
+  from { transform: translateX(0); }
+  to { transform: translateX(-33.33%); }
 }
 
 .hero__animation__wave svg {
   width: 300%;
   height: 100%;
-  animation: waveRun 25s linear infinite;
+  animation: waveRun 20s linear infinite;
 }
 </style>
 </head>
 <body>
 
 <header>
-  <a href="General-AI.html" class="logo">VASUKI LABS</a>
+  <a href="https://shauryachr.github.io/vasuki.github.io/General-AI" class="logo">VASUKI LABS</a>
   <div class="nav-links">
-    <a href="General-AI.html">AI</a>
-    <a href="Wiki-Knowledge.html">Wiki</a>
-    
+    <a href="https://shauryachr.github.io/vasuki.github.io/General-AI">AI</a>
+    <a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Wiki</a>
     <div class="dropdown">
       <span class="drop-trigger">Team</span>
       <div class="dropdown-menu">
@@ -198,7 +184,6 @@ header {
         <a href="#">Adamya Khairwal</a>
       </div>
     </div>
-
     <a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Review</a>
     <a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a>
   </div>
@@ -207,12 +192,12 @@ header {
 <div class="hero">
   <div class="hero__animation">
     <div class="hero__animation__wave hero__animation__wave--pink">
-      <svg viewBox="0 0 3600 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 3600 600" preserveAspectRatio="none">
         <path class="wave-fill" d="M0,300 C150,200 350,400 600,300 C850,200 1050,400 1200,300 C1450,200 1650,400 1800,300 C2050,200 2250,400 2400,300 C2650,200 2850,400 3100,300 C3250,200 3450,400 3600,300 L3600,600 L0,600 Z"></path>
       </svg>
     </div>
     <div class="hero__animation__wave hero__animation__wave--white">
-      <svg viewBox="0 0 4800 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 4800 600" preserveAspectRatio="none">
         <path class="wave-fill" d="M0,350 C200,250 400,450 600,350 C800,250 1000,450 1200,350 C1400,250 1600,450 1800,350 C2000,250 2200,450 2400,350 C2600,250 2800,450 3000,350 C3200,250 3400,450 3600,350 C3800,250 4000,450 4200,350 C4400,250 4600,450 4800,350 L4800,600 L0,600 Z"></path>
       </svg>
     </div>
@@ -226,10 +211,8 @@ header {
 
 <script>
 (function(){
-  const waves = [
-    document.querySelector('.hero__animation__wave--pink'),
-    document.querySelector('.hero__animation__wave--white')
-  ];
+  const pink = document.querySelector('.hero__animation__wave--pink');
+  const white = document.querySelector('.hero__animation__wave--white');
 
   let targetX = 0.5, targetY = 0.5, currentX = 0.5, currentY = 0.5;
 
@@ -239,15 +222,22 @@ header {
   });
 
   function animate() {
-    currentX += (targetX - currentX) * 0.05;
-    currentY += (targetY - currentY) * 0.05;
+    // Smoother interpolation (0.03 instead of 0.05)
+    currentX += (targetX - currentX) * 0.03;
+    currentY += (targetY - currentY) * 0.03;
 
-    waves.forEach((w, i) => {
-      const offset = (currentX - 0.5) * -(400 + (i * 200));
-      const scale = 0.1 + (1 - currentY) * (0.5 - (i * 0.1));
-      w.style.marginLeft = offset + 'px';
-      w.style.transform = `scaleY(${scale})`;
-    });
+    // Pink Wave - Reactive
+    const pOffset = (currentX - 0.5) * -450;
+    const pScale = 0.2 + (1 - currentY) * 0.5; // Base 0.2 to avoid collapse
+    pink.style.marginLeft = pOffset + 'px';
+    pink.style.transform = `scaleY(${pScale})`;
+
+    // White Wave - Deeper
+    const wOffset = (currentX - 0.5) * -700;
+    const wScale = 0.15 + (1 - currentY) * 0.35;
+    white.style.marginLeft = wOffset + 'px';
+    white.style.transform = `scaleY(${wScale})`;
+
     requestAnimationFrame(animate);
   }
   animate();
