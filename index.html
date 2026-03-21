@@ -133,7 +133,7 @@ header {
   border: 1px solid var(--glass-stroke);
   border-radius: 10px;
   cursor: pointer;
-  z-index: 1100;
+  z-index: 1300;
   transition: background 0.2s;
 }
 .hamburger:hover { background: rgba(255,202,40,0.25); }
@@ -154,15 +154,15 @@ header {
   display: none;
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 999;
+  z-index: 1200;
   background: rgba(224,224,224,0.97);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 6px;
-  padding: 100px 32px 40px;
+  padding: 110px 32px 40px;
   overflow-y: auto;
 }
 .mobile-menu.open { display: flex; }
@@ -200,6 +200,39 @@ header {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+.mobile-tool-item {
+  font-family: 'Anta', sans-serif;
+  font-size: 14px;
+  color: rgba(0,0,0,0.4);
+  padding: 12px 20px;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+  background: rgba(255,255,255,0.3);
+  border: 1px solid rgba(255,255,255,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: not-allowed;
+  pointer-events: none;
+  user-select: none;
+}
+
+.coming-soon-badge {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: rgba(184,134,11,0.12);
+  color: #b8860b;
+  border: 1px solid rgba(184,134,11,0.25);
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {
@@ -337,16 +370,16 @@ header {
 
   <span class="mobile-section-title">Tools</span>
   <div class="mobile-tools-list">
-    <a href="#">ASCII <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
-    <a href="#">Base64 <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
-    <a href="#">Calculator <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
-    <a href="#">Color <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
-    <a href="#">Date <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
-    <a href="#">JSON <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
-    <a href="#">Numbers <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
-    <a href="#">Password <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
-    <a href="#">Regex <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
-    <a href="#">Roman <span style="font-size:10px;opacity:0.5;margin-left:8px;">Coming Soon</span></a>
+    <div class="mobile-tool-item">ASCII <span class="coming-soon-badge">Coming Soon</span></div>
+    <div class="mobile-tool-item">Base64 <span class="coming-soon-badge">Coming Soon</span></div>
+    <div class="mobile-tool-item">Calculator <span class="coming-soon-badge">Coming Soon</span></div>
+    <div class="mobile-tool-item">Color <span class="coming-soon-badge">Coming Soon</span></div>
+    <div class="mobile-tool-item">Date <span class="coming-soon-badge">Coming Soon</span></div>
+    <div class="mobile-tool-item">JSON <span class="coming-soon-badge">Coming Soon</span></div>
+    <div class="mobile-tool-item">Numbers <span class="coming-soon-badge">Coming Soon</span></div>
+    <div class="mobile-tool-item">Password <span class="coming-soon-badge">Coming Soon</span></div>
+    <div class="mobile-tool-item">Regex <span class="coming-soon-badge">Coming Soon</span></div>
+    <div class="mobile-tool-item">Roman <span class="coming-soon-badge">Coming Soon</span></div>
   </div>
 
   <span class="mobile-section-title">Team</span>
