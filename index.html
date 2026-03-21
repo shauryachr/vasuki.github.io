@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vasuki Labs - Fixed Flow</title>
+<title>Vasuki Labs - Ecosystem</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,7 +28,7 @@ body {
   min-height: 100vh;
 }
 
-/* FIXED GLASS HEADER */
+/* HEADER */
 header {
   position: fixed;
   top: 15px;
@@ -55,14 +55,14 @@ header {
   letter-spacing: 1px;
 }
 
-.nav-links { display: flex; gap: 10px; align-items: center; }
+.nav-links { display: flex; gap: 8px; align-items: center; }
 
 .nav-links a, .drop-trigger {
   font-family: 'Anta', sans-serif;
   color: rgba(0,0,0,0.6);
   text-decoration: none;
-  font-size: 14px;
-  padding: 8px 16px;
+  font-size: 13px;
+  padding: 8px 12px;
   border-radius: 12px;
   transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -72,7 +72,7 @@ header {
   color: #000;
 }
 
-/* TEAM DROPDOWN */
+/* DROPDOWN SYSTEM */
 .dropdown { position: relative; }
 .dropdown-menu {
   display: none;
@@ -80,25 +80,45 @@ header {
   top: 100%;
   left: 50%;
   transform: translateX(-50%) translateY(10px);
-  background: rgba(245, 245, 245, 0.95);
-  backdrop-filter: blur(15px);
+  background: rgba(245, 245, 245, 0.98);
+  backdrop-filter: blur(20px);
   border: 1px solid var(--glass-stroke);
-  border-radius: 18px;
-  min-width: 180px;
-  padding: 8px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border-radius: 20px;
+  min-width: 220px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 10px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
 }
+
+/* Custom Scrollbar for Tools */
+.dropdown-menu::-webkit-scrollbar { width: 4px; }
+.dropdown-menu::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
 .dropdown:hover .dropdown-menu { display: block; }
+
 .dropdown-menu a {
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   padding: 10px 15px;
-  text-align: center;
   color: #444;
-  font-size: 13px;
+  font-size: 12px;
   border-radius: 10px;
+  text-align: left;
 }
+
+.dropdown-menu a span.status {
+  font-size: 9px;
+  background: rgba(0,0,0,0.05);
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: #888;
+}
+
 .dropdown-menu a:hover { background: var(--primary); color: #5d4037; }
+.dropdown-menu a:hover span.status { color: #5d4037; background: rgba(0,0,0,0.1); }
 
 /* HERO */
 .hero {
@@ -129,7 +149,14 @@ header {
   margin-bottom: 10px;
 }
 
-/* REPAIRED WAVE SYSTEM */
+.hero-content p {
+  font-size: 18px;
+  color: rgba(0,0,0,0.4);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+/* WAVE SYSTEM */
 .hero__animation {
   position: absolute;
   bottom: 0;
@@ -142,12 +169,11 @@ header {
 
 .hero__animation__wave {
   position: absolute;
-  bottom: -2px; /* Fixed the bottom leak */
+  bottom: -2px; 
   left: 0;
   width: 100%;
   height: 50%;
-  transform-origin: center bottom; /* Anchor to bottom to prevent glitch */
-  will-change: transform, margin-left;
+  transform-origin: center bottom;
 }
 
 .hero__animation__wave--pink .wave-fill { fill: rgba(255, 202, 40, 0.25); filter: blur(3px); }
@@ -177,14 +203,33 @@ header {
   <div class="nav-links">
     <a href="https://shauryachr.github.io/vasuki.github.io/General-AI">AI</a>
     <a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Wiki</a>
+    
+    <div class="dropdown">
+      <span class="drop-trigger">Tools</span>
+      <div class="dropdown-menu">
+        <a href="tool-ascii.html">ASCII <span class="status">Coming Soon</span></a>
+        <a href="tool-base64.html">Base64 <span class="status">Coming Soon</span></a>
+        <a href="tool-calc.html">Calculator <span class="status">Coming Soon</span></a>
+        <a href="tool-color.html">Color <span class="status">Coming Soon</span></a>
+        <a href="tool-date.html">Date <span class="status">Coming Soon</span></a>
+        <a href="tool-json.html">JSON <span class="status">Coming Soon</span></a>
+        <a href="tool-numbers.html">Numbers <span class="status">Coming Soon</span></a>
+        <a href="tool-password.html">Password <span class="status">Coming Soon</span></a>
+        <a href="tool-regex.html">Regex <span class="status">Coming Soon</span></a>
+        <a href="tool-roman.html">Roman <span class="status">Coming Soon</span></a>
+      </div>
+    </div>
+
     <div class="dropdown">
       <span class="drop-trigger">Team</span>
       <div class="dropdown-menu">
-        <a href="#">Shaurya Chauhan</a>
-        <a href="#">Adamya Khairwal</a>
+        <a href="https://www.linkedin.com/in/shaurya-chauhan-1307742bb/" target="_blank">Shaurya Chauhan</a>
+        <a href="https://www.linkedin.com/in/adamya-r-khairwal-8b51b235b/" target="_blank">Adamya Khairwal</a>
       </div>
     </div>
+    
     <a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Review</a>
+    <a href="contact-us.html">Contact Us</a>
     <a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a>
   </div>
 </header>
@@ -213,7 +258,6 @@ header {
 (function(){
   const pink = document.querySelector('.hero__animation__wave--pink');
   const white = document.querySelector('.hero__animation__wave--white');
-
   let targetX = 0.5, targetY = 0.5, currentX = 0.5, currentY = 0.5;
 
   window.addEventListener('mousemove', e => {
@@ -222,22 +266,12 @@ header {
   });
 
   function animate() {
-    // Smoother interpolation (0.03 instead of 0.05)
     currentX += (targetX - currentX) * 0.03;
     currentY += (targetY - currentY) * 0.03;
-
-    // Pink Wave - Reactive
-    const pOffset = (currentX - 0.5) * -450;
-    const pScale = 0.2 + (1 - currentY) * 0.5; // Base 0.2 to avoid collapse
-    pink.style.marginLeft = pOffset + 'px';
-    pink.style.transform = `scaleY(${pScale})`;
-
-    // White Wave - Deeper
-    const wOffset = (currentX - 0.5) * -700;
-    const wScale = 0.15 + (1 - currentY) * 0.35;
-    white.style.marginLeft = wOffset + 'px';
-    white.style.transform = `scaleY(${wScale})`;
-
+    pink.style.marginLeft = (currentX - 0.5) * -450 + 'px';
+    pink.style.transform = `scaleY(${0.2 + (1 - currentY) * 0.5})`;
+    white.style.marginLeft = (currentX - 0.5) * -700 + 'px';
+    white.style.transform = `scaleY(${0.15 + (1 - currentY) * 0.35})`;
     requestAnimationFrame(animate);
   }
   animate();
