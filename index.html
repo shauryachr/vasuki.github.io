@@ -235,6 +235,59 @@ header {
   font-weight: 500;
 }
 
+/* MOBILE MENU TOP BAR */
+.mobile-menu-topbar {
+  position: fixed;
+  top: 15px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1400;
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 18px;
+  padding: 10px 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.mobile-home-btn {
+  font-family: 'Anta', sans-serif;
+  font-size: 13px;
+  color: #b8860b !important;
+  background: rgba(255,202,40,0.15) !important;
+  border: 1px solid rgba(255,202,40,0.35) !important;
+  padding: 8px 16px !important;
+  border-radius: 10px !important;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  transition: background 0.2s !important;
+  width: auto !important;
+  max-width: none !important;
+}
+.mobile-home-btn:hover { background: rgba(255,202,40,0.3) !important; }
+
+.mobile-close-btn {
+  font-family: 'Anta', sans-serif;
+  font-size: 13px;
+  color: rgba(0,0,0,0.55);
+  background: rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 8px 16px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.mobile-close-btn:hover { background: rgba(220,50,50,0.1); color: #c0392b; border-color: rgba(220,50,50,0.25); }
+
 @media (max-width: 768px) {
   .nav-links { display: none; }
   .hamburger { display: flex; }
@@ -362,11 +415,22 @@ header {
 
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
+
+  <!-- Top bar: Close + Home -->
+  <div class="mobile-menu-topbar">
+    <a href="https://shauryachr.github.io/vasuki.github.io/General-AI" class="mobile-home-btn" id="mobileHomeBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/><polyline points="9 21 9 12 15 12 15 21"/></svg>
+      Home
+    </a>
+    <button class="mobile-close-btn" id="mobileCloseBtn" aria-label="Close menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      Close
+    </button>
+  </div>
+
+  <span class="mobile-section-title">Products</span>
   <a href="https://shauryachr.github.io/vasuki.github.io/General-AI">AI</a>
   <a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Wiki</a>
-  <a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Review</a>
-  <a href="contact-us.html">Contact Us</a>
-  <a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a>
 
   <span class="mobile-section-title">Tools</span>
   <div class="mobile-tools-list">
@@ -385,6 +449,12 @@ header {
   <span class="mobile-section-title">Team</span>
   <a href="https://www.linkedin.com/in/shaurya-chauhan-1307742bb/" target="_blank">Shaurya Chauhan</a>
   <a href="https://www.linkedin.com/in/adamya-r-khairwal-8b51b235b/" target="_blank">Adamya Khairwal</a>
+
+  <span class="mobile-section-title">Others</span>
+  <a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Review</a>
+  <a href="contact-us.html">Contact Us</a>
+  <a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a>
+
 </div>
 
 <div class="hero">
@@ -411,6 +481,13 @@ header {
 // Hamburger Menu Toggle
 const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
+const mobileCloseBtn = document.getElementById('mobileCloseBtn');
+
+function closeMenu() {
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  document.body.style.overflow = '';
+}
 
 hamburger.addEventListener('click', () => {
   hamburger.classList.toggle('open');
@@ -418,13 +495,11 @@ hamburger.addEventListener('click', () => {
   document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
 });
 
-// Close menu when a link is clicked
+mobileCloseBtn.addEventListener('click', closeMenu);
+
+// Close menu when a nav link is clicked
 mobileMenu.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', () => {
-    hamburger.classList.remove('open');
-    mobileMenu.classList.remove('open');
-    document.body.style.overflow = '';
-  });
+  link.addEventListener('click', closeMenu);
 });
 </script>
 
