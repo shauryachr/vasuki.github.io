@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - Vasuki iTech-Labs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <style>
+    :root {
+      --gray-900: #202124;
+      --gray-800: #3c4043;
+      --gray-700: #5f6368;
+      --gray-400: #bdc1c6;
+      --gray-200: #e8eaed;
+      --gray-100: #f1f3f4;
+      --gray-50:  #f8f9fa;
+      --cream:    #fdf8ee;
+      --cream-yellow: #f5e6a3;
+      --cream-yellow-dark: #e6d276;
+      --cream-yellow-light: #fffbe6;
+      --accent:   #c8a92b;
+      --accent-hover: #a88b1c;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 3px rgba(60,64,67,.15), 0 1px 2px rgba(60,64,67,.06);
+      --shadow-md: 0 2px 6px 2px rgba(60,64,67,.15);
+      --shadow-lg: 0 4px 16px rgba(60,64,67,.2);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-800);
+      min-height: 100vh;
+    }
+
+    /* ─── TOP NAV ─── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 64px;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(60,64,67,.18);
+    }
+    .logo-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .brand-name {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+    .brand-name span {
+      color: var(--accent);
+    }
+
+    .topbar-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-link {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: background .15s, color .15s;
+    }
+    .nav-link:hover { background: var(--gray-100); color: var(--gray-900); }
+    .nav-link.active { color: var(--accent); background: var(--cream-yellow-light); }
+
+    /* ─── HERO BANNER ─── */
+    .hero {
+      background: linear-gradient(135deg, var(--gray-900) 0%, #2d3035 55%, #3a3215 100%);
+      padding: 56px 24px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 80% at 60% 50%, rgba(245,230,163,.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245,230,163,.15);
+      border: 1px solid rgba(245,230,163,.3);
+      color: var(--cream-yellow);
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'Google Sans', sans-serif;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+      letter-spacing: .4px;
+    }
+
+    .hero h1 {
+      font-family: 'Google Sans', sans-serif;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .hero h1 span { color: var(--cream-yellow); }
+
+    .hero p {
+      font-size: 15px;
+      color: var(--gray-400);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    /* ─── MAIN LAYOUT ─── */
+    .main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    @media (max-width: 760px) {
+      .main { grid-template-columns: 1fr; }
+    }
+
+    /* ─── PERSON CARD ─── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-200);
+      overflow: hidden;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, var(--cream-yellow-light) 0%, #fef9e0 100%);
+      border-bottom: 1px solid #eee0a0;
+      padding: 28px 28px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding-bottom: 0;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      margin-bottom: -28px;
+    }
+    .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--white);
+      box-shadow: 0 4px 16px rgba(60,64,67,.18);
+      display: block;
+    }
+    .avatar-fallback {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 4px solid var(--white);
+      box-shadow: 0 4px 16px rgba(60,64,67,.18);
+      background: linear-gradient(135deg, var(--cream-yellow) 0%, var(--accent) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+
+    .role-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'Google Sans', sans-serif;
+      color: var(--accent-hover);
+      background: rgba(200,169,43,.12);
+      border: 1px solid rgba(200,169,43,.3);
+      padding: 3px 10px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      margin-top: 8px;
+      letter-spacing: .3px;
+    }
+
+    .card-body {
+      padding: 40px 28px 28px;
+    }
+
+    .person-name {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 4px;
+      text-align: center;
+    }
+
+    .person-subtitle {
+      font-size: 13px;
+      color: var(--gray-700);
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--gray-200);
+      margin: 0 0 20px;
+    }
+
+    .contact-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .contact-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      background: var(--cream-yellow-light);
+      border: 1px solid #eee0a0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .contact-icon .material-icons {
+      font-size: 18px;
+      color: var(--accent);
+    }
+
+    .contact-detail {
+      display: flex;
+      flex-direction: column;
+    }
+    .contact-label {
+      font-size: 11px;
+      color: var(--gray-700);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      font-weight: 500;
+    }
+    .contact-value {
+      font-size: 14px;
+      color: var(--gray-900);
+      font-weight: 500;
+      text-decoration: none;
+      transition: color .15s;
+    }
+    a.contact-value:hover { color: var(--accent); }
+
+    .card-actions {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .15s, box-shadow .15s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cream-yellow) 0%, var(--accent) 100%);
+      color: var(--gray-900);
+      box-shadow: 0 2px 6px rgba(200,169,43,.3);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--cream-yellow-dark) 0%, var(--accent-hover) 100%);
+      box-shadow: 0 3px 10px rgba(200,169,43,.4);
+    }
+    .btn-secondary {
+      background: var(--gray-100);
+      color: var(--gray-800);
+      border: 1px solid var(--gray-200);
+    }
+    .btn-secondary:hover { background: var(--gray-200); }
+    .btn .material-icons { font-size: 16px; }
+
+    /* ─── BOTTOM INFO BAR ─── */
+    .info-bar {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px 48px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 640px) { .info-bar { grid-template-columns: 1fr; } }
+
+    .info-tile {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .info-tile-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--cream-yellow-light) 0%, #fef4c0 100%);
+      border: 1px solid #eee0a0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .info-tile-icon .material-icons { font-size: 20px; color: var(--accent); }
+    .info-tile-text h3 {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 3px;
+    }
+    .info-tile-text p {
+      font-size: 12px;
+      color: var(--gray-700);
+      line-height: 1.5;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--gray-900);
+      border-top: 3px solid var(--cream-yellow);
+      padding: 24px;
+      text-align: center;
+    }
+    footer p {
+      font-size: 13px;
+      color: var(--gray-400);
+    }
+    footer span { color: var(--cream-yellow); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAV -->
+  <nav class="topbar">
+    <div class="topbar-left">
+      <div class="logo-mark">
+        <img src="WhatsApp Image 2026-03-18 at 10.58.25.jpeg" alt="Vasuki iTech-Labs Logo" onerror="this.parentElement.style.background='linear-gradient(135deg,#f5e6a3,#c8a92b)'; this.style.display='none';" />
+      </div>
+      <span class="brand-name">Vasuki <span>iTech</span>-Labs</span>
+    </div>
+    <div class="topbar-nav">
+      <a href="#" class="nav-link active">Contact</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="material-icons" style="font-size:14px;">support_agent</span>
+      Get In Touch
+    </div>
+    <h1>Contact <span>Our Team</span></h1>
+    <p>Reach out to the people behind Vasuki iTech-Labs. We're here to collaborate, build, and innovate with you.</p>
+  </section>
+
+  <!-- PERSON CARDS -->
+  <main class="main">
+
+    <!-- Shaurya Chauhan -->
+    <div class="card">
+      <div class="card-header">
+        <div class="avatar-wrap">
+          <img
+            class="avatar"
+            src="shaurya.png"
+            alt="Shaurya Chauhan"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <div class="avatar-fallback" style="display:none;">SC</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div style="text-align:center; margin-bottom:6px;">
+          <span class="role-pill">Developer</span>
+        </div>
+        <h2 class="person-name">Shaurya Chauhan</h2>
+        <p class="person-subtitle">Vasuki iTech-Labs</p>
+        <div class="divider"></div>
+        <ul class="contact-list">
+          <li class="contact-item">
+            <div class="contact-icon"><span class="material-icons">phone</span></div>
+            <div class="contact-detail">
+              <span class="contact-label">Phone</span>
+              <a href="tel:+917988757238" class="contact-value">+91 79887 57238</a>
+            </div>
+          </li>
+          <li class="contact-item">
+            <div class="contact-icon"><span class="material-icons">email</span></div>
+            <div class="contact-detail">
+              <span class="contact-label">Email</span>
+              <a href="mailto:shauryachr@gmail.com" class="contact-value">shauryachr@gmail.com</a>
+            </div>
+          </li>
+          <li class="contact-item">
+            <div class="contact-icon"><span class="material-icons">business</span></div>
+            <div class="contact-detail">
+              <span class="contact-label">Company</span>
+              <span class="contact-value">Vasuki iTech-Labs</span>
+            </div>
+          </li>
+        </ul>
+        <div class="card-actions">
+          <a href="tel:+917988757238" class="btn btn-primary">
+            <span class="material-icons">phone</span> Call
+          </a>
+          <a href="mailto:shauryachr@gmail.com" class="btn btn-secondary">
+            <span class="material-icons">email</span> Email
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Adamya Khairwal -->
+    <div class="card">
+      <div class="card-header">
+        <div class="avatar-wrap">
+          <img
+            class="avatar"
+            src="admaya.jpg"
+            alt="Adamya Khairwal"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <div class="avatar-fallback" style="display:none;">AK</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div style="text-align:center; margin-bottom:6px;">
+          <span class="role-pill">CEO</span>
+        </div>
+        <h2 class="person-name">Adamya Khairwal</h2>
+        <p class="person-subtitle">Vasuki iTech-Labs</p>
+        <div class="divider"></div>
+        <ul class="contact-list">
+          <li class="contact-item">
+            <div class="contact-icon"><span class="material-icons">phone</span></div>
+            <div class="contact-detail">
+              <span class="contact-label">Phone</span>
+              <a href="tel:+919416817348" class="contact-value">+91 94168 17348</a>
+            </div>
+          </li>
+          <li class="contact-item">
+            <div class="contact-icon"><span class="material-icons">email</span></div>
+            <div class="contact-detail">
+              <span class="contact-label">Email</span>
+              <a href="mailto:codeclutch.adamyarao@gmail.com" class="contact-value">codeclutch.adamyarao@gmail.com</a>
+            </div>
+          </li>
+          <li class="contact-item">
+            <div class="contact-icon"><span class="material-icons">business</span></div>
+            <div class="contact-detail">
+              <span class="contact-label">Company</span>
+              <span class="contact-value">Vasuki iTech-Labs</span>
+            </div>
+          </li>
+        </ul>
+        <div class="card-actions">
+          <a href="tel:+919416817348" class="btn btn-primary">
+            <span class="material-icons">phone</span> Call
+          </a>
+          <a href="mailto:codeclutch.adamyarao@gmail.com" class="btn btn-secondary">
+            <span class="material-icons">email</span> Email
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- INFO TILES -->
+  <section class="info-bar">
+    <div class="info-tile">
+      <div class="info-tile-icon"><span class="material-icons">schedule</span></div>
+      <div class="info-tile-text">
+        <h3>Response Time</h3>
+        <p>We typically respond within 24 business hours.</p>
+      </div>
+    </div>
+    <div class="info-tile">
+      <div class="info-tile-icon"><span class="material-icons">location_on</span></div>
+      <div class="info-tile-text">
+        <h3>Location</h3>
+        <p>India — Working remotely & collaborating globally.</p>
+      </div>
+    </div>
+    <div class="info-tile">
+      <div class="info-tile-icon"><span class="material-icons">handshake</span></div>
+      <div class="info-tile-text">
+        <h3>Collaboration</h3>
+        <p>Open to freelance, contracts & long-term projects.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 <span>Vasuki iTech-Labs</span> · Built with passion by Shaurya & Adamya</p>
+  </footer>
+
+</body>
+</html>
