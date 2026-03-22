@@ -3,483 +3,677 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vasuki Labs - Ecosystem</title>
-
+<title>Vasuki iTech Labs - Ecosystem</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anta&family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --blue:       #1a73e8;
-  --blue-hover: #e8f0fe;
-  --text:       #202124;
-  --text-2:     #3c4043;
-  --text-3:     #5f6368;
-  --text-4:     #80868b;
-  --border:     #dadce0;
-  --bg:         #ffffff;
-  --bg-2:       #f8f9fa;
-  --gold:       #b8860b;
-  --yellow:     #ffca28;
+  --blue:    #1a73e8;
+  --blue-h:  #1557b0;
+  --blue-bg: #e8f0fe;
+  --text:    #202124;
+  --text-2:  #3c4043;
+  --text-3:  #5f6368;
+  --text-4:  #80868b;
+  --border:  #dadce0;
+  --bg:      #ffffff;
+  --bg-2:    #f8f9fa;
+  --gold:    #b8860b;
+  --yellow:  #ffca28;
+  --yellow-h:#f5d800;
 }
+body { font-family: 'Google Sans', sans-serif; color: var(--text); background: var(--bg); overflow-x: hidden; }
+a { text-decoration: none; color: inherit; cursor: pointer; }
+button { cursor: pointer; font-family: 'Google Sans', sans-serif; }
 
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; cursor: default; }
-
-body {
-  font-family: 'Google Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  overflow-x: hidden;
-  min-height: 100vh;
+/* TOPBAR */
+.topbar {
+  background: #1e3a5f; color: #fff;
+  text-align: center; font-size: 13px;
+  padding: 10px 24px; line-height: 1.4;
 }
+.topbar a { color: var(--yellow); text-decoration: underline; }
 
-/* ── HEADER ── */
+/* HEADER */
 header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 32px;
-  z-index: 1000;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 1000;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  height: 64px; display: flex; align-items: center; padding: 0 24px; gap: 0;
 }
-
-.logo {
-  font-family: 'Google Sans', sans-serif;
-  font-weight: 700;
-  font-size: 16px;
-  color: var(--text);
-  text-decoration: none;
-  letter-spacing: 0.3px;
+.logo-wrap { display: flex; align-items: center; gap: 10px; margin-right: 28px; flex-shrink: 0; }
+.logo-icon {
+  width: 32px; height: 32px; background: var(--yellow); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px; color: var(--gold); flex-shrink: 0;
 }
+.logo-text { font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 17px; color: var(--text); letter-spacing: -0.2px; white-space: nowrap; }
+.logo-text span { color: #6b7b8d; }
 
-.nav-links { display: flex; gap: 0; align-items: center; }
-
-.nav-links a, .drop-trigger {
-  font-family: 'Google Sans', sans-serif;
-  font-weight: 500;
-  color: var(--text-3);
-  text-decoration: none;
-  font-size: 13.5px;
-  padding: 8px 14px;
-  border-radius: 4px;
-  transition: background .1s, color .1s;
-  cursor: pointer;
+.nav-primary { display: flex; align-items: center; flex: 1; gap: 0; }
+.nav-item {
+  position: relative; display: flex; align-items: center; gap: 4px;
+  font-size: 13.5px; font-weight: 500; color: var(--text-2);
+  padding: 0 13px; height: 64px; cursor: pointer;
+  border-bottom: 2px solid transparent; transition: border-color .15s, color .15s; white-space: nowrap;
 }
-.nav-links a:hover       { background: var(--bg-2); color: var(--text); }
-.dropdown:hover .drop-trigger { background: var(--bg-2); color: var(--text); }
+.nav-item:hover { color: var(--blue); border-bottom-color: var(--blue); }
+.nav-item svg { width: 16px; height: 16px; fill: currentColor; opacity: .65; }
 
-/* ── DROPDOWN ── */
-.dropdown { position: relative; }
-
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  min-width: 200px;
-  max-height: 360px;
-  overflow-y: auto;
-  padding: 4px;
+/* Mega dropdown */
+.mega-menu {
+  display: none; position: absolute; top: 100%; left: 0;
+  background: var(--bg); border: 1px solid var(--border); border-top: none;
+  min-width: 520px; padding: 24px 28px; z-index: 2000; gap: 32px;
 }
-.dropdown-menu::-webkit-scrollbar { width: 4px; }
-.dropdown-menu::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-.dropdown:hover .dropdown-menu { display: block; }
+.nav-item:hover .mega-menu { display: flex; }
+.mega-col h4 { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-4); margin-bottom: 12px; }
+.mega-col a { display: block; font-size: 13px; color: var(--text-2); padding: 5px 0; transition: color .1s; }
+.mega-col a:hover { color: var(--blue); }
 
-.dropdown-menu a {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 9px 12px;
-  color: var(--text-2);
-  font-size: 13px;
-  font-family: 'Google Sans', sans-serif;
-  border-radius: 4px;
-  text-decoration: none;
-  transition: background .1s;
+/* Simple dropdown */
+.drop-menu {
+  display: none; position: absolute; top: 100%; left: 0;
+  background: var(--bg); border: 1px solid var(--border); border-top: none;
+  min-width: 200px; max-height: 360px; overflow-y: auto; padding: 4px; z-index: 2000;
 }
-.dropdown-menu a span.status {
-  font-size: 10px;
-  font-weight: 500;
-  background: var(--bg-2);
-  color: var(--text-4);
-  padding: 2px 6px;
-  border-radius: 3px;
-  letter-spacing: .2px;
+.drop-menu::-webkit-scrollbar { width: 4px; }
+.drop-menu::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.nav-item:hover .drop-menu { display: block; }
+.drop-menu a {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 12px; font-size: 13px; color: var(--text-2); border-radius: 2px; transition: background .1s;
 }
-.dropdown-menu a:hover { background: var(--blue-hover); color: var(--blue); }
-.dropdown-menu a:hover span.status { color: var(--blue); background: var(--blue-hover); }
+.drop-menu a:hover { background: var(--blue-bg); color: var(--blue); }
+.drop-menu a .badge { font-size: 10px; background: var(--bg-2); color: var(--text-4); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--border); }
 
-/* ── HAMBURGER ── */
+.nav-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.nav-right a { font-size: 13.5px; font-weight: 500; color: var(--text-2); padding: 8px 10px; border-radius: 4px; transition: background .1s; white-space: nowrap; }
+.nav-right a:hover { background: var(--bg-2); }
+
+.btn { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; padding: 9px 20px; border-radius: 4px; border: none; transition: background .15s, color .15s; white-space: nowrap; }
+.btn-filled { background: var(--blue); color: #fff; }
+.btn-filled:hover { background: var(--blue-h); }
+.btn-outlined { background: transparent; color: var(--blue); border: 1px solid var(--blue); }
+.btn-outlined:hover { background: var(--blue-bg); }
+
+/* Hamburger */
 .hamburger {
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  width: 36px;
-  height: 36px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  cursor: pointer;
-  z-index: 1300;
+  display: none; flex-direction: column; justify-content: center; align-items: center;
+  gap: 5px; width: 36px; height: 36px; background: transparent;
+  border: 1px solid var(--border); border-radius: 4px; margin-left: auto; z-index: 1300;
 }
 .hamburger:hover { background: var(--bg-2); }
-.hamburger span {
-  display: block;
-  width: 16px;
-  height: 1.5px;
-  background: var(--text-3);
-  border-radius: 1px;
-  transition: all .25s ease;
-}
+.hamburger span { display: block; width: 16px; height: 1.5px; background: var(--text-3); border-radius: 1px; transition: all .25s ease; }
 .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
 .hamburger.open span:nth-child(2) { opacity: 0; }
 .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
-/* ── MOBILE MENU ── */
-.mobile-menu {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 1200;
-  background: var(--bg);
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 2px;
-  padding: 80px 20px 40px;
-  overflow-y: auto;
-}
+/* MOBILE MENU */
+.mobile-menu { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1200; background: var(--bg); flex-direction: column; overflow-y: auto; }
 .mobile-menu.open { display: flex; }
+.mobile-topbar { position: sticky; top: 0; height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid var(--border); background: var(--bg); z-index: 10; flex-shrink: 0; }
+.mobile-home-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--blue); background: var(--blue-bg); border: 1px solid rgba(26,115,232,.25); padding: 7px 14px; border-radius: 4px; }
+.mobile-home-btn:hover { background: rgba(26,115,232,.15); }
+.mobile-close-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--text-3); background: var(--bg-2); border: 1px solid var(--border); padding: 7px 14px; border-radius: 4px; }
+.mobile-close-btn:hover { background: var(--border); }
+.mobile-body { padding: 8px 16px 48px; }
+.mobile-section-title { display: block; font-size: 10px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; color: var(--text-4); padding: 20px 8px 6px; border-top: 1px solid var(--border); margin-top: 8px; }
+.mobile-section-title:first-child { border-top: none; margin-top: 0; padding-top: 12px; }
+.mobile-link { display: flex; align-items: center; justify-content: space-between; padding: 11px 8px; font-size: 14px; font-weight: 500; color: var(--text-2); border-radius: 4px; transition: background .1s, color .1s; }
+.mobile-link:hover { background: var(--blue-bg); color: var(--blue); }
+.mobile-tool-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 8px; font-size: 14px; font-weight: 500; color: var(--text-4); border-radius: 4px; pointer-events: none; cursor: not-allowed; }
+.cs-badge { font-size: 10px; font-weight: 500; background: var(--bg-2); color: var(--text-4); border: 1px solid var(--border); padding: 2px 7px; border-radius: 3px; }
 
-.mobile-menu a {
-  font-family: 'Google Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-2);
-  text-decoration: none;
-  padding: 12px 16px;
-  border-radius: 4px;
-  width: 100%;
-  display: block;
-  transition: background .1s, color .1s;
-  background: transparent;
-  border: none;
+/* HERO */
+.hero { max-width: 1440px; margin: 0 auto; padding: 72px 80px 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+.hero-left h1 { font-family: 'Google Sans', sans-serif; font-size: clamp(30px, 3.6vw, 52px); font-weight: 400; line-height: 1.15; color: var(--text); margin-bottom: 16px; letter-spacing: -0.5px; }
+.hero-left h1 strong { font-weight: 700; }
+.hero-left p { font-size: 16px; color: var(--text-3); margin-bottom: 28px; line-height: 1.6; }
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero-right { background: #1e1e2e; border-radius: 8px; padding: 28px 32px; color: #fff; min-height: 240px; display: flex; flex-direction: column; justify-content: center; gap: 0; }
+.hero-chat-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--yellow); margin-bottom: 12px; }
+.hero-chat-prompt { font-size: 13px; color: #9aa0b0; padding: 10px 0; border-bottom: 1px solid #2d2d40; cursor: pointer; transition: color .1s; }
+.hero-chat-prompt:last-of-type { border-bottom: none; }
+.hero-chat-prompt:hover { color: #fff; }
+.hero-free-credit { font-size: 13px; background: rgba(255,202,40,.1); border: 1px solid rgba(255,202,40,.25); color: var(--yellow); padding: 10px 14px; border-radius: 4px; margin-top: 14px; }
+
+/* NEWS */
+.news-section { border-top: 1px solid var(--border); }
+.news-inner { max-width: 1440px; margin: 0 auto; padding: 0 80px; }
+.news-tabs { display: flex; border-bottom: 1px solid var(--border); }
+.news-tab { font-size: 13.5px; font-weight: 500; color: var(--text-3); padding: 14px 20px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .1s, border-color .1s; }
+.news-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+.news-tab:hover { color: var(--blue); }
+.news-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; padding: 24px 0; }
+.news-card { display: flex; gap: 14px; align-items: flex-start; padding: 16px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; transition: border-color .15s; }
+.news-card:hover { border-color: var(--blue); }
+.news-card-img { width: 52px; height: 52px; border-radius: 4px; background: var(--bg-2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid var(--border); }
+.news-card-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; color: var(--text-4); margin-bottom: 4px; }
+.news-card-title { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.4; }
+
+/* SECTIONS */
+.section { padding: 56px 80px; max-width: 1440px; margin: 0 auto; }
+.section-divider { border: none; border-top: 1px solid var(--border); }
+.section-heading { font-size: clamp(22px, 2.5vw, 32px); font-weight: 400; line-height: 1.2; color: var(--text); margin-bottom: 8px; letter-spacing: -0.3px; }
+.section-sub { font-size: 15px; color: var(--text-3); margin-bottom: 28px; line-height: 1.6; max-width: 600px; }
+.section-actions { display: flex; gap: 12px; margin-bottom: 36px; flex-wrap: wrap; }
+
+/* PRODUCTS GRID */
+.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.product-item { padding: 22px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); transition: background .12s; cursor: pointer; }
+.product-item:hover { background: var(--bg-2); }
+.product-item h3 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.product-item p { font-size: 12.5px; color: var(--text-3); line-height: 1.5; margin-bottom: 10px; }
+.product-item a { font-size: 12.5px; color: var(--blue); display: block; }
+.product-item a:hover { text-decoration: underline; }
+.product-coming { font-size: 12px; color: var(--text-4); }
+
+/* FEATURE SECTION */
+.feature-section { background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.feature-inner { max-width: 1440px; margin: 0 auto; padding: 56px 80px; }
+.feature-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+.feature-tab { font-size: 13.5px; font-weight: 500; color: var(--text-3); padding: 12px 16px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .1s, border-color .1s; }
+.feature-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+.feature-tab:hover { color: var(--blue); }
+.feature-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+.feature-card { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; cursor: pointer; transition: border-color .15s; }
+.feature-card:hover { border-color: var(--blue); }
+.feature-card-thumb { width: 100%; height: 130px; background: #1e1e2e; display: flex; align-items: center; justify-content: center; font-size: 32px; }
+.feature-card-body { padding: 14px 16px; }
+.feature-card-body p { font-size: 13px; color: var(--text-2); line-height: 1.4; font-weight: 500; }
+.feature-ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+.feature-cta { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); transition: border-color .15s; flex: 1; min-width: 180px; cursor: pointer; }
+.feature-cta:hover { border-color: var(--blue); }
+.feature-cta-icon { font-size: 22px; }
+.feature-cta-text p { font-size: 11px; color: var(--text-4); margin-bottom: 2px; }
+.feature-cta-text strong { font-size: 13px; color: var(--text); }
+
+/* TEAM CARDS */
+.customers-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 28px; }
+.customer-card { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; cursor: pointer; transition: border-color .15s; }
+.customer-card:hover { border-color: var(--blue); }
+.customer-card-thumb { width: 100%; height: 110px; background: var(--bg-2); display: flex; align-items: center; justify-content: center; font-size: 28px; border-bottom: 1px solid var(--border); }
+.customer-card-body { padding: 14px; }
+.customer-card-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.customer-card-desc { font-size: 12px; color: var(--text-3); line-height: 1.4; }
+
+/* CTA BAND */
+.cta-band { background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.cta-band-inner { max-width: 1440px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; }
+.cta-band-item { padding: 40px 80px; border-right: 1px solid var(--border); }
+.cta-band-item:last-child { border-right: none; }
+.cta-band-item h3 { font-size: 17px; font-weight: 400; margin-bottom: 16px; line-height: 1.4; }
+.cta-band-item h3 strong { font-weight: 700; }
+
+/* FOOTER */
+footer { border-top: 1px solid var(--border); background: var(--bg); }
+.footer-main { max-width: 1440px; margin: 0 auto; display: grid; grid-template-columns: repeat(5,1fr); gap: 32px; padding: 48px 80px 40px; }
+.footer-col h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; color: var(--text); margin-bottom: 16px; }
+.footer-col a { display: block; font-size: 13px; color: var(--text-3); padding: 3px 0; transition: color .1s; }
+.footer-col a:hover { color: var(--blue); }
+.footer-bottom { border-top: 1px solid var(--border); max-width: 1440px; margin: 0 auto; padding: 16px 80px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.footer-bottom-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.footer-bottom-links a { font-size: 12px; color: var(--text-3); }
+.footer-bottom-links a:hover { color: var(--blue); }
+.footer-copyright { font-size: 12px; color: var(--text-4); }
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+  .hero, .section { padding: 48px 40px; }
+  .news-inner, .feature-inner { padding: 0 40px; }
+  .feature-inner { padding: 48px 40px; }
+  .cta-band-item { padding: 32px 40px; }
+  .footer-main { padding: 40px; grid-template-columns: repeat(3,1fr); }
+  .footer-bottom { padding: 16px 40px; }
+  .feature-cards { grid-template-columns: repeat(2,1fr); }
+  .customers-grid { grid-template-columns: repeat(2,1fr); }
 }
-.mobile-menu a:hover { background: var(--blue-hover); color: var(--blue); }
-
-.mobile-section-title {
-  font-family: 'Google Sans', sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--text-4);
-  padding: 20px 16px 6px;
-  display: block;
-  width: 100%;
-  border-top: 1px solid var(--border);
-  margin-top: 4px;
-  cursor: default;
-  background: transparent !important;
-  border-left: none;
-  border-right: none;
-  border-bottom: none;
-}
-.mobile-section-title:first-child { border-top: none; margin-top: 0; }
-
-.mobile-tools-list {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.mobile-tool-item {
-  font-family: 'Google Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-4);
-  padding: 12px 16px;
-  border-radius: 4px;
-  width: 100%;
-  background: transparent;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: not-allowed;
-  pointer-events: none;
-  user-select: none;
-}
-
-.coming-soon-badge {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: .3px;
-  background: var(--bg-2);
-  color: var(--text-4);
-  border: 1px solid var(--border);
-  padding: 2px 7px;
-  border-radius: 3px;
-  font-family: 'Google Sans', sans-serif;
-}
-
-/* ── MOBILE TOP BAR ── */
-.mobile-menu-topbar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 1400;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  padding: 0 20px;
-}
-
-.mobile-home-btn {
-  font-family: 'Google Sans', sans-serif !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-  color: var(--blue) !important;
-  background: transparent !important;
-  border: 1px solid var(--blue) !important;
-  padding: 7px 14px !important;
-  border-radius: 4px !important;
-  display: inline-flex !important;
-  align-items: center;
-  gap: 6px;
-  text-decoration: none;
-  transition: background .1s !important;
-  width: auto !important;
-  max-width: none !important;
-  cursor: pointer !important;
-}
-.mobile-home-btn:hover { background: var(--blue-hover) !important; }
-
-.mobile-close-btn {
-  font-family: 'Google Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-3);
-  background: transparent;
-  border: 1px solid var(--border);
-  padding: 7px 14px;
-  border-radius: 4px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: background .1s;
-}
-.mobile-close-btn:hover { background: var(--bg-2); }
-
 @media (max-width: 768px) {
-  .nav-links  { display: none; }
-  .hamburger  { display: flex; }
-  header      { padding: 0 20px; }
-}
-
-/* ── HERO ── */
-.hero {
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg);
-}
-
-.hero__animation { display: none; }
-
-.hero-content {
-  text-align: center;
-}
-
-.hero-content h1 {
-  font-family: 'Anta', sans-serif;
-  font-size: clamp(40px, 8vw, 80px);
-  color: var(--gold);
-  margin-bottom: 12px;
-}
-
-.hero-content p {
-  font-size: 15px;
-  color: var(--text-4);
-  letter-spacing: 3px;
-  text-transform: uppercase;
+  .nav-primary, .nav-right { display: none; }
+  .hamburger { display: flex; }
+  header { padding: 0 16px; }
+  .hero { grid-template-columns: 1fr; padding: 32px 20px; gap: 24px; }
+  .news-inner { padding: 0 20px; }
+  .news-grid { grid-template-columns: 1fr; }
+  .section { padding: 36px 20px; }
+  .feature-inner { padding: 36px 20px; }
+  .feature-cards { grid-template-columns: 1fr; }
+  .feature-ctas { flex-direction: column; }
+  .customers-grid { grid-template-columns: 1fr; }
+  .products-grid { grid-template-columns: 1fr; }
+  .cta-band-inner { grid-template-columns: 1fr; }
+  .cta-band-item { padding: 28px 20px; border-right: none; border-bottom: 1px solid var(--border); }
+  .footer-main { grid-template-columns: repeat(2,1fr); padding: 28px 20px; }
+  .footer-bottom { padding: 16px 20px; flex-direction: column; align-items: flex-start; }
 }
 </style>
 </head>
 <body>
 
-<header>
-  <a href="https://shauryachr.github.io/vasuki.github.io/General-AI" class="logo">VASUKI LABS</a>
-  <div class="nav-links">
-    <a href="https://shauryachr.github.io/vasuki.github.io/General-AI">AI</a>
-    <a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Wiki</a>
+<!-- TOPBAR -->
+<div class="topbar">
+  🚀 <strong>Vasuki iTech Labs</strong> is growing — new tools launching soon. <a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Leave your feedback</a>
+</div>
 
-    <div class="dropdown">
-      <span class="drop-trigger">Tools</span>
-      <div class="dropdown-menu">
-        <a href="#">ASCII <span class="status">Coming Soon</span></a>
-        <a href="#">Base64 <span class="status">Coming Soon</span></a>
-        <a href="#">Calculator <span class="status">Coming Soon</span></a>
-        <a href="#">Color <span class="status">Coming Soon</span></a>
-        <a href="#">Date <span class="status">Coming Soon</span></a>
-        <a href="#">JSON <span class="status">Coming Soon</span></a>
-        <a href="#">Numbers <span class="status">Coming Soon</span></a>
-        <a href="#">Password <span class="status">Coming Soon</span></a>
-        <a href="#">Regex <span class="status">Coming Soon</span></a>
-        <a href="#">Roman <span class="status">Coming Soon</span></a>
+<!-- HEADER -->
+<header>
+  <div class="logo-wrap">
+    <div class="logo-icon">Vi</div>
+    <span class="logo-text">vasuki itech <span>labs</span></span>
+  </div>
+
+  <nav class="nav-primary">
+    <div class="nav-item">
+      Overview
+      <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+      <div class="mega-menu">
+        <div class="mega-col">
+          <h4>Key Benefits</h4>
+          <a href="#">Why Vasuki iTech</a>
+          <a href="#">AI and ML</a>
+          <a href="#">Open Ecosystem</a>
+          <a href="#">Infrastructure</a>
+        </div>
+        <div class="mega-col">
+          <h4>Reports & Info</h4>
+          <a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About Us</a>
+          <a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">User Reviews</a>
+          <a href="contact-us.html">Contact</a>
+        </div>
       </div>
     </div>
 
-    <div class="dropdown">
-      <span class="drop-trigger">Team</span>
-      <div class="dropdown-menu">
+    <div class="nav-item">
+      Products
+      <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+      <div class="drop-menu">
+        <a href="https://shauryachr.github.io/vasuki.github.io/General-AI">AI</a>
+        <a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Wiki</a>
+      </div>
+    </div>
+
+    <div class="nav-item">
+      Tools
+      <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+      <div class="drop-menu">
+        <a href="#">ASCII <span class="badge">Coming Soon</span></a>
+        <a href="#">Base64 <span class="badge">Coming Soon</span></a>
+        <a href="#">Calculator <span class="badge">Coming Soon</span></a>
+        <a href="#">Color <span class="badge">Coming Soon</span></a>
+        <a href="#">Date <span class="badge">Coming Soon</span></a>
+        <a href="#">JSON <span class="badge">Coming Soon</span></a>
+        <a href="#">Numbers <span class="badge">Coming Soon</span></a>
+        <a href="#">Password <span class="badge">Coming Soon</span></a>
+        <a href="#">Regex <span class="badge">Coming Soon</span></a>
+        <a href="#">Roman <span class="badge">Coming Soon</span></a>
+      </div>
+    </div>
+
+    <div class="nav-item">
+      Team
+      <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+      <div class="drop-menu">
         <a href="https://www.linkedin.com/in/shaurya-chauhan-1307742bb/" target="_blank">Shaurya Chauhan</a>
         <a href="https://www.linkedin.com/in/adamya-r-khairwal-8b51b235b/" target="_blank">Adamya Khairwal</a>
       </div>
     </div>
 
-    <a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Review</a>
-    <a href="contact-us.html">Contact Us</a>
-    <a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a>
+    <a class="nav-item" href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Review</a>
+    <a class="nav-item" href="contact-us.html">Contact Us</a>
+    <a class="nav-item" href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a>
+  </nav>
+
+  <div class="nav-right">
+    <a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Docs</a>
+    <a href="contact-us.html">Support</a>
+    <a href="https://shauryachr.github.io/vasuki.github.io/General-AI" class="btn btn-filled">Get started</a>
   </div>
 
-  <!-- Hamburger Button -->
   <button class="hamburger" id="hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </header>
 
-<!-- Mobile Menu -->
+<!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
-
-  <!-- Top bar: Close + Home -->
-  <div class="mobile-menu-topbar">
+  <div class="mobile-topbar">
     <a href="https://shauryachr.github.io/vasuki.github.io/General-AI" class="mobile-home-btn" id="mobileHomeBtn">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/><polyline points="9 21 9 12 15 12 15 21"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/><polyline points="9 21 9 12 15 12 15 21"/></svg>
       Home
     </a>
-    <button class="mobile-close-btn" id="mobileCloseBtn" aria-label="Close menu">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    <button class="mobile-close-btn" id="mobileCloseBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       Close
     </button>
   </div>
+  <div class="mobile-body">
+    <span class="mobile-section-title">Products</span>
+    <a class="mobile-link" href="https://shauryachr.github.io/vasuki.github.io/General-AI">AI</a>
+    <a class="mobile-link" href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Wiki</a>
 
-  <span class="mobile-section-title">Products</span>
-  <a href="https://shauryachr.github.io/vasuki.github.io/General-AI">AI</a>
-  <a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Wiki</a>
+    <span class="mobile-section-title">Tools</span>
+    <div class="mobile-tool-row">ASCII <span class="cs-badge">Coming Soon</span></div>
+    <div class="mobile-tool-row">Base64 <span class="cs-badge">Coming Soon</span></div>
+    <div class="mobile-tool-row">Calculator <span class="cs-badge">Coming Soon</span></div>
+    <div class="mobile-tool-row">Color <span class="cs-badge">Coming Soon</span></div>
+    <div class="mobile-tool-row">Date <span class="cs-badge">Coming Soon</span></div>
+    <div class="mobile-tool-row">JSON <span class="cs-badge">Coming Soon</span></div>
+    <div class="mobile-tool-row">Numbers <span class="cs-badge">Coming Soon</span></div>
+    <div class="mobile-tool-row">Password <span class="cs-badge">Coming Soon</span></div>
+    <div class="mobile-tool-row">Regex <span class="cs-badge">Coming Soon</span></div>
+    <div class="mobile-tool-row">Roman <span class="cs-badge">Coming Soon</span></div>
 
-  <span class="mobile-section-title">Tools</span>
-  <div class="mobile-tools-list">
-    <div class="mobile-tool-item">ASCII <span class="coming-soon-badge">Coming Soon</span></div>
-    <div class="mobile-tool-item">Base64 <span class="coming-soon-badge">Coming Soon</span></div>
-    <div class="mobile-tool-item">Calculator <span class="coming-soon-badge">Coming Soon</span></div>
-    <div class="mobile-tool-item">Color <span class="coming-soon-badge">Coming Soon</span></div>
-    <div class="mobile-tool-item">Date <span class="coming-soon-badge">Coming Soon</span></div>
-    <div class="mobile-tool-item">JSON <span class="coming-soon-badge">Coming Soon</span></div>
-    <div class="mobile-tool-item">Numbers <span class="coming-soon-badge">Coming Soon</span></div>
-    <div class="mobile-tool-item">Password <span class="coming-soon-badge">Coming Soon</span></div>
-    <div class="mobile-tool-item">Regex <span class="coming-soon-badge">Coming Soon</span></div>
-    <div class="mobile-tool-item">Roman <span class="coming-soon-badge">Coming Soon</span></div>
-  </div>
+    <span class="mobile-section-title">Team</span>
+    <a class="mobile-link" href="https://www.linkedin.com/in/shaurya-chauhan-1307742bb/" target="_blank">Shaurya Chauhan</a>
+    <a class="mobile-link" href="https://www.linkedin.com/in/adamya-r-khairwal-8b51b235b/" target="_blank">Adamya Khairwal</a>
 
-  <span class="mobile-section-title">Team</span>
-  <a href="https://www.linkedin.com/in/shaurya-chauhan-1307742bb/" target="_blank">Shaurya Chauhan</a>
-  <a href="https://www.linkedin.com/in/adamya-r-khairwal-8b51b235b/" target="_blank">Adamya Khairwal</a>
-
-  <span class="mobile-section-title">Others</span>
-  <a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Review</a>
-  <a href="contact-us.html">Contact Us</a>
-  <a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a>
-
-</div>
-
-<div class="hero">
-  <div class="hero__animation">
-    <div class="hero__animation__wave hero__animation__wave--pink">
-      <svg viewBox="0 0 3600 600" preserveAspectRatio="none">
-        <path class="wave-fill" d="M0,300 C150,200 350,400 600,300 C850,200 1050,400 1200,300 C1450,200 1650,400 1800,300 C2050,200 2250,400 2400,300 C2650,200 2850,400 3100,300 C3250,200 3450,400 3600,300 L3600,600 L0,600 Z"></path>
-      </svg>
-    </div>
-    <div class="hero__animation__wave hero__animation__wave--white">
-      <svg viewBox="0 0 4800 600" preserveAspectRatio="none">
-        <path class="wave-fill" d="M0,350 C200,250 400,450 600,350 C800,250 1000,450 1200,350 C1400,250 1600,450 1800,350 C2000,250 2200,450 2400,350 C2600,250 2800,450 3000,350 C3200,250 3400,450 3600,350 C3800,250 4000,450 4200,350 C4400,250 4600,450 4800,350 L4800,600 L0,600 Z"></path>
-      </svg>
-    </div>
-  </div>
-
-  <div class="hero-content">
-    <h1>Vasuki Labs</h1>
-    <p>Build • Experiment • Create</p>
+    <span class="mobile-section-title">Others</span>
+    <a class="mobile-link" href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Review</a>
+    <a class="mobile-link" href="contact-us.html">Contact Us</a>
+    <a class="mobile-link" href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a>
   </div>
 </div>
+
+<!-- HERO -->
+<section>
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Build what's next<br><strong>Create with AI.</strong><br>Deploy apps fast.</h1>
+      <p>Vasuki iTech Labs — build, experiment, and create with powerful AI tools and a growing ecosystem of developer products.</p>
+      <div class="hero-btns">
+        <a href="https://shauryachr.github.io/vasuki.github.io/General-AI" class="btn btn-filled">Get started for free</a>
+        <a href="contact-us.html" class="btn btn-outlined">Contact us</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-chat-label">Built with Vasuki AI</div>
+      <div class="hero-chat-prompt">How can I try Vasuki AI products for free?</div>
+      <div class="hero-chat-prompt">How do I build AI-powered apps?</div>
+      <div class="hero-chat-prompt">Discover solutions for my project</div>
+      <div class="hero-chat-prompt">What's new with Vasuki iTech Labs?</div>
+      <div class="hero-free-credit">🎁 <strong>Get started free</strong> — explore all products and tools from Vasuki iTech Labs</div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWS TABS -->
+<div class="news-section">
+  <div class="news-inner">
+    <div class="news-tabs">
+      <div class="news-tab active" onclick="switchTab(this)">What's new in AI</div>
+      <div class="news-tab" onclick="switchTab(this)">Developers</div>
+      <div class="news-tab" onclick="switchTab(this)">For Teams</div>
+    </div>
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="news-card-img">🤖</div>
+        <div>
+          <div class="news-card-label">Product Launch</div>
+          <div class="news-card-title">Vasuki AI — intelligent assistant for research and creation</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-card-img">📖</div>
+        <div>
+          <div class="news-card-label">Knowledge Base</div>
+          <div class="news-card-title">Vasuki Wiki — curated knowledge for developers and researchers</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-card-img">🔧</div>
+        <div>
+          <div class="news-card-label">Coming Soon</div>
+          <div class="news-card-title">10 developer tools launching — ASCII, JSON, Password and more</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- PRODUCTS -->
+<div class="section">
+  <h2 class="section-heading">Build and scale with the Vasuki iTech Labs platform</h2>
+  <p class="section-sub">Explore our growing suite of AI and developer tools designed for builders, researchers, and teams.</p>
+  <div class="section-actions">
+    <a href="https://shauryachr.github.io/vasuki.github.io/General-AI" class="btn btn-filled">Get started for free</a>
+    <a href="#" class="btn btn-outlined">See all products</a>
+  </div>
+  <div class="products-grid">
+    <div class="product-item">
+      <h3>🤖 Vasuki AI</h3>
+      <p>Intelligent AI assistant for research, coding, writing, and exploration.</p>
+      <a href="https://shauryachr.github.io/vasuki.github.io/General-AI">Try Vasuki AI →</a>
+    </div>
+    <div class="product-item">
+      <h3>📖 Vasuki Wiki</h3>
+      <p>Curated knowledge base for developers, students, and creators.</p>
+      <a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Explore Wiki →</a>
+    </div>
+    <div class="product-item">
+      <h3>⚙️ ASCII Tool</h3>
+      <p>Convert text to ASCII art and work with character encodings.</p>
+      <span class="product-coming">Coming Soon</span>
+    </div>
+    <div class="product-item">
+      <h3>🔢 Base64</h3>
+      <p>Encode and decode Base64 strings instantly in your browser.</p>
+      <span class="product-coming">Coming Soon</span>
+    </div>
+    <div class="product-item">
+      <h3>🧮 Calculator</h3>
+      <p>Advanced scientific and developer calculator with history.</p>
+      <span class="product-coming">Coming Soon</span>
+    </div>
+    <div class="product-item">
+      <h3>🎨 Color Tool</h3>
+      <p>Pick, convert, and explore color palettes for your projects.</p>
+      <span class="product-coming">Coming Soon</span>
+    </div>
+    <div class="product-item">
+      <h3>📅 Date Tool</h3>
+      <p>Calculate date differences, format timestamps, convert timezones.</p>
+      <span class="product-coming">Coming Soon</span>
+    </div>
+    <div class="product-item">
+      <h3>{ } JSON Tool</h3>
+      <p>Format, validate, and minify JSON with syntax highlighting.</p>
+      <span class="product-coming">Coming Soon</span>
+    </div>
+    <div class="product-item">
+      <h3>🔐 Password</h3>
+      <p>Generate strong, secure passwords with custom rules.</p>
+      <span class="product-coming">Coming Soon</span>
+    </div>
+    <div class="product-item">
+      <h3>🔍 Regex</h3>
+      <p>Test and debug regular expressions with live match highlighting.</p>
+      <span class="product-coming">Coming Soon</span>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- FEATURE SECTION -->
+<div class="feature-section">
+  <div class="feature-inner">
+    <h2 class="section-heading">Build and scale with Vasuki AI</h2>
+    <p class="section-sub" style="margin-bottom:0">Our AI platform is designed for developers and researchers — fast, reliable, and built for exploration.</p>
+    <div class="feature-tabs" style="margin-top:20px">
+      <div class="feature-tab active">Overview</div>
+      <div class="feature-tab">For Developers</div>
+      <div class="feature-tab">For Teams</div>
+      <div class="feature-tab">Resources</div>
+    </div>
+    <div class="feature-cards">
+      <div class="feature-card">
+        <div class="feature-card-thumb">🤖</div>
+        <div class="feature-card-body"><p>Get started with Vasuki AI — intelligent answers in seconds</p></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-thumb">📖</div>
+        <div class="feature-card-body"><p>Explore the Wiki — curated knowledge at your fingertips</p></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-thumb">🔧</div>
+        <div class="feature-card-body"><p>10 developer tools launching soon — stay tuned</p></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-thumb">👥</div>
+        <div class="feature-card-body"><p>Meet the team building Vasuki iTech Labs</p></div>
+      </div>
+    </div>
+    <div class="feature-ctas">
+      <div class="feature-cta">
+        <div class="feature-cta-icon">🚀</div>
+        <div class="feature-cta-text"><p>Start for free</p><strong>Try Vasuki AI now</strong></div>
+      </div>
+      <div class="feature-cta">
+        <div class="feature-cta-icon">📬</div>
+        <div class="feature-cta-text"><p>Leave a review</p><strong>Share your feedback</strong></div>
+      </div>
+      <div class="feature-cta">
+        <div class="feature-cta-icon">💼</div>
+        <div class="feature-cta-text"><p>Work with us</p><strong>Contact the team</strong></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- TEAM -->
+<div class="section">
+  <h2 class="section-heading">Meet the team behind Vasuki iTech Labs</h2>
+  <p class="section-sub">A small but passionate team building tools that developers and creators love.</p>
+  <div class="customers-grid">
+    <div class="customer-card">
+      <div class="customer-card-thumb">👨‍💻</div>
+      <div class="customer-card-body">
+        <div class="customer-card-name">Shaurya Chauhan — Developer</div>
+        <div class="customer-card-desc">Building the AI and developer tools powering Vasuki iTech Labs.</div>
+      </div>
+    </div>
+    <div class="customer-card">
+      <div class="customer-card-thumb">👔</div>
+      <div class="customer-card-body">
+        <div class="customer-card-name">Adamya Khairwal — CEO</div>
+        <div class="customer-card-desc">Leading the vision and growth of Vasuki iTech Labs.</div>
+      </div>
+    </div>
+    <div class="customer-card">
+      <div class="customer-card-thumb">⭐</div>
+      <div class="customer-card-body">
+        <div class="customer-card-name">Leave a Review</div>
+        <div class="customer-card-desc">Tried our products? Share your experience and help us improve.</div>
+      </div>
+    </div>
+    <div class="customer-card">
+      <div class="customer-card-thumb">🏢</div>
+      <div class="customer-card-body">
+        <div class="customer-card-name">About Vasuki iTech Labs</div>
+        <div class="customer-card-desc">Learn more about our mission, org, and what we're building.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <div class="cta-band-inner">
+    <div class="cta-band-item">
+      <h3>Try <strong>Vasuki AI</strong> and <strong>Wiki</strong> for free today</h3>
+      <a href="https://shauryachr.github.io/vasuki.github.io/General-AI" class="btn btn-filled">Get started for free</a>
+    </div>
+    <div class="cta-band-item">
+      <h3>Have questions? <strong>Contact the team</strong> directly</h3>
+      <a href="contact-us.html" class="btn btn-outlined">Contact us</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-main">
+    <div class="footer-col">
+      <h4>Why Vasuki</h4>
+      <a href="#">Our Mission</a>
+      <a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About Us</a>
+      <a href="#">Open Ecosystem</a>
+      <a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Reviews</a>
+    </div>
+    <div class="footer-col">
+      <h4>Products</h4>
+      <a href="https://shauryachr.github.io/vasuki.github.io/General-AI">Vasuki AI</a>
+      <a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Wiki</a>
+      <a href="#">Developer Tools</a>
+      <a href="#">All Products</a>
+    </div>
+    <div class="footer-col">
+      <h4>Tools</h4>
+      <a href="#">ASCII</a>
+      <a href="#">Base64</a>
+      <a href="#">Calculator</a>
+      <a href="#">JSON</a>
+      <a href="#">Password</a>
+      <a href="#">Regex</a>
+    </div>
+    <div class="footer-col">
+      <h4>Team</h4>
+      <a href="https://www.linkedin.com/in/shaurya-chauhan-1307742bb/" target="_blank">Shaurya Chauhan</a>
+      <a href="https://www.linkedin.com/in/adamya-r-khairwal-8b51b235b/" target="_blank">Adamya Khairwal</a>
+      <a href="contact-us.html">Contact Us</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="#">Documentation</a>
+      <a href="#">Blog</a>
+      <a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Feedback</a>
+      <a href="contact-us.html">Support</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copyright">© 2025 Vasuki iTech Labs · Built by Shaurya &amp; Adamya</div>
+    <div class="footer-bottom-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="contact-us.html">Contact</a>
+      <a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a>
+    </div>
+  </div>
+</footer>
 
 <script>
-// Hamburger Menu Toggle
+function switchTab(el) {
+  document.querySelectorAll('.news-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+document.querySelectorAll('.feature-tab').forEach(t => {
+  t.addEventListener('click', function() {
+    document.querySelectorAll('.feature-tab').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
 const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
 const mobileCloseBtn = document.getElementById('mobileCloseBtn');
-
 function closeMenu() {
   hamburger.classList.remove('open');
   mobileMenu.classList.remove('open');
   document.body.style.overflow = '';
 }
-
 hamburger.addEventListener('click', () => {
   hamburger.classList.toggle('open');
   mobileMenu.classList.toggle('open');
   document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
 });
-
 mobileCloseBtn.addEventListener('click', closeMenu);
-
-// Close menu when a nav link is clicked
-mobileMenu.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', closeMenu);
-});
+mobileMenu.querySelectorAll('a').forEach(l => l.addEventListener('click', closeMenu));
 </script>
-
-<script>
-(function(){
-  const pink = document.querySelector('.hero__animation__wave--pink');
-  const white = document.querySelector('.hero__animation__wave--white');
-  let targetX = 0.5, targetY = 0.5, currentX = 0.5, currentY = 0.5;
-
-  window.addEventListener('mousemove', e => {
-    targetX = e.clientX / window.innerWidth;
-    targetY = e.clientY / window.innerHeight;
-  });
-
-  function animate() {
-    currentX += (targetX - currentX) * 0.03;
-    currentY += (targetY - currentY) * 0.03;
-    pink.style.marginLeft = (currentX - 0.5) * -450 + 'px';
-    pink.style.transform = `scaleY(${0.2 + (1 - currentY) * 0.5})`;
-    white.style.marginLeft = (currentX - 0.5) * -700 + 'px';
-    white.style.transform = `scaleY(${0.15 + (1 - currentY) * 0.35})`;
-    requestAnimationFrame(animate);
-  }
-  animate();
-})();
-</script>
-
 </body>
 </html>
