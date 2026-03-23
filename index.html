@@ -8,6 +8,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+@font-face {
+  font-family: 'BrandPrimary';
+  src: url('brand-primary.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
   --blue:    #1a73e8;
@@ -24,9 +31,9 @@
   --yellow:  #ffca28;
   --yellow-h:#f5d800;
 }
-body { font-family: 'Google Sans', sans-serif; color: var(--text); background: var(--bg); overflow-x: hidden; }
+body { font-family: 'BrandPrimary', 'Google Sans', sans-serif; color: var(--text); background: var(--bg); overflow-x: hidden; }
 a { text-decoration: none; color: inherit; cursor: pointer; }
-button { cursor: pointer; font-family: 'Google Sans', sans-serif; }
+button { cursor: pointer; font-family: 'BrandPrimary', 'Google Sans', sans-serif; }
 
 /* TOPBAR */
 .topbar {
@@ -48,13 +55,14 @@ header {
   display: flex; align-items: center; justify-content: center;
   font-weight: 700; font-size: 13px; color: var(--gold); flex-shrink: 0;
 }
-.logo-text { font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 17px; color: var(--text); letter-spacing: -0.2px; white-space: nowrap; }
+.logo-text { font-family: 'BrandPrimary', 'DM Sans', sans-serif; font-weight: 400; font-size: 17px; color: var(--text); letter-spacing: -0.2px; white-space: nowrap; }
 .logo-text span { color: #6b7b8d; }
 
 .nav-primary { display: flex; align-items: center; flex: 1; gap: 0; }
 .nav-item {
   position: relative; display: flex; align-items: center; gap: 4px;
   font-size: 13.5px; font-weight: 500; color: var(--text-2);
+  font-family: 'BrandPrimary', 'Google Sans', sans-serif;
   padding: 0 13px; height: 64px; cursor: pointer;
   border-bottom: 2px solid transparent; transition: border-color .15s, color .15s; white-space: nowrap;
 }
@@ -92,7 +100,7 @@ header {
 .nav-right a { font-size: 13.5px; font-weight: 500; color: var(--text-2); padding: 8px 10px; border-radius: 4px; transition: background .1s; white-space: nowrap; }
 .nav-right a:hover { background: var(--bg-2); }
 
-.btn { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; padding: 9px 20px; border-radius: 4px; border: none; transition: background .15s, color .15s; white-space: nowrap; }
+.btn { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; font-family: 'BrandPrimary', 'Google Sans', sans-serif; padding: 9px 20px; border-radius: 4px; border: none; transition: background .15s, color .15s; white-space: nowrap; }
 .btn-filled { background: var(--blue); color: #fff; }
 .btn-filled:hover { background: var(--blue-h); }
 .btn-outlined { background: transparent; color: var(--blue); border: 1px solid var(--blue); }
@@ -128,7 +136,7 @@ header {
 
 /* HERO */
 .hero { max-width: 1440px; margin: 0 auto; padding: 72px 80px 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
-.hero-left h1 { font-family: 'Google Sans', sans-serif; font-size: clamp(30px, 3.6vw, 52px); font-weight: 400; line-height: 1.15; color: var(--text); margin-bottom: 16px; letter-spacing: -0.5px; }
+.hero-left h1 { font-family: 'BrandPrimary', 'Google Sans', sans-serif; font-size: clamp(30px, 3.6vw, 52px); font-weight: 400; line-height: 1.15; color: var(--text); margin-bottom: 16px; letter-spacing: -0.5px; }
 .hero-left h1 strong { font-weight: 700; }
 .hero-left p { font-size: 16px; color: var(--text-3); margin-bottom: 28px; line-height: 1.6; }
 .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -156,7 +164,7 @@ header {
 /* SECTIONS */
 .section { padding: 56px 80px; max-width: 1440px; margin: 0 auto; }
 .section-divider { border: none; border-top: 1px solid var(--border); }
-.section-heading { font-size: clamp(22px, 2.5vw, 32px); font-weight: 400; line-height: 1.2; color: var(--text); margin-bottom: 8px; letter-spacing: -0.3px; }
+.section-heading { font-size: clamp(22px, 2.5vw, 32px); font-weight: 400; font-family: 'BrandPrimary', 'Google Sans', sans-serif; line-height: 1.2; color: var(--text); margin-bottom: 8px; letter-spacing: -0.3px; }
 .section-sub { font-size: 15px; color: var(--text-3); margin-bottom: 28px; line-height: 1.6; max-width: 600px; }
 .section-actions { display: flex; gap: 12px; margin-bottom: 36px; flex-wrap: wrap; }
 
