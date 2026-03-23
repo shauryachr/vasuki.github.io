@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Lab — Vasuki iTech Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- CodeMirror -->
+<link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closetag.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
+
+<style>
+@font-face {
+  font-family: 'BrandPrimary';
+  src: url('brand-primary.ttf') format('truetype');
+  font-weight: normal; font-style: normal; font-display: swap;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --blue:    #1a73e8;
+  --blue-h:  #1557b0;
+  --blue-bg: #e8f0fe;
+  --text:    #202124;
+  --text-2:  #3c4043;
+  --text-3:  #5f6368;
+  --text-4:  #80868b;
+  --border:  #dadce0;
+  --bg:      #ffffff;
+  --bg-2:    #f8f9fa;
+  --gold:    #b8860b;
+  --yellow:  #ffca28;
+  --green:   #34a853;
+  --red:     #ea4335;
+
+  /* Editor dark */
+  --ed-bg:     #282a36;
+  --ed-border: #44475a;
+  --ed-tab-bg: #1e1f2b;
+  --ed-active: #44475a;
+  --ed-text:   #f8f8f2;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'BrandPrimary', 'Google Sans', sans-serif;
+  background: var(--ed-bg);
+  color: var(--ed-text);
+}
+
+/* ── HEADER ── */
+.header {
+  height: 52px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.hlogo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text); }
+.hlogo-icon { width: 28px; height: 28px; border-radius: 5px; overflow: hidden; background: var(--yellow); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; color: var(--gold); flex-shrink: 0; }
+.hlogo-icon img { width: 100%; height: 100%; object-fit: cover; }
+.hlogo-text { font-size: 14px; font-weight: 400; letter-spacing: -.2px; }
+.hlogo-text span { color: #6b7b8d; }
+
+.htitle {
+  font-size: 12px; color: var(--text-3);
+  padding-left: 12px; border-left: 1px solid var(--border);
+  margin-left: 2px;
+}
+
+.header-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: 'BrandPrimary', 'Google Sans', sans-serif;
+  font-size: 13px; font-weight: 500;
+  padding: 6px 14px; border-radius: 4px; border: none;
+  cursor: pointer; transition: background .1s, color .1s;
+  white-space: nowrap;
+}
+.btn-filled  { background: var(--blue);   color: #fff; }
+.btn-filled:hover  { background: var(--blue-h); }
+.btn-outlined { background: transparent; color: var(--blue); border: 1px solid var(--blue); }
+.btn-outlined:hover { background: var(--blue-bg); }
+.btn-ghost   { background: var(--bg-2);   color: var(--text-2); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--border); }
+.btn-green   { background: var(--green);  color: #fff; }
+.btn-green:hover { background: #2d9247; }
+
+.hback { font-size: 13px; font-weight: 500; color: var(--blue); padding: 6px 12px; border: 1px solid var(--blue); border-radius: 4px; text-decoration: none; transition: background .1s; }
+.hback:hover { background: var(--blue-bg); }
+
+/* ── LAYOUT ── */
+.workspace {
+  display: flex;
+  height: calc(100vh - 52px);
+  overflow: hidden;
+}
+
+/* ── EDITOR PANE ── */
+.editor-pane {
+  width: 50%;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  border-right: 3px solid var(--ed-border);
+  background: var(--ed-bg);
+  overflow: hidden;
+}
+
+/* Lang tabs */
+.lang-tabs {
+  display: flex;
+  background: var(--ed-tab-bg);
+  border-bottom: 1px solid var(--ed-border);
+  flex-shrink: 0;
+}
+.lang-tab {
+  font-family: 'BrandPrimary', 'Google Sans', sans-serif;
+  font-size: 12px; font-weight: 600;
+  color: #6272a4;
+  padding: 10px 18px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color .1s, border-color .1s;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+}
+.lang-tab:hover { color: var(--ed-text); }
+.lang-tab.active { color: var(--ed-text); border-bottom-color: var(--yellow); }
+.lang-tab.html-tab.active { border-bottom-color: #e06c75; }
+.lang-tab.css-tab.active  { border-bottom-color: #61dafb; }
+.lang-tab.js-tab.active   { border-bottom-color: var(--yellow); }
+
+/* CodeMirror overrides */
+.editor-wrap {
+  flex: 1;
+  overflow: hidden;
+  display: none;
+}
+.editor-wrap.active { display: flex; flex-direction: column; }
+
+.CodeMirror {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace !important;
+  font-size: 13.5px !important;
+  line-height: 1.6 !important;
+  height: 100% !important;
+  background: var(--ed-bg) !important;
+}
+.CodeMirror-scroll { overflow: auto !important; }
+.CodeMirror-gutters { background: var(--ed-tab-bg) !important; border-right: 1px solid var(--ed-border) !important; }
+.CodeMirror-linenumber { color: #6272a4 !important; font-size: 12px !important; }
+.CodeMirror-cursor { border-left: 2px solid var(--yellow) !important; }
+.CodeMirror-selected { background: rgba(68,71,90,.6) !important; }
+
+/* Editor toolbar */
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--ed-tab-bg);
+  border-top: 1px solid var(--ed-border);
+  flex-shrink: 0;
+}
+.editor-toolbar span { font-size: 11px; color: #6272a4; margin-left: auto; }
+
+/* ── RESIZER ── */
+.resizer {
+  width: 4px;
+  background: var(--ed-border);
+  cursor: col-resize;
+  flex-shrink: 0;
+  transition: background .1s;
+  z-index: 10;
+}
+.resizer:hover, .resizer.dragging { background: var(--yellow); }
+
+/* ── PREVIEW PANE ── */
+.preview-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--ed-tab-bg);
+  overflow: hidden;
+  min-width: 200px;
+}
+
+.preview-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: var(--ed-tab-bg);
+  border-bottom: 1px solid var(--ed-border);
+  flex-shrink: 0;
+}
+.preview-bar-title {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .8px; text-transform: uppercase;
+  color: #6272a4;
+}
+.preview-dot { width: 8px; height: 8px; border-radius: 50%; }
+.preview-dot.red    { background: #ff5f57; }
+.preview-dot.yellow { background: #ffbd2e; }
+.preview-dot.green  { background: #28c941; }
+.preview-dot-row { display: flex; gap: 6px; }
+
+.preview-url {
+  flex: 1;
+  background: rgba(0,0,0,.25);
+  border: 1px solid var(--ed-border);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: #6272a4;
+  font-family: monospace;
+}
+
+.preview-iframe {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: #fff;
+}
+
+/* ── CONSOLE ── */
+.console-wrap {
+  height: 140px;
+  border-top: 1px solid var(--ed-border);
+  background: #1a1b26;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: height .2s;
+}
+.console-wrap.collapsed { height: 32px; }
+.console-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--ed-border);
+  cursor: pointer;
+  flex-shrink: 0;
+  user-select: none;
+}
+.console-title { font-size: 11px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; color: #6272a4; }
+.console-clear { margin-left: auto; font-size: 10px; font-weight: 500; color: #6272a4; cursor: pointer; padding: 2px 6px; border-radius: 3px; }
+.console-clear:hover { background: var(--ed-active); color: var(--ed-text); }
+.console-body { flex: 1; overflow-y: auto; padding: 6px 12px; font-family: monospace; font-size: 12px; }
+.console-body::-webkit-scrollbar { width: 4px; }
+.console-body::-webkit-scrollbar-thumb { background: var(--ed-border); border-radius: 2px; }
+.log-line { padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,.04); color: #f8f8f2; }
+.log-line.error { color: #ff5555; }
+.log-line.warn  { color: #ffb86c; }
+.log-line.info  { color: #8be9fd; }
+.log-line::before { content: '> '; color: #6272a4; }
+
+/* ── STATUS BAR ── */
+.status-bar {
+  height: 24px;
+  background: var(--blue);
+  display: flex; align-items: center;
+  padding: 0 12px; gap: 16px;
+  flex-shrink: 0;
+}
+.status-item { font-size: 11px; color: rgba(255,255,255,.8); }
+.status-item strong { color: #fff; }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .workspace { flex-direction: column; }
+  .editor-pane { width: 100%; height: 50%; border-right: none; border-bottom: 3px solid var(--ed-border); }
+  .resizer { display: none; }
+  .preview-pane { height: 50%; }
+  .htitle { display: none; }
+  .console-wrap { height: 100px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <a class="hlogo" href="index.html">
+    <div class="hlogo-icon">
+      <img src="WhatsApp Image 2026-03-18 at 10.58.25.jpeg" alt="logo" onerror="this.style.display='none'"/>
+    </div>
+    <span class="hlogo-text">vasuki itech <span>labs</span></span>
+  </a>
+  <span class="htitle">⚡ Code Lab</span>
+  <div class="header-actions">
+    <button class="btn btn-ghost" onclick="clearAll()">🗑 Clear</button>
+    <button class="btn btn-ghost" onclick="formatCode()">✨ Format</button>
+    <button class="btn btn-green" onclick="runCode()">▶ Run</button>
+    <a href="index.html" class="hback">← Home</a>
+  </div>
+</div>
+
+<!-- WORKSPACE -->
+<div class="workspace" id="workspace">
+
+  <!-- EDITOR PANE -->
+  <div class="editor-pane" id="editorPane">
+
+    <!-- Language Tabs -->
+    <div class="lang-tabs">
+      <button class="lang-tab html-tab active" onclick="switchLang('html', this)">
+        🟠 HTML
+      </button>
+      <button class="lang-tab css-tab" onclick="switchLang('css', this)">
+        🔵 CSS
+      </button>
+      <button class="lang-tab js-tab" onclick="switchLang('js', this)">
+        🟡 JS
+      </button>
+    </div>
+
+    <!-- HTML Editor -->
+    <div class="editor-wrap active" id="wrap-html">
+      <textarea id="editor-html"></textarea>
+    </div>
+
+    <!-- CSS Editor -->
+    <div class="editor-wrap" id="wrap-css">
+      <textarea id="editor-css"></textarea>
+    </div>
+
+    <!-- JS Editor -->
+    <div class="editor-wrap" id="wrap-js">
+      <textarea id="editor-js"></textarea>
+    </div>
+
+    <!-- Editor Toolbar -->
+    <div class="editor-toolbar">
+      <button class="btn btn-ghost" style="font-size:11px;padding:4px 10px" onclick="runCode()">▶ Run</button>
+      <button class="btn btn-ghost" style="font-size:11px;padding:4px 10px" onclick="toggleAutoRun()">
+        <span id="autoRunLabel">⚡ Auto-run: ON</span>
+      </button>
+      <span id="cursorPos">Ln 1, Col 1</span>
+    </div>
+
+  </div>
+
+  <!-- RESIZER -->
+  <div class="resizer" id="resizer"></div>
+
+  <!-- PREVIEW PANE -->
+  <div class="preview-pane" id="previewPane">
+
+    <div class="preview-bar">
+      <div class="preview-dot-row">
+        <div class="preview-dot red"></div>
+        <div class="preview-dot yellow"></div>
+        <div class="preview-dot green"></div>
+      </div>
+      <div class="preview-url" id="previewUrl">preview</div>
+      <button class="btn btn-ghost" style="font-size:11px;padding:4px 8px" onclick="refreshPreview()" title="Refresh">↻</button>
+      <button class="btn btn-ghost" style="font-size:11px;padding:4px 8px" onclick="toggleConsole()" title="Console">⌨ Console</button>
+    </div>
+
+    <iframe class="preview-iframe" id="previewFrame" sandbox="allow-scripts allow-modals"></iframe>
+
+    <!-- Console -->
+    <div class="console-wrap" id="consoleWrap">
+      <div class="console-header" onclick="toggleConsole()">
+        <span class="console-title">⌨ Console</span>
+        <span id="logCount" style="font-size:10px;color:#6272a4;background:rgba(255,255,255,.08);padding:1px 6px;border-radius:10px;">0</span>
+        <span class="console-clear" onclick="clearConsole(event)">Clear</span>
+      </div>
+      <div class="console-body" id="consoleBody"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <span class="status-item">⚡ <strong>Code Lab</strong></span>
+  <span class="status-item">Lang: <strong id="statusLang">HTML</strong></span>
+  <span class="status-item" id="statusLines">Lines: <strong>1</strong></span>
+  <span class="status-item" id="statusSize">Size: <strong>0 B</strong></span>
+</div>
+
+<script>
+// ── DEFAULT STARTER CODE ──────────────────────────────────────────────────────
+const DEFAULTS = {
+  html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Page</title>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Hello, Vasuki! 👋</h1>
+    <p>Edit the HTML, CSS, and JS tabs to see live changes.</p>
+    <button onclick="greet()">Click Me</button>
+  </div>
+
+</body>
+</html>`,
+
+  css: `* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Google Sans', sans-serif;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.container {
+  background: #fff;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  padding: 40px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+h1 {
+  font-size: 28px;
+  color: #202124;
+  margin-bottom: 12px;
+}
+
+p {
+  color: #5f6368;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+button {
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+button:hover {
+  background: #1557b0;
+}`,
+
+  js: `function greet() {
+  const messages = [
+    "Hello from Vasuki Code Lab! 🚀",
+    "Keep building! 💻",
+    "You're on fire! 🔥",
+    "Great code starts here ✨"
+  ];
+  const msg = messages[Math.floor(Math.random() * messages.length)];
+  alert(msg);
+  console.log("Button clicked:", msg);
+}
+
+console.log("✅ JS loaded successfully");
+console.log("📅 Time:", new Date().toLocaleTimeString());`
+};
+
+// ── CODEMIRROR INSTANCES ──────────────────────────────────────────────────────
+const cmConfig = {
+  theme: 'dracula',
+  lineNumbers: true,
+  autoCloseTags: true,
+  autoCloseBrackets: true,
+  matchBrackets: true,
+  indentUnit: 2,
+  tabSize: 2,
+  indentWithTabs: false,
+  lineWrapping: false,
+  extraKeys: {
+    'Ctrl-Enter': runCode,
+    'Cmd-Enter':  runCode,
+    'Ctrl-/':     (cm) => cm.execCommand('toggleComment'),
+    'Tab': (cm) => cm.execCommand('indentMore'),
+    'Shift-Tab': (cm) => cm.execCommand('indentLess')
+  }
+};
+
+const editors = {
+  html: CodeMirror.fromTextArea(document.getElementById('editor-html'), { ...cmConfig, mode: 'htmlmixed' }),
+  css:  CodeMirror.fromTextArea(document.getElementById('editor-css'),  { ...cmConfig, mode: 'css' }),
+  js:   CodeMirror.fromTextArea(document.getElementById('editor-js'),   { ...cmConfig, mode: 'javascript' })
+};
+
+// Set default values
+editors.html.setValue(DEFAULTS.html);
+editors.css.setValue(DEFAULTS.css);
+editors.js.setValue(DEFAULTS.js);
+
+// Fix heights
+Object.values(editors).forEach(ed => ed.setSize('100%', '100%'));
+
+// ── AUTO RUN ──────────────────────────────────────────────────────────────────
+let autoRun = true;
+let runTimeout = null;
+
+Object.entries(editors).forEach(([lang, ed]) => {
+  ed.on('change', () => {
+    updateStatus(lang, ed);
+    if (autoRun) {
+      clearTimeout(runTimeout);
+      runTimeout = setTimeout(runCode, 700);
+    }
+  });
+  ed.on('cursorActivity', () => {
+    const cur = ed.getCursor();
+    document.getElementById('cursorPos').textContent = `Ln ${cur.line + 1}, Col ${cur.ch + 1}`;
+  });
+});
+
+function toggleAutoRun() {
+  autoRun = !autoRun;
+  document.getElementById('autoRunLabel').textContent = `⚡ Auto-run: ${autoRun ? 'ON' : 'OFF'}`;
+}
+
+// ── LANGUAGE SWITCHING ────────────────────────────────────────────────────────
+let currentLang = 'html';
+
+function switchLang(lang, btn) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.editor-wrap').forEach(w => w.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('wrap-' + lang).classList.add('active');
+  editors[lang].refresh();
+  editors[lang].focus();
+  document.getElementById('statusLang').textContent = lang.toUpperCase();
+  updateStatus(lang, editors[lang]);
+}
+
+function updateStatus(lang, ed) {
+  const code = ed.getValue();
+  document.getElementById('statusLines').innerHTML = `Lines: <strong>${ed.lineCount()}</strong>`;
+  const bytes = new Blob([code]).size;
+  document.getElementById('statusSize').innerHTML = `Size: <strong>${bytes < 1024 ? bytes + ' B' : (bytes/1024).toFixed(1) + ' KB'}</strong>`;
+}
+
+// ── RUN CODE ──────────────────────────────────────────────────────────────────
+function runCode() {
+  clearConsole(null, true);
+  const html = editors.html.getValue();
+  const css  = editors.css.getValue();
+  const js   = editors.js.getValue();
+
+  // Extract <body> content or use full HTML
+  let bodyContent = html;
+
+  // Build the combined document
+  const consoleScript = `
+    (function() {
+      const _log = ['log','warn','error','info'];
+      _log.forEach(type => {
+        const orig = console[type];
+        console[type] = function(...args) {
+          orig.apply(console, args);
+          window.parent.postMessage({ type: 'console', level: type, msg: args.map(a => {
+            try { return typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a); }
+            catch(e) { return String(a); }
+          }).join(' ') }, '*');
+        };
+      });
+      window.onerror = (msg, src, line, col) => {
+        window.parent.postMessage({ type: 'console', level: 'error', msg: msg + ' (line ' + line + ')' }, '*');
+      };
+    })();
+  `;
+
+  const doc = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>${css}</style>
+</head>
+<body>
+${bodyContent.replace(/<!DOCTYPE[^>]*>/i, '').replace(/<\/?html[^>]*>/gi, '').replace(/<\/?head[^>]*>[\s\S]*?<\/head>/gi, '').replace(/<\/?body[^>]*>/gi, '')}
+<script>${consoleScript}<\/script>
+<script>${js}<\/script>
+</body>
+</html>`;
+
+  const iframe = document.getElementById('previewFrame');
+  const blob = new Blob([doc], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  iframe.src = url;
+
+  document.getElementById('previewUrl').textContent = 'preview — ' + new Date().toLocaleTimeString();
+}
+
+// ── CONSOLE ───────────────────────────────────────────────────────────────────
+let logCount = 0;
+
+window.addEventListener('message', e => {
+  if (e.data && e.data.type === 'console') {
+    addLog(e.data.level, e.data.msg);
+  }
+});
+
+function addLog(level, msg) {
+  logCount++;
+  document.getElementById('logCount').textContent = logCount;
+  const body = document.getElementById('consoleBody');
+  const line = document.createElement('div');
+  line.className = `log-line ${level}`;
+  line.textContent = msg;
+  body.appendChild(line);
+  body.scrollTop = body.scrollHeight;
+
+  // Auto expand console if collapsed
+  const wrap = document.getElementById('consoleWrap');
+  if (wrap.classList.contains('collapsed')) wrap.classList.remove('collapsed');
+}
+
+function clearConsole(e, silent) {
+  if (e) e.stopPropagation();
+  document.getElementById('consoleBody').innerHTML = '';
+  logCount = 0;
+  document.getElementById('logCount').textContent = '0';
+}
+
+let consoleOpen = true;
+function toggleConsole() {
+  consoleOpen = !consoleOpen;
+  document.getElementById('consoleWrap').classList.toggle('collapsed', !consoleOpen);
+}
+
+// ── CLEAR ALL ─────────────────────────────────────────────────────────────────
+function clearAll() {
+  if (!confirm('Clear all code? This cannot be undone.')) return;
+  editors.html.setValue('');
+  editors.css.setValue('');
+  editors.js.setValue('');
+  document.getElementById('previewFrame').src = 'about:blank';
+  clearConsole(null, true);
+}
+
+// ── FORMAT (basic) ────────────────────────────────────────────────────────────
+function formatCode() {
+  // Basic auto-indent via CodeMirror
+  const ed = editors[currentLang];
+  ed.execCommand('selectAll');
+  ed.execCommand('indentAuto');
+  ed.setCursor({ line: 0, ch: 0 });
+}
+
+// ── REFRESH ───────────────────────────────────────────────────────────────────
+function refreshPreview() {
+  runCode();
+}
+
+// ── RESIZER ───────────────────────────────────────────────────────────────────
+(function initResizer() {
+  const resizer     = document.getElementById('resizer');
+  const editorPane  = document.getElementById('editorPane');
+  const workspace   = document.getElementById('workspace');
+  let dragging = false;
+
+  resizer.addEventListener('mousedown', e => {
+    dragging = true;
+    resizer.classList.add('dragging');
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = 'col-resize';
+  });
+
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const rect = workspace.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const pct = Math.min(Math.max(x / rect.width * 100, 20), 80);
+    editorPane.style.width = pct + '%';
+    Object.values(editors).forEach(ed => ed.refresh());
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    resizer.classList.remove('dragging');
+    document.body.style.userSelect = '';
+    document.body.style.cursor = '';
+  });
+})();
+
+// ── KEYBOARD SHORTCUTS ────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    runCode();
+  }
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+// Run on load
+setTimeout(runCode, 300);
+updateStatus('html', editors.html);
+</script>
+</body>
+</html>
