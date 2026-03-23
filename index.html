@@ -265,91 +265,171 @@ footer { border-top: 1px solid var(--border); background: var(--bg); }
 /* ── SCROLL STAGE ─────────────────────────────────────────── */
 .scroll-stage {
   position: relative;
-  height: 500vh; /* scroll distance */
-  background: #000;
+  height: 600vh;
+  background: #fff;
 }
-
 .scroll-sticky {
   position: sticky;
   top: 0;
   height: 100vh;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  background: #000;
+  background: #fff;
 }
 
-/* Center logo */
+/* Subtle grid background */
+.scroll-sticky::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0;
+  transition: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Radial glow behind logo */
+.sc-glow {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26,115,232,.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  transform: scale(0.4);
+  opacity: 0;
+}
+
+/* Orbit ring */
+.sc-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(26,115,232,.12);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transform: scale(0.3);
+}
+.sc-ring-1 { width: 220px; height: 220px; }
+.sc-ring-2 { width: 380px; height: 380px; border-color: rgba(26,115,232,.07); }
+.sc-ring-3 { width: 560px; height: 560px; border-color: rgba(26,115,232,.04); }
+
+/* Logo */
 .sc-logo {
   position: absolute;
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   z-index: 10;
-  transition: transform .1s linear;
+  opacity: 0;
+  transform: scale(0.6);
 }
 .sc-logo img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: invert(1); /* white logo on black */
 }
 
-/* Each text label */
+/* Product labels */
 .sc-label {
   position: absolute;
-  font-family: 'BrandPrimary', 'Google Sans', sans-serif;
-  font-size: clamp(13px, 1.6vw, 18px);
-  font-weight: 500;
-  color: #fff;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
+  z-index: 10;
   opacity: 0;
-  transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(0.85);
-  transition: none; /* driven by JS */
   pointer-events: none;
   user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: translate(var(--ox, 0px), var(--oy, 0px)) scale(0.7);
+}
+.sc-label-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--blue);
+  flex-shrink: 0;
+}
+.sc-label-text {
+  font-family: 'BrandPrimary', 'Google Sans', sans-serif;
+  font-size: clamp(12px, 1.4vw, 16px);
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  letter-spacing: .1px;
+}
+
+/* Connector line from logo to label */
+.sc-line {
+  position: absolute;
+  z-index: 5;
+  background: rgba(26,115,232,.2);
+  height: 1px;
+  width: 0;
+  transform-origin: left center;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Scroll hint */
-.scroll-hint {
+.sc-hint {
   position: absolute;
-  bottom: 40px;
+  bottom: 36px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  color: rgba(255,255,255,.35);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  animation: hintBob 2s ease-in-out infinite;
+  gap: 6px;
+  z-index: 20;
+  opacity: 1;
 }
-.scroll-hint-arrow {
+.sc-hint-text {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-4);
+}
+.sc-hint-bar {
   width: 1px;
-  height: 32px;
-  background: rgba(255,255,255,.25);
+  height: 28px;
+  background: var(--border);
   position: relative;
   overflow: hidden;
 }
-.scroll-hint-arrow::after {
+.sc-hint-bar::after {
   content: '';
   position: absolute;
   top: -100%;
-  left: 0;
   width: 100%;
-  height: 100%;
-  background: rgba(255,255,255,.6);
-  animation: hintFlow 2s ease-in-out infinite;
+  height: 50%;
+  background: var(--blue);
+  animation: barFlow 1.4s ease-in-out infinite;
 }
-@keyframes hintBob {
-  0%,100% { opacity: .5; } 50% { opacity: 1; }
+@keyframes barFlow { 0% { top: -50%; } 100% { top: 100%; } }
+
+/* Tagline that fades in at the end */
+.sc-tagline {
+  position: absolute;
+  bottom: 80px;
+  left: 0; right: 0;
+  text-align: center;
+  z-index: 20;
+  opacity: 0;
 }
-@keyframes hintFlow {
-  0% { top: -100%; } 100% { top: 100%; }
+.sc-tagline span {
+  font-family: 'BrandPrimary', 'Google Sans', sans-serif;
+  font-size: clamp(11px, 1.2vw, 14px);
+  font-weight: 500;
+  color: var(--text-4);
+  letter-spacing: 3px;
+  text-transform: uppercase;
 }
 </style>
 
@@ -357,80 +437,129 @@ footer { border-top: 1px solid var(--border); background: var(--bg); }
 <div class="scroll-stage" id="scrollStage">
   <div class="scroll-sticky" id="scrollSticky">
 
+    <div class="sc-glow"  id="scGlow"></div>
+    <div class="sc-ring sc-ring-1" id="scRing1"></div>
+    <div class="sc-ring sc-ring-2" id="scRing2"></div>
+    <div class="sc-ring sc-ring-3" id="scRing3"></div>
+
     <!-- Logo -->
     <div class="sc-logo" id="scLogo">
       <img src="WhatsApp Image 2026-03-18 at 10.58.25.jpeg" alt="Vasuki"
            onerror="this.src='WhatsApp_Image_2026-03-18_at_10_58_25.jpeg'"/>
     </div>
 
-    <!-- Labels — positioned around logo, fly outward on scroll -->
-    <!-- Top -->
-    <div class="sc-label" id="sc0" style="--tx:0px; --ty:-180px;">Vasuki Intelligence</div>
-    <!-- Top-right -->
-    <div class="sc-label" id="sc1" style="--tx:260px; --ty:-80px;">Wiki Knowledge</div>
-    <!-- Bottom-right -->
-    <div class="sc-label" id="sc2" style="--tx:220px; --ty:100px;">Code Lab</div>
-    <!-- Bottom-left -->
-    <div class="sc-label" id="sc3" style="--tx:-220px; --ty:100px;">Vasuki iTech</div>
-    <!-- Top-left -->
-    <div class="sc-label" id="sc4" style="--tx:-260px; --ty:-80px;">Vasuki Cloud</div>
+    <!-- Connector lines -->
+    <div class="sc-line" id="scLine0"></div>
+    <div class="sc-line" id="scLine1"></div>
+    <div class="sc-line" id="scLine2"></div>
+    <div class="sc-line" id="scLine3"></div>
+    <div class="sc-line" id="scLine4"></div>
+
+    <!-- Labels -->
+    <div class="sc-label" id="scL0" style="--ox:0px;  --oy:-200px;">
+      <div class="sc-label-dot"></div>
+      <span class="sc-label-text">Vasuki Intelligence</span>
+    </div>
+    <div class="sc-label" id="scL1" style="--ox:280px; --oy:-90px;">
+      <div class="sc-label-dot"></div>
+      <span class="sc-label-text">Wiki Knowledge</span>
+    </div>
+    <div class="sc-label" id="scL2" style="--ox:240px; --oy:110px;">
+      <div class="sc-label-dot"></div>
+      <span class="sc-label-text">Code Lab</span>
+    </div>
+    <div class="sc-label" id="scL3" style="--ox:-280px;--oy:110px;">
+      <div class="sc-label-dot" style="order:1;margin-left:8px;margin-right:0;"></div>
+      <span class="sc-label-text">Vasuki iTech</span>
+    </div>
+    <div class="sc-label" id="scL4" style="--ox:-300px;--oy:-90px;">
+      <div class="sc-label-dot" style="order:1;margin-left:8px;margin-right:0;"></div>
+      <span class="sc-label-text">Vasuki Cloud</span>
+    </div>
+
+    <!-- Tagline -->
+    <div class="sc-tagline" id="scTagline">
+      <span>Build · Experiment · Publish for Everyone</span>
+    </div>
 
     <!-- Scroll hint -->
-    <div class="scroll-hint" id="scrollHint">
-      <span>Scroll</span>
-      <div class="scroll-hint-arrow"></div>
+    <div class="sc-hint" id="scHint">
+      <span class="sc-hint-text">Scroll</span>
+      <div class="sc-hint-bar"></div>
     </div>
 
   </div>
 </div>
 
 <script>
-(function() {
-  const stage   = document.getElementById('scrollStage');
-  const logo    = document.getElementById('scLogo');
-  const hint    = document.getElementById('scrollHint');
-  const labels  = [0,1,2,3,4].map(i => document.getElementById('sc' + i));
+(function () {
+  const stage  = document.getElementById('scrollStage');
+  const glow   = document.getElementById('scGlow');
+  const rings  = [document.getElementById('scRing1'), document.getElementById('scRing2'), document.getElementById('scRing3')];
+  const logo   = document.getElementById('scLogo');
+  const hint   = document.getElementById('scHint');
+  const tagline= document.getElementById('scTagline');
+  const labels = [0,1,2,3,4].map(i => document.getElementById('scL' + i));
+  const lines  = [0,1,2,3,4].map(i => document.getElementById('scLine' + i));
 
-  // Final destinations (px from center) for each label
+  // Final label positions (relative to center)
   const DEST = [
-    { x:   0, y: -200 },   // top
-    { x: 300, y:  -90 },   // top-right
-    { x: 260, y:  120 },   // bottom-right
-    { x:-260, y:  120 },   // bottom-left
-    { x:-300, y:  -90 },   // top-left
+    { x:   0, y: -200 },
+    { x: 280, y:  -90 },
+    { x: 240, y:  110 },
+    { x:-280, y:  110 },
+    { x:-300, y:  -90 },
   ];
 
-  function lerp(a, b, t) { return a + (b - a) * t; }
+  function ease(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+  function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+  function remap(v,a,b){ return clamp((v-a)/(b-a),0,1); }
 
   function update() {
-    const stageRect  = stage.getBoundingClientRect();
-    const stageH     = stage.offsetHeight;
-    const scrolled   = -stageRect.top;                    // px scrolled into stage
-    const maxScroll  = stageH - window.innerHeight;       // total scrollable px
-    const p          = Math.max(0, Math.min(1, scrolled / maxScroll)); // 0→1
+    const top     = stage.getBoundingClientRect().top;
+    const total   = stage.offsetHeight - window.innerHeight;
+    const p       = clamp(-top / total, 0, 1);
 
-    // Phase 1 (0→0.3): logo scales up slightly
-    const logoScale  = 1 + p * 0.15;
-    logo.style.transform = `scale(${logoScale})`;
+    // ── Phase 0→0.2: logo fades + scales in, grid appears ──
+    const p0 = ease(remap(p, 0, 0.2));
+    logo.style.opacity   = p0;
+    logo.style.transform = `scale(${0.6 + p0 * 0.4})`;
+    glow.style.opacity   = p0 * 0.9;
+    glow.style.transform = `scale(${0.4 + p0 * 0.6})`;
+    document.querySelector('.scroll-sticky').style.setProperty('--grid-op', p0 * 0.5);
+    document.querySelector('.scroll-sticky::before'); // trigger
+    // apply grid via inline
+    document.getElementById('scrollSticky').style.backgroundImage =
+      `linear-gradient(rgba(218,220,224,${p0 * 0.45}) 1px, transparent 1px),
+       linear-gradient(90deg, rgba(218,220,224,${p0 * 0.45}) 1px, transparent 1px)`;
+    document.getElementById('scrollSticky').style.backgroundSize = '48px 48px';
 
-    // Phase 2 (0.15→0.85): labels fly out
-    const labelP = Math.max(0, Math.min(1, (p - 0.15) / 0.7));
-
-    labels.forEach((el, i) => {
-      const tx = lerp(0, DEST[i].x, labelP);
-      const ty = lerp(0, DEST[i].y, labelP);
-      const opacity = labelP;
-      const scale  = 0.85 + labelP * 0.15;
-      el.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
-      el.style.opacity   = opacity;
+    // ── Phase 0.1→0.4: rings expand in ──
+    rings.forEach((r, i) => {
+      const rp = ease(remap(p, 0.1 + i * 0.05, 0.35 + i * 0.05));
+      r.style.opacity   = rp * (0.9 - i * 0.2);
+      r.style.transform = `scale(${0.3 + rp * 0.7})`;
     });
 
-    // Hide scroll hint after a little scrolling
-    hint.style.opacity = Math.max(0, 1 - p * 6);
+    // ── Phase 0.25→0.85: labels + lines fly out ──
+    const labelP = ease(remap(p, 0.25, 0.82));
+
+    labels.forEach((el, i) => {
+      const tx = DEST[i].x * labelP;
+      const ty = DEST[i].y * labelP;
+      el.style.transform = `translate(${tx}px, ${ty}px) scale(${0.7 + labelP * 0.3})`;
+      el.style.opacity   = labelP;
+    });
+
+    // ── Phase 0.75→0.95: tagline fades in ──
+    tagline.style.opacity = ease(remap(p, 0.75, 0.95));
+
+    // ── Hint fades out quickly ──
+    hint.style.opacity = Math.max(0, 1 - p * 8);
   }
 
   window.addEventListener('scroll', update, { passive: true });
-  update();
+  requestAnimationFrame(update);
 })();
 </script>
 
