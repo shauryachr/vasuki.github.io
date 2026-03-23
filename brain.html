@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Riddle — Vasuki iTech Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@font-face {
+  font-family: 'BrandPrimary';
+  src: url('brand-primary.ttf') format('truetype');
+  font-weight: normal; font-style: normal; font-display: swap;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --blue:   #1a73e8; --blue-h: #1557b0; --blue-bg: #e8f0fe;
+  --text:   #202124; --text-2: #3c4043; --text-3: #5f6368; --text-4: #80868b;
+  --border: #dadce0; --bg: #ffffff; --bg-2: #f8f9fa;
+  --gold:   #b8860b; --yellow: #ffca28;
+  --green:  #34a853; --red: #ea4335;
+}
+body { font-family: 'BrandPrimary','Google Sans',sans-serif; background: var(--bg-2); color: var(--text); min-height: 100vh; }
+a { text-decoration: none; color: inherit; }
+
+/* ── HEADER ── */
+header { background: var(--bg); border-bottom: 1px solid var(--border); height: 64px; display: flex; align-items: center; padding: 0 32px; gap: 14px; position: sticky; top: 0; z-index: 100; }
+.hlogo { display: flex; align-items: center; gap: 10px; }
+.hlogo-icon { width: 32px; height: 32px; border-radius: 6px; overflow: hidden; background: var(--yellow); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--gold); flex-shrink: 0; }
+.hlogo-icon img { width: 100%; height: 100%; object-fit: cover; }
+.hlogo-text { font-size: 16px; font-weight: 400; letter-spacing: -.2px; }
+.hlogo-text span { color: #6b7b8d; }
+.htitle { font-size: 13px; color: var(--text-3); padding-left: 14px; border-left: 1px solid var(--border); margin-left: 2px; }
+.hback { margin-left: auto; font-size: 13px; font-weight: 500; color: var(--blue); padding: 7px 14px; border: 1px solid var(--blue); border-radius: 4px; transition: background .1s; }
+.hback:hover { background: var(--blue-bg); }
+
+/* ── HERO ── */
+.hero { background: var(--bg); border-bottom: 1px solid var(--border); padding: 32px 80px 28px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.hero h1 { font-size: clamp(24px,3vw,36px); font-weight: 400; letter-spacing: -.3px; }
+.hero h1 strong { font-weight: 700; }
+.hero p { font-size: 14px; color: var(--text-3); margin-top: 6px; }
+.date-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; background: var(--yellow); color: var(--gold); padding: 6px 14px; border-radius: 20px; white-space: nowrap; }
+
+/* ── MAIN ── */
+.main { max-width: 760px; margin: 0 auto; padding: 36px 24px 80px; }
+
+/* ── STREAK BAR ── */
+.streak-bar { display: flex; align-items: center; gap: 16px; padding: 14px 20px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+.streak-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; }
+.streak-num { font-size: 22px; font-weight: 700; color: var(--gold); line-height: 1; }
+.streak-dot { width: 5px; height: 5px; background: var(--border); border-radius: 50%; }
+
+/* ── CARD ── */
+.card { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.card-head { padding: 18px 28px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.card-title { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+.icon-box { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 17px; background: rgba(184,134,11,.1); }
+.riddle-num { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-4); }
+.card-body { padding: 28px; }
+
+/* ── RIDDLE ── */
+.riddle-day { font-size: 11px; font-weight: 600; color: var(--blue); background: var(--blue-bg); padding: 3px 10px; border-radius: 20px; display: inline-block; margin-bottom: 16px; }
+.riddle-q { font-size: 22px; font-weight: 500; line-height: 1.5; color: var(--text); margin-bottom: 28px; }
+.riddle-q::before { content: '"'; font-size: 40px; color: var(--yellow); line-height: 0; vertical-align: -12px; margin-right: 4px; font-family: Georgia, serif; }
+
+.hint-row { display: flex; gap: 8px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+.hint-box { font-size: 13px; color: var(--text-3); background: var(--bg-2); border: 1px solid var(--border); border-radius: 4px; padding: 10px 14px; display: none; margin-top: 8px; }
+.hint-box.show { display: block; }
+.hint-box::before { content: '💡 Hint: '; font-weight: 600; color: var(--gold); }
+
+.answer-box { font-size: 16px; font-weight: 600; color: var(--green); background: rgba(52,168,83,.08); border: 1px solid rgba(52,168,83,.25); border-radius: 4px; padding: 16px 20px; margin-top: 14px; display: none; }
+.answer-box.show { display: flex; align-items: center; gap: 10px; }
+.answer-box::before { content: '✓'; font-size: 18px; }
+
+/* ── RESULT BADGE ── */
+.result-badge { display: none; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; padding: 10px 16px; border-radius: 4px; margin-top: 16px; }
+.result-badge.correct { background: rgba(52,168,83,.1); color: var(--green); border: 1px solid rgba(52,168,83,.2); display: flex; }
+.result-badge.wrong   { background: rgba(234,67,53,.1);  color: var(--red);   border: 1px solid rgba(234,67,53,.2);  display: flex; }
+
+/* ── SHARE ── */
+.share-row { display: flex; gap: 10px; align-items: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.share-label { font-size: 12px; color: var(--text-4); font-weight: 500; }
+
+/* ── BUTTONS ── */
+.btn { display: inline-flex; align-items: center; gap: 6px; font-family: 'BrandPrimary','Google Sans',sans-serif; font-size: 14px; font-weight: 500; padding: 9px 20px; border-radius: 4px; border: none; cursor: pointer; transition: background .12s, color .12s; white-space: nowrap; }
+.btn-filled   { background: var(--blue);   color: #fff; }
+.btn-filled:hover   { background: var(--blue-h); }
+.btn-outlined { background: transparent;   color: var(--blue); border: 1px solid var(--blue); }
+.btn-outlined:hover { background: var(--blue-bg); }
+.btn-gold     { background: var(--yellow); color: var(--gold); }
+.btn-gold:hover { background: #f5d800; }
+.btn-ghost    { background: var(--bg-2);   color: var(--text-2); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--border); }
+.btn-sm { font-size: 13px; padding: 7px 14px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .hero  { padding: 24px 20px; }
+  .main  { padding: 20px 14px 60px; }
+  .card-body { padding: 20px; }
+  .card-head { padding: 14px 20px; }
+  header { padding: 0 16px; }
+  .htitle { display: none; }
+  .riddle-q { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a class="hlogo" href="index.html">
+    <div class="hlogo-icon">
+      <img src="WhatsApp Image 2026-03-18 at 10.58.25.jpeg" alt="logo" onerror="this.style.display='none'"/>
+    </div>
+    <span class="hlogo-text">vasuki itech <span>labs</span></span>
+  </a>
+  <span class="htitle">🧠 Daily Riddle</span>
+  <a href="index.html" class="hback">← Home</a>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <h1>Daily <strong>Riddle</strong></h1>
+    <p>One new riddle every day. Same for everyone. Come back tomorrow for more.</p>
+  </div>
+  <div class="date-badge" id="dateBadge">📅 ...</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- STREAK BAR -->
+  <div class="streak-bar">
+    <div class="streak-item">
+      <span class="streak-num" id="streakNum">0</span>
+      <span>Day Streak 🔥</span>
+    </div>
+    <div class="streak-dot"></div>
+    <div class="streak-item">
+      <span class="streak-num" id="solvedNum">0</span>
+      <span>Solved</span>
+    </div>
+    <div class="streak-dot"></div>
+    <div class="streak-item" style="margin-left:auto;font-size:12px;color:var(--text-4)">
+      Next riddle in: <strong id="countdown">--:--:--</strong>
+    </div>
+  </div>
+
+  <!-- RIDDLE CARD -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">
+        <div class="icon-box">🎭</div>
+        Today's Riddle
+      </div>
+      <div id="riddleNum" class="riddle-num"></div>
+    </div>
+    <div class="card-body">
+      <div class="riddle-day" id="riddleDay"></div>
+      <div class="riddle-q"   id="riddleQ"></div>
+
+      <div class="hint-row">
+        <button class="btn btn-ghost btn-sm" id="hintBtn" onclick="showHint()">💡 Show Hint</button>
+        <span style="font-size:12px;color:var(--text-4)">Stuck? Get a nudge.</span>
+      </div>
+      <div class="hint-box" id="hintBox"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-filled" id="revealBtn" onclick="revealAnswer()">Reveal Answer</button>
+        <button class="btn btn-gold"   id="solvedBtn" onclick="markSolved()">✓ I Solved It!</button>
+      </div>
+
+      <div class="answer-box"  id="answerBox"></div>
+      <div class="result-badge" id="resultBadge"></div>
+
+      <div class="share-row">
+        <span class="share-label">Share today's riddle:</span>
+        <button class="btn btn-ghost btn-sm" onclick="copyShare()">📋 Copy</button>
+        <button class="btn btn-ghost btn-sm" onclick="shareWhatsApp()">💬 WhatsApp</button>
+        <button class="btn btn-ghost btn-sm" onclick="shareTwitter()">𝕏 Twitter</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="brain.js"></script>
+</body>
+</html>
