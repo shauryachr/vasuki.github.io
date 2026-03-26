@@ -33,18 +33,9 @@ button{font-family:inherit;cursor:pointer;}
   transition:width .1s linear;
 }
 
-/* ─── CURSOR ─── */
-@media(pointer:fine){*{cursor:none!important;}}
-.cdot{position:fixed;width:6px;height:6px;border-radius:50%;background:var(--blue);
-  pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}
-.cring{position:fixed;width:28px;height:28px;border-radius:50%;
-  border:1.5px solid rgba(26,115,232,.45);pointer-events:none;z-index:99998;
-  transform:translate(-50%,-50%);
-  transition:width .18s,height .18s,border-color .18s,opacity .2s;}
-.cglow{position:fixed;width:300px;height:300px;border-radius:50%;pointer-events:none;z-index:0;
-  background:radial-gradient(circle,rgba(26,115,232,.055) 0%,transparent 70%);
-  transform:translate(-50%,-50%);}
-@media(pointer:coarse){.cdot,.cring,.cglow{display:none!important;}*{cursor:auto!important;}}
+/* ─── CURSOR — normal system cursor ─── */
+*{cursor:auto;}
+a,button,[onclick],.fcard,.tcard,.ncard,.fcta,.stat-item,.ntab,.ftab{cursor:pointer;}
 .crip{position:fixed;pointer-events:none;z-index:99997;
   width:4px;height:4px;border-radius:50%;background:rgba(26,115,232,.4);
   transform:translate(-50%,-50%);animation:ripOut .55s ease-out forwards;}
@@ -728,10 +719,66 @@ header.scrolled {
 </head>
 <body>
 
+<!-- BOOT SCREEN -->
+<div id="boot">
+  <div id="boot-inner">
+    <div id="boot-logo">
+      <img src="WhatsApp Image 2026-03-18 at 10.58.25.jpeg" alt="V"
+           onerror="this.style.display='none'"/>
+    </div>
+    <div id="boot-lines"></div>
+    <div id="boot-bar-wrap"><div id="boot-bar"></div></div>
+    <div id="boot-skip">press any key to skip</div>
+  </div>
+</div>
+
+<style>
+/* ── BOOT SCREEN ── */
+#boot{
+  position:fixed;inset:0;z-index:99999;
+  background:#05060d;
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .6s ease, visibility .6s;
+}
+#boot.done{opacity:0;visibility:hidden;pointer-events:none;}
+#boot-inner{
+  width:min(480px,90vw);
+  font-family:'DM Sans',monospace,sans-serif;
+}
+#boot-logo{
+  width:52px;height:52px;margin:0 auto 28px;
+  opacity:0;animation:bootLogoIn .5s .1s ease both;
+}
+#boot-logo img{width:100%;height:100%;object-fit:contain;}
+@keyframes bootLogoIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+#boot-lines{
+  font-size:12px;line-height:1.9;color:rgba(26,115,232,.75);
+  font-family:monospace;letter-spacing:.3px;
+  min-height:180px;
+}
+#boot-lines .bl{
+  opacity:0;display:block;
+  animation:blIn .2s ease both;
+}
+#boot-lines .bl.ok::after{content:' OK';color:#34a853;}
+#boot-lines .bl.warn::after{content:' WARN';color:#ffca28;}
+@keyframes blIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+#boot-bar-wrap{
+  margin-top:20px;height:2px;background:rgba(26,115,232,.12);border-radius:2px;overflow:hidden;
+}
+#boot-bar{
+  height:100%;width:0%;background:linear-gradient(90deg,var(--blue),#4285f4);
+  border-radius:2px;transition:width .35s ease;
+}
+#boot-skip{
+  margin-top:14px;font-size:10px;color:rgba(255,255,255,.18);
+  text-align:center;letter-spacing:1.5px;text-transform:uppercase;
+  animation:blinkSlow 2s step-end infinite;
+}
+@keyframes blinkSlow{0%,100%{opacity:.4}50%{opacity:1}}
+</style>
+
 <canvas id="pcv"></canvas>
-<div class="cdot"  id="cdot"></div>
-<div class="cring" id="cring"></div>
-<div class="cglow" id="cglow"></div>
 <div id="pbar"></div>
 
 <!-- TOPBAR -->
@@ -1056,408 +1103,540 @@ header { transform-origin:top center; transition:transform .2s; }
 
 <script>
 'use strict';
+
+// ═══════════════════════════════════════════
+//  BOOT SEQUENCE
+// ═══════════════════════════════════════════
+(function boot() {
+  const screen  = document.getElementById('boot');
+  const lines   = document.getElementById('boot-lines');
+  const bar     = document.getElementById('boot-bar');
+  const MSGS = [
+    ['Initialising Vasuki Laboratory...', 'ok', 0],
+    ['Loading AI subsystems...', 'ok', 320],
+    ['Connecting to vasuki.cloud...', 'ok', 640],
+    ['Mounting Wiki Knowledge engine...', 'ok', 960],
+    ['Calibrating Code Lab environment...', 'ok', 1260],
+    ['Verifying team credentials...', 'ok', 1540],
+    ['Running diagnostics...', 'warn', 1800],
+    ['All systems nominal.', 'ok', 2100],
+    ['Welcome to Vasuki iTech Labs.', '', 2400],
+  ];
+
+  let dismissed = false;
+  const dismiss = () => {
+    if (dismissed) return;
+    dismissed = true;
+    bar.style.width = '100%';
+    setTimeout(() => { screen.classList.add('done'); }, 400);
+  };
+
+  // Skip on any key or click
+  document.addEventListener('keydown', dismiss, { once: true });
+  screen.addEventListener('click', dismiss);
+
+  MSGS.forEach(([msg, type, delay]) => {
+    setTimeout(() => {
+      if (dismissed) return;
+      const span = document.createElement('span');
+      span.className = 'bl' + (type ? ' ' + type : '');
+      span.textContent = '> ' + msg;
+      lines.appendChild(span);
+      // progress bar
+      const pct = ((MSGS.indexOf(MSGS.find(m => m[0] === msg)) + 1) / MSGS.length * 100);
+      bar.style.width = pct + '%';
+    }, delay);
+  });
+
+  // Auto dismiss after all lines
+  setTimeout(() => dismiss(), 3000);
+})();
+
+// ═══════════════════════════════════════════
+//  CORE SETUP
+// ═══════════════════════════════════════════
 const mob = window.matchMedia('(pointer:coarse)').matches;
 
-/* ── PROGRESS BAR ── */
+// ── PROGRESS BAR ──
 const pbar = document.getElementById('pbar');
 window.addEventListener('scroll', () => {
   const p = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
   pbar.style.width = (p * 100) + '%';
 }, { passive: true });
 
-/* ── HEADER SHADOW + WARP ── */
+// ── HEADER SCROLL ──
 const hdr = document.getElementById('hdr');
-let lastSY = 0, warpTimer;
 window.addEventListener('scroll', () => {
   hdr.classList.toggle('scrolled', window.scrollY > 50);
-  const delta = Math.abs(window.scrollY - lastSY);
-  if (delta > 8) {
-    hdr.classList.add('warp');
-    clearTimeout(warpTimer);
-    warpTimer = setTimeout(() => hdr.classList.remove('warp'), 150);
-  }
-  lastSY = window.scrollY;
 }, { passive: true });
 
-/* ── CURSOR ── */
-if (!mob) {
-  const dot = document.getElementById('cdot');
-  const ring = document.getElementById('cring');
-  const gl   = document.getElementById('cglow');
-  let mx=0,my=0, rx=0,ry=0, gx=0,gy=0;
-  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
-  (function tick() {
-    dot.style.left=mx+'px'; dot.style.top=my+'px';
-    rx+=(mx-rx)*.13; ry+=(my-ry)*.13;
-    ring.style.left=rx+'px'; ring.style.top=ry+'px';
-    gx+=(mx-gx)*.055; gy+=(my-gy)*.055;
-    gl.style.left=gx+'px'; gl.style.top=gy+'px';
-    requestAnimationFrame(tick);
-  })();
+// ═══════════════════════════════════════════
+//  INTERACTIVE ANIMATIONS
+// ═══════════════════════════════════════════
 
-  /* Cursor grows on interactive elements */
-  document.querySelectorAll('a,button,.fcard,.tcard,.ncard,.fcta,.stat-item').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      ring.style.width = ring.style.height = '44px';
-      ring.style.borderColor = 'rgba(26,115,232,.75)';
-      dot.style.transform = 'translate(-50%,-50%) scale(1.5)';
-    });
-    el.addEventListener('mouseleave', () => {
-      ring.style.width = ring.style.height = '28px';
-      ring.style.borderColor = 'rgba(26,115,232,.45)';
-      dot.style.transform = 'translate(-50%,-50%) scale(1)';
-    });
-  });
-
-  /* Mouse trail */
-  let trailCount = 0;
-  document.addEventListener('mousemove', e => {
-    if (trailCount++ % 3 !== 0) return; // every 3rd move
-    const t = document.createElement('div');
-    t.className = 'trail';
-    const size = Math.random()*4+2;
-    t.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;width:${size}px;height:${size}px;
-      background:rgba(26,115,232,${Math.random()*.2+.05});transform:translate(-50%,-50%)`;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 500);
-  });
-}
-
-/* ── CLICK RIPPLE ── */
+// ── 1. CLICK RIPPLE (every click on page) ──
 document.addEventListener('click', e => {
   const r = document.createElement('div');
   r.className = 'crip';
-  r.style.left = e.clientX+'px'; r.style.top = e.clientY+'px';
+  r.style.cssText = `left:${e.clientX}px;top:${e.clientY}px`;
   document.body.appendChild(r);
-  setTimeout(() => r.remove(), 600);
+  setTimeout(() => r.remove(), 700);
 });
 
-/* ── BUTTON PARTICLE BURST ── */
-document.querySelectorAll('.btn-blue,.btn-y').forEach(btn => {
-  btn.addEventListener('click', e => {
-    const rect = btn.getBoundingClientRect();
-    const cx = rect.left + rect.width/2;
-    const cy = rect.top  + rect.height/2;
-    for (let i = 0; i < 12; i++) {
-      const p = document.createElement('div');
-      p.className = 'btn-burst';
-      const angle = (i/12)*Math.PI*2;
-      const dist  = 40 + Math.random()*30;
-      p.style.cssText = `left:${cx}px;top:${cy}px;
-        --bx:${Math.cos(angle)*dist}px;--by:${Math.sin(angle)*dist}px;
-        background:${i%2===0?'var(--blue)':'var(--yellow)'};
-        animation-delay:${i*0.02}s`;
-      document.body.appendChild(p);
-      setTimeout(() => p.remove(), 800);
-    }
-  });
-});
-
-/* ── PARTICLE NETWORK ── */
+// ── 2. PARTICLE NETWORK (mouse-attracted canvas) ──
 const cv = document.getElementById('pcv'), ctx = cv.getContext('2d');
-let W, H, pts = [];
+let W, H;
 const resize = () => { W = cv.width = window.innerWidth; H = cv.height = window.innerHeight; };
 resize(); window.addEventListener('resize', resize);
-class Pt {
-  constructor() { this.reset(); }
-  reset() {
-    this.x  = Math.random()*W; this.y  = Math.random()*H;
-    this.vx = (Math.random()-.5)*.35; this.vy = (Math.random()-.5)*.35;
-    this.r  = Math.random()*1.5+.3;
-    this.a  = Math.random()*.18+.04;
+let pmx = -999, pmy = -999;
+document.addEventListener('mousemove', e => { pmx = e.clientX; pmy = e.clientY; });
+
+class Particle {
+  constructor() { this.reset(true); }
+  reset(rand) {
+    this.x  = rand ? Math.random()*W : pmx + (Math.random()-0.5)*60;
+    this.y  = rand ? Math.random()*H : pmy + (Math.random()-0.5)*60;
+    this.vx = (Math.random()-0.5)*0.5;
+    this.vy = (Math.random()-0.5)*0.5;
+    this.r  = Math.random()*1.6+0.4;
+    this.a  = Math.random()*0.2+0.04;
     this.ph = Math.random()*Math.PI*2;
+    this.life = 1;
   }
   step() {
-    this.x+=this.vx; this.y+=this.vy; this.ph+=.015;
-    if (this.x<0||this.x>W||this.y<0||this.y>H) this.reset();
+    const dx = pmx-this.x, dy = pmy-this.y, d = Math.hypot(dx,dy);
+    if (d < 180 && d > 1) { this.vx += dx/d*0.012; this.vy += dy/d*0.012; }
+    const s = Math.hypot(this.vx,this.vy);
+    if (s > 1.5) { this.vx /= s/1.5; this.vy /= s/1.5; }
+    this.x += this.vx; this.y += this.vy; this.ph += 0.016;
+    if (this.x<0||this.x>W||this.y<0||this.y>H) this.reset(true);
   }
   draw() {
-    const a = this.a*(.6+.4*Math.sin(this.ph));
+    const a = this.a*(0.6+0.4*Math.sin(this.ph));
     ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
     ctx.fillStyle = `rgba(26,115,232,${a})`; ctx.fill();
   }
 }
-for (let i=0; i<65; i++) pts.push(new Pt());
-let pmx=-999, pmy=-999;
-document.addEventListener('mousemove', e => { pmx=e.clientX; pmy=e.clientY; });
-(function loop() {
+
+const pts = Array.from({length:70}, () => new Particle());
+
+(function ploop() {
   ctx.clearRect(0,0,W,H);
-  pts.forEach(p => {
-    const dx=pmx-p.x, dy=pmy-p.y, d=Math.hypot(dx,dy);
-    if (d < 150) { p.vx += dx/d*.012; p.vy += dy/d*.012; }
-    const s = Math.hypot(p.vx,p.vy); if (s>1.3){p.vx/=s/1.3;p.vy/=s/1.3;}
-    p.step(); p.draw();
-  });
+  pts.forEach(p => { p.step(); p.draw(); });
   for (let i=0; i<pts.length; i++) for (let j=i+1; j<pts.length; j++) {
     const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.hypot(dx,dy);
-    if (d<115) {
+    if (d < 120) {
       ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y);
-      ctx.strokeStyle = `rgba(26,115,232,${.065*(1-d/115)})`; ctx.lineWidth=.5; ctx.stroke();
+      ctx.strokeStyle = `rgba(26,115,232,${0.07*(1-d/120)})`;
+      ctx.lineWidth = 0.5; ctx.stroke();
     }
   }
-  requestAnimationFrame(loop);
+  requestAnimationFrame(ploop);
 })();
 
-/* ── 3D CARD TILT with spotlight ── */
+// ── 3. DRAG TO SPRAY PARTICLES (drag mouse = more particles) ──
+let isDragging = false;
+document.addEventListener('mousedown', () => isDragging = true);
+document.addEventListener('mouseup',   () => isDragging = false);
+document.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  const p = new Particle(); p.reset(false);
+  p.x = e.clientX; p.y = e.clientY;
+  p.vx = (Math.random()-0.5)*3; p.vy = (Math.random()-0.5)*3;
+  pts.push(p);
+  if (pts.length > 120) pts.shift(); // cap
+});
+
+// ── 4. DOUBLE CLICK = BURST of particles ──
+document.addEventListener('dblclick', e => {
+  for (let i=0; i<16; i++) {
+    const p = new Particle(); p.reset(false);
+    p.x = e.clientX; p.y = e.clientY;
+    const angle = (i/16)*Math.PI*2;
+    p.vx = Math.cos(angle)*2.5; p.vy = Math.sin(angle)*2.5;
+    pts.push(p);
+  }
+  if (pts.length > 140) pts.splice(0, pts.length-70);
+});
+
+// ── 5. 3D TILT on all cards (mouse-position driven) ──
 if (!mob) {
   document.querySelectorAll('.fcard,.tcard,.ncard').forEach(card => {
-    // Add spotlight div
-    const spot = document.createElement('div');
-    spot.className = 'hero-spotlight';
-    card.style.position = 'relative';
-    card.appendChild(spot);
+    // Inject inner spotlight
+    const sp = document.createElement('div'); sp.className = 'hero-spotlight';
+    card.style.overflow = 'hidden'; card.appendChild(sp);
 
     card.addEventListener('mousemove', e => {
       const r = card.getBoundingClientRect();
-      const x = (e.clientX-r.left)/r.width;
-      const y = (e.clientY-r.top)/r.height;
-      const tx = x-.5, ty = y-.5;
-      card.style.transform = `perspective(700px) rotateY(${tx*9}deg) rotateX(${-ty*9}deg) translateZ(5px)`;
-      card.style.transition = 'transform .06s linear';
-      // Move spotlight
-      spot.style.setProperty('--sx', (x*100)+'%');
-      spot.style.setProperty('--sy', (y*100)+'%');
-      spot.style.opacity = '1';
+      const x = (e.clientX-r.left)/r.width, y = (e.clientY-r.top)/r.height;
+      card.style.transform = `perspective(600px) rotateY(${(x-.5)*10}deg) rotateX(${-(y-.5)*10}deg) translateZ(6px)`;
+      card.style.transition = 'transform .05s linear, box-shadow .2s';
+      card.style.boxShadow = `${(x-.5)*-15}px ${(y-.5)*-15}px 30px rgba(26,115,232,0.12)`;
+      sp.style.setProperty('--sx', x*100+'%'); sp.style.setProperty('--sy', y*100+'%');
+      sp.style.opacity = '1';
     });
     card.addEventListener('mouseleave', () => {
       card.style.transform = '';
-      card.style.transition = 'transform .4s cubic-bezier(.16,1,.3,1)';
-      spot.style.opacity = '0';
+      card.style.boxShadow = '';
+      card.style.transition = 'transform .5s cubic-bezier(.16,1,.3,1), box-shadow .4s';
+      sp.style.opacity = '0';
     });
 
-    // Card click ripple
+    // Click ripple inside card
     card.addEventListener('click', e => {
       const r = card.getBoundingClientRect();
-      const rip = document.createElement('div');
-      rip.className = 'card-rip';
-      const size = Math.max(r.width, r.height);
-      rip.style.cssText = `width:${size}px;height:${size}px;
-        left:${e.clientX-r.left-size/2}px;top:${e.clientY-r.top-size/2}px`;
-      card.appendChild(rip);
-      setTimeout(() => rip.remove(), 700);
+      const rip = document.createElement('div'); rip.className = 'card-rip';
+      const sz = Math.max(r.width,r.height)*2;
+      rip.style.cssText = `width:${sz}px;height:${sz}px;left:${e.clientX-r.left-sz/2}px;top:${e.clientY-r.top-sz/2}px`;
+      card.appendChild(rip); setTimeout(() => rip.remove(), 700);
     });
   });
 }
 
-/* ── MAGNETIC BUTTONS ── */
+// ── 6. MAGNETIC BUTTONS (follow cursor when nearby) ──
 if (!mob) {
   document.querySelectorAll('.btn-blue,.btn-out,.btn-y').forEach(btn => {
     btn.addEventListener('mousemove', e => {
       const r = btn.getBoundingClientRect();
-      const x = (e.clientX-r.left-r.width/2)*.2;
-      const y = (e.clientY-r.top-r.height/2)*.2;
-      btn.style.transform = `translate(${x}px,${y}px) translateY(-1px)`;
+      const x = (e.clientX-r.left-r.width/2)*0.22;
+      const y = (e.clientY-r.top-r.height/2)*0.22;
+      btn.style.transform = `translate(${x}px,${y}px)`;
     });
-    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = '';
+      btn.style.transition = 'transform .4s cubic-bezier(.34,1.56,.64,1)';
+    });
+    btn.addEventListener('mouseenter', () => {
+      btn.style.transition = 'transform .1s';
+    });
+
+    // Particle burst on click
+    btn.addEventListener('click', e => {
+      const r = btn.getBoundingClientRect();
+      const cx = r.left+r.width/2, cy = r.top+r.height/2;
+      for (let i=0;i<12;i++) {
+        const el = document.createElement('div'); el.className = 'btn-burst';
+        const angle = (i/12)*Math.PI*2, dist = 40+Math.random()*30;
+        el.style.cssText = `left:${cx}px;top:${cy}px;
+          --bx:${Math.cos(angle)*dist}px;--by:${Math.sin(angle)*dist}px;
+          background:${i%2?'var(--blue)':'var(--yellow)'};animation-delay:${i*0.02}s`;
+        document.body.appendChild(el); setTimeout(() => el.remove(), 800);
+      }
+    });
   });
 }
 
-/* ── HERO PANEL SPOTLIGHT ── */
+// ── 7. HERO PANEL MOUSE-TRACKED SPOTLIGHT ──
 if (!mob) {
   const heroR = document.querySelector('.hero-r');
   if (heroR) {
-    const spot = document.createElement('div');
-    spot.className = 'hero-spotlight';
-    heroR.appendChild(spot);
+    const sp = document.createElement('div'); sp.className = 'hero-spotlight';
+    heroR.appendChild(sp);
     heroR.addEventListener('mousemove', e => {
       const r = heroR.getBoundingClientRect();
-      spot.style.setProperty('--sx', ((e.clientX-r.left)/r.width*100)+'%');
-      spot.style.setProperty('--sy', ((e.clientY-r.top)/r.height*100)+'%');
+      sp.style.setProperty('--sx', ((e.clientX-r.left)/r.width*100)+'%');
+      sp.style.setProperty('--sy', ((e.clientY-r.top)/r.height*100)+'%');
+      sp.style.opacity = '1';
     });
+    heroR.addEventListener('mouseleave', () => sp.style.opacity = '0');
   }
 }
 
-/* ── SCROLL REVEAL ── */
-const io = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); }
-  });
-}, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
-document.querySelectorAll('.rUp,.rLeft,.rRight,.sh').forEach(el => io.observe(el));
+// ── 8. INTERACTIVE PROMPTS — click to "send" ──
+document.querySelectorAll('.prompt').forEach((p, i) => {
+  const txt = p.textContent.trim(); p.textContent = ''; p.style.opacity = '0';
+  setTimeout(() => {
+    p.style.transition = 'opacity .2s'; p.style.opacity = '1';
+    let idx = 0;
+    const type = () => { if(idx<=txt.length){p.textContent=txt.slice(0,idx++);setTimeout(type,18);} };
+    type();
+  }, 200+i*240);
 
-/* ── SCROLL FADE (distant sections dim) ── */
+  // Click prompt → it "sends" with animation
+  p.addEventListener('click', () => {
+    p.style.transform = 'translateX(8px)';
+    p.style.color = 'rgba(255,255,255,.9)';
+    p.style.transition = 'all .2s cubic-bezier(.16,1,.3,1)';
+    p.style.borderColor = 'rgba(26,115,232,.4)';
+    setTimeout(() => {
+      p.style.transform = '';
+      p.style.color = '';
+      p.style.borderColor = '';
+    }, 400);
+    // Ripple
+    const r = p.getBoundingClientRect();
+    const rip = document.createElement('div'); rip.className = 'card-rip';
+    const sz = 200;
+    rip.style.cssText=`width:${sz}px;height:${sz}px;left:${r.width/2-sz/2}px;top:${r.height/2-sz/2}px;background:rgba(26,115,232,.08)`;
+    p.style.position='relative'; p.style.overflow='hidden';
+    p.appendChild(rip); setTimeout(()=>rip.remove(),600);
+  });
+});
+
+// ── 9. FCTA TILES — 3D tilt + bottom line ──
 if (!mob) {
-  const fadeEls = document.querySelectorAll('.feat-sec,.section,.stats-row,.cta-band');
-  const fadeIO = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      e.target.classList.toggle('far',  !e.isIntersecting);
-      e.target.classList.toggle('near',  e.isIntersecting);
+  document.querySelectorAll('.fcta').forEach(fcta => {
+    fcta.addEventListener('mousemove', e => {
+      const r = fcta.getBoundingClientRect();
+      const x = (e.clientX-r.left)/r.width-.5;
+      const y = (e.clientY-r.top)/r.height-.5;
+      fcta.style.transform = `perspective(500px) rotateY(${x*7}deg) rotateX(${-y*7}deg) translateY(-3px) scale(1.02)`;
+      fcta.style.transition = 'transform .06s linear';
     });
-  }, { threshold: 0.1 });
-  fadeEls.forEach(el => { el.classList.add('scroll-fade'); fadeIO.observe(el); });
+    fcta.addEventListener('mouseleave', () => {
+      fcta.style.transform = '';
+      fcta.style.transition = 'transform .4s cubic-bezier(.16,1,.3,1)';
+    });
+  });
 }
 
-/* ── ANIMATED COUNTERS ── */
-const cio = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    const el = e.target, target = parseInt(el.dataset.count);
+// ── 10. STAT ITEMS — click replays counter + bounces ──
+document.querySelectorAll('.stat-item').forEach(item => {
+  item.style.cursor = 'pointer';
+  item.addEventListener('click', () => {
+    const num = item.querySelector('[data-count]'); if(!num) return;
+    const target = parseInt(num.dataset.count);
     let start = null;
     const step = ts => {
-      if (!start) start = ts;
-      const p = Math.min((ts-start)/1400, 1);
-      const ease = 1-Math.pow(1-p,3);
-      el.textContent = Math.round(ease*target).toLocaleString();
-      if (p<1) requestAnimationFrame(step);
+      if(!start) start=ts;
+      const p = Math.min((ts-start)/900,1), e = 1-Math.pow(1-p,3);
+      num.textContent = Math.round(e*target).toLocaleString();
+      if(p<1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
-    cio.unobserve(el);
+    item.style.transform='scale(1.06)';
+    item.style.transition='transform .3s cubic-bezier(.34,1.56,.64,1)';
+    setTimeout(()=>item.style.transform='',350);
   });
-}, { threshold: 0.5 });
-document.querySelectorAll('[data-count]').forEach(el => cio.observe(el));
+  // Hover tooltip
+  item.addEventListener('mouseenter', e => {
+    tipEl.textContent = item.dataset.tip || '';
+    tipEl.classList.add('show');
+  });
+  item.addEventListener('mousemove', e => {
+    tipEl.style.left = (e.clientX+14)+'px';
+    tipEl.style.top  = (e.clientY-30)+'px';
+  });
+  item.addEventListener('mouseleave', () => tipEl.classList.remove('show'));
+});
 
-/* ── PARALLAX HERO ── */
+const tipEl = document.createElement('div'); tipEl.className='v-tip'; document.body.appendChild(tipEl);
+const statTips=['5 products shipped','2-person team','Always free','Est. 2026, India'];
+document.querySelectorAll('.stat-item').forEach((el,i) => el.dataset.tip = statTips[i]||'');
+
+// ── 11. HERO BADGE CONFETTI CLICK ──
+const badge = document.querySelector('.hero-badge');
+if (badge) {
+  badge.style.cursor = 'pointer';
+  badge.addEventListener('click', e => {
+    const cols = ['var(--blue)','var(--yellow)','#34a853','#ea4335','#4285f4','#fff'];
+    for (let i=0;i<22;i++) {
+      const el = document.createElement('div'); el.className='btn-burst';
+      const angle = Math.random()*Math.PI*2, dist=40+Math.random()*70;
+      el.style.cssText=`left:${e.clientX}px;top:${e.clientY}px;
+        --bx:${Math.cos(angle)*dist}px;--by:${Math.sin(angle)*dist}px;
+        background:${cols[i%cols.length]};width:${Math.random()*6+3}px;height:${Math.random()*6+3}px;
+        animation-delay:${Math.random()*0.1}s;animation-duration:${0.5+Math.random()*0.4}s`;
+      document.body.appendChild(el); setTimeout(()=>el.remove(),900);
+    }
+  });
+}
+
+// ── 12. LOGO 5× CLICK EASTER EGG ──
+let spinN=0;
+const logoIco = document.querySelector('.logo-icon');
+if (logoIco) {
+  logoIco.style.cursor='pointer';
+  logoIco.addEventListener('click', () => {
+    spinN++;
+    logoIco.style.transition='transform .5s cubic-bezier(.34,1.56,.64,1)';
+    logoIco.style.transform=`rotate(${spinN*360}deg) scale(1.2)`;
+    setTimeout(()=>logoIco.style.transform=`rotate(${spinN*360}deg)`,500);
+    if (spinN===5) {
+      // Confetti burst from logo
+      const r=logoIco.getBoundingClientRect();
+      const cx=r.left+r.width/2, cy=r.top+r.height/2;
+      ['🎉','🚀','⚡','🧠','☁️'].forEach((emoji,i)=>{
+        const el=document.createElement('div');
+        el.textContent=emoji;
+        const angle=(i/5)*Math.PI*2, dist=80;
+        el.style.cssText=`position:fixed;font-size:24px;left:${cx}px;top:${cy}px;
+          z-index:99998;pointer-events:none;
+          animation:burstOut .9s ease-out forwards;
+          --bx:${Math.cos(angle)*dist}px;--by:${Math.sin(angle)*dist}px`;
+        document.body.appendChild(el); setTimeout(()=>el.remove(),1000);
+      });
+      spinN=0;
+    }
+  });
+}
+
+// ── 13. KEYBOARD INTERACTIONS ──
+document.addEventListener('keydown', e => {
+  // '/' → go to Vasuki Intelligence
+  if (e.key==='/' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
+    e.preventDefault();
+    window.location.href='https://shauryachr.github.io/vasuki.github.io/General-AI';
+  }
+  // 'b' → go to Brain
+  if (e.key==='b' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
+    window.location.href='brain.html';
+  }
+  // Escape → close mobile menu
+  if (e.key==='Escape') closeMob();
+  // Space at top → scroll to hero
+  if (e.key===' ' && window.scrollY===0) {
+    e.preventDefault();
+    document.querySelector('.hero-wrap')?.scrollIntoView({behavior:'smooth'});
+  }
+});
+
+// ── 14. PARALLAX HERO ──
 if (!mob) {
-  const hl = document.querySelector('.hero-l');
-  const hr = document.querySelector('.hero-r');
+  const hl=document.querySelector('.hero-l'), hr=document.querySelector('.hero-r');
   window.addEventListener('scroll', () => {
-    const sy = window.scrollY;
-    if (hl) hl.style.transform = `translateY(${sy*.04}px)`;
-    if (hr) hr.style.transform = `translateY(${sy*.02}px)`;
-  }, { passive: true });
+    const sy=window.scrollY;
+    if(hl) hl.style.transform=`translateY(${sy*0.04}px)`;
+    if(hr) hr.style.transform=`translateY(${sy*0.02}px)`;
+  },{passive:true});
 }
 
-/* ── SCROLL-LINKED SECTION PARALLAX ── */
-if (!mob) {
-  const fcards = document.querySelectorAll('.fcard');
-  window.addEventListener('scroll', () => {
-    fcards.forEach((c, i) => {
-      const r = c.getBoundingClientRect();
-      const center = r.top + r.height/2 - window.innerHeight/2;
-      const shift = center * .04 * (i%2===0?1:-1);
-      c.style.setProperty('--parallax', `${shift}px`);
-    });
-  }, { passive: true });
-}
+// ── 15. SCROLL REVEAL ──
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target);}});
+},{threshold:0,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rUp,.rLeft,.rRight,.sh').forEach(el=>io.observe(el));
 
-/* ── TYPING PROMPTS ── */
-document.querySelectorAll('.prompt').forEach((p, i) => {
-  const txt = p.textContent.trim();
-  p.textContent = ''; p.style.opacity = '0';
-  setTimeout(() => {
-    p.style.transition = 'opacity .25s'; p.style.opacity = '1';
-    let idx = 0;
-    const type = () => { if(idx<=txt.length){ p.textContent=txt.slice(0,idx++); setTimeout(type,20); }};
-    type();
-  }, 250 + i*260);
-});
-
-/* ── TOOLTIP ON DATA-TIP ELEMENTS ── */
-const tip = document.createElement('div');
-tip.className = 'v-tip'; document.body.appendChild(tip);
-document.querySelectorAll('[data-tip]').forEach(el => {
-  el.addEventListener('mouseenter', e => {
-    tip.textContent = el.dataset.tip; tip.classList.add('show');
+// ── 16. ANIMATED COUNTERS ──
+const cio=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting) return;
+    const el=e.target, target=parseInt(el.dataset.count); let start=null;
+    const step=ts=>{if(!start)start=ts;const p=Math.min((ts-start)/1400,1),ease=1-Math.pow(1-p,3);el.textContent=Math.round(ease*target).toLocaleString();if(p<1)requestAnimationFrame(step);};
+    requestAnimationFrame(step); cio.unobserve(el);
   });
-  el.addEventListener('mousemove', e => {
-    tip.style.left = (e.clientX+14)+'px'; tip.style.top = (e.clientY-30)+'px';
-  });
-  el.addEventListener('mouseleave', () => tip.classList.remove('show'));
-});
+},{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
 
-/* ── HOVER TOOLTIP on stat items ── */
-const statTips = ['Vasuki Intelligence, Wiki, Code Lab, Cloud + Brain','Shaurya & Adamya','Always free on vasuki.cloud','Est. 2026'];
-document.querySelectorAll('.stat-item').forEach((el, i) => {
-  el.dataset.tip = statTips[i] || '';
-});
-
-/* ── STAGGER WORD ANIMATION on hero h1 ── */
-const h1 = document.querySelector('.hero-l h1');
-if (h1) {
-  // Remove cursor blink after 3s
-  setTimeout(() => {
-    h1.style.setProperty('--cursor-opacity','0');
-    const style = document.createElement('style');
-    style.textContent = '.hero-l h1::after{display:none}';
-    document.head.appendChild(style);
-  }, 3000);
+// ── 17. TAB INK ──
+function updInk(){
+  const ink=document.getElementById('tabInk'),tabs=document.getElementById('newsTabs');
+  if(!ink||!tabs) return;
+  const a=tabs.querySelector('.active'); if(!a) return;
+  const ar=a.getBoundingClientRect(),pr=tabs.getBoundingClientRect();
+  ink.style.left=(ar.left-pr.left)+'px'; ink.style.width=ar.width+'px';
 }
-
-/* ── INTERACTIVE TAB INK ── */
-function updInk() {
-  const ink  = document.getElementById('tabInk');
-  const tabs = document.getElementById('newsTabs');
-  if (!ink||!tabs) return;
-  const a = tabs.querySelector('.active');
-  if (!a) return;
-  const ar=a.getBoundingClientRect(), pr=tabs.getBoundingClientRect();
-  ink.style.left  = (ar.left-pr.left)+'px';
-  ink.style.width = ar.width+'px';
-}
-setTimeout(updInk, 80);
-function switchNTab(el) {
+setTimeout(updInk,80);
+function switchNTab(el){
   document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  updInk();
-  // Ripple on tab
-  el.style.transform='scale(.96)';
-  setTimeout(()=>el.style.transform='',150);
+  el.classList.add('active'); updInk();
+  el.style.transform='scale(.95)'; setTimeout(()=>el.style.transform='',120);
 }
-function switchFTab(el) {
+function switchFTab(el){
   document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  el.style.transform='scale(.95)'; setTimeout(()=>el.style.transform='',150);
+  el.style.transform='scale(.95)'; setTimeout(()=>el.style.transform='',120);
 }
 
-/* ── FOOTER LETTERS ── */
-document.querySelectorAll('.fcol a').forEach(link => {
-  if (link.dataset.s) return; link.dataset.s='1';
-  const txt = link.textContent;
-  link.innerHTML = txt.split('').map((c,i)=>
-    `<span style="display:inline-block;transition:transform .13s ease ${i*.015}s,color .13s">${c===' '?'&nbsp;':c}</span>`
-  ).join('');
-  link.addEventListener('mouseenter', () =>
-    link.querySelectorAll('span').forEach(s=>{ s.style.transform='translateY(-3px)'; s.style.color='var(--blue)'; }));
-  link.addEventListener('mouseleave', () =>
-    link.querySelectorAll('span').forEach(s=>{ s.style.transform=''; s.style.color=''; }));
+// ── 18. FOOTER LETTER HOVER ──
+document.querySelectorAll('.fcol a').forEach(link=>{
+  if(link.dataset.s) return; link.dataset.s='1';
+  const txt=link.textContent;
+  link.innerHTML=txt.split('').map((c,i)=>`<span style="display:inline-block;transition:transform .13s ease ${i*.014}s,color .13s">${c===' '?'&nbsp;':c}</span>`).join('');
+  link.addEventListener('mouseenter',()=>link.querySelectorAll('span').forEach(s=>{s.style.transform='translateY(-3px)';s.style.color='var(--blue)';}));
+  link.addEventListener('mouseleave',()=>link.querySelectorAll('span').forEach(s=>{s.style.transform='';s.style.color='';}));
 });
 
-/* ── NAV ACTIVE DOT on scroll position ── */
-const sections = document.querySelectorAll('.news-sec,.feat-sec,.section,.cta-band,footer');
-const navItems = document.querySelectorAll('.ni');
-if (!mob) {
-  window.addEventListener('scroll', () => {
-    let active = -1;
-    sections.forEach((s, i) => {
-      const r = s.getBoundingClientRect();
-      if (r.top < window.innerHeight/2 && r.bottom > 0) active = i;
-    });
-    navItems.forEach((n,i)=>{
-      const old = n.querySelector('.nav-active-dot');
-      if (old) old.remove();
-      if (i===active%navItems.length) {
-        const d=document.createElement('div'); d.className='nav-active-dot'; n.appendChild(d);
-      }
-    });
-  }, { passive:true });
-}
-
-/* ── SCROLL SNAP FEEL on section entry ── */
-if (!mob) {
-  const sectionIO = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.style.transition = 'transform .4s cubic-bezier(.16,1,.3,1)';
-        e.target.style.transform = 'translateY(0)';
-      }
-    });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.feat-sec,.section,.stats-row,.cta-band').forEach(el => sectionIO.observe(el));
-}
-
-/* ── HAMBURGER ── */
-const ham = document.getElementById('ham');
-const mobMenu = document.getElementById('mobMenu');
-const mobClose = document.getElementById('mobClose');
-const mobHome  = document.getElementById('mobHome');
-const closeMob = () => { ham.classList.remove('open'); mobMenu.classList.remove('open'); document.body.style.overflow=''; };
-ham.addEventListener('click', () => {
-  ham.classList.toggle('open'); mobMenu.classList.toggle('open');
-  document.body.style.overflow = mobMenu.classList.contains('open') ? 'hidden' : '';
+// ── 19. SECTION HEADINGS GLOW on hover ──
+document.querySelectorAll('.sh').forEach(h=>{
+  h.style.cursor='default';
+  h.addEventListener('mouseenter',()=>{h.style.color='var(--blue)';h.style.transition='color .2s';});
+  h.addEventListener('mouseleave',()=>h.style.color='');
 });
-mobClose.addEventListener('click', closeMob);
-mobHome.addEventListener('click', closeMob);
-mobMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMob));
+
+// ── 20. NCARD IMAGE ROTATE on hover ──
+document.querySelectorAll('.ncard').forEach(nc=>{
+  const img=nc.querySelector('.ncard-img'); if(!img) return;
+  nc.addEventListener('mousemove', e=>{
+    const r=nc.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    img.style.transform=`rotate(${x*14}deg) scale(1.15)`;
+    img.style.transition='transform .1s linear';
+  });
+  nc.addEventListener('mouseleave',()=>{img.style.transform='';img.style.transition='transform .4s cubic-bezier(.34,1.56,.64,1)';});
+});
+
+// ── 21. DIVIDER CLICK BURST ──
+document.querySelectorAll('.divider').forEach(div=>{
+  div.style.cursor='pointer';
+  div.addEventListener('click', e=>{
+    for(let i=0;i<10;i++){
+      const p=document.createElement('div'); p.className='btn-burst';
+      const angle=Math.random()*Math.PI*2;
+      p.style.cssText=`left:${e.clientX}px;top:${e.clientY}px;
+        --bx:${Math.cos(angle)*30}px;--by:${Math.sin(angle)*20}px;
+        background:var(--blue);animation-delay:${i*.02}s;width:4px;height:4px`;
+      document.body.appendChild(p); setTimeout(()=>p.remove(),700);
+    }
+  });
+});
+
+// ── 22. TEAM CARD CLICK BOUNCE ──
+document.querySelectorAll('.tcard').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    const thumb=card.querySelector('.tcard-thumb'); if(!thumb) return;
+    thumb.style.transition='transform .3s cubic-bezier(.34,1.56,.64,1)';
+    thumb.style.transform='scale(1.5) rotate(15deg)';
+    setTimeout(()=>{thumb.style.transform='';},350);
+  });
+});
+
+// ── 23. CTA ITEM HOVER LIFT ──
+document.querySelectorAll('.cta-item').forEach(item=>{
+  item.addEventListener('mouseenter',()=>{
+    item.style.transform='translateY(-3px)';
+    item.style.background='rgba(26,115,232,.03)';
+    item.style.transition='transform .25s cubic-bezier(.16,1,.3,1),background .2s';
+  });
+  item.addEventListener('mouseleave',()=>{item.style.transform='';item.style.background='';});
+});
+
+// ── 24. FEATURE CARD THUMB BOUNCE on hover ──
+document.querySelectorAll('.fcard').forEach(card=>{
+  const thumb=card.querySelector('.fcard-thumb'); if(!thumb) return;
+  card.addEventListener('mouseenter',()=>{
+    thumb.style.transform='scale(1.15) translateY(-5px)';
+    thumb.style.transition='transform .35s cubic-bezier(.34,1.56,.64,1)';
+  });
+  card.addEventListener('mouseleave',()=>{thumb.style.transform='';});
+});
+
+// ── 25. SCROLL-SPEED PARTICLE BURST ──
+let lastSY2=0;
+window.addEventListener('scroll',()=>{
+  const vel=Math.abs(window.scrollY-lastSY2);
+  if(vel>20){
+    const p=new Particle(); p.reset(false);
+    p.x=Math.random()*W; p.y=window.scrollY%H;
+    p.vx=(Math.random()-.5)*3; p.vy=(Math.random()-.5)*3;
+    pts.push(p); if(pts.length>100) pts.shift();
+  }
+  lastSY2=window.scrollY;
+},{passive:true});
+
+// ── 26. HAMBURGER ──
+const ham=document.getElementById('ham');
+const mobMenu=document.getElementById('mobMenu');
+const mobClose=document.getElementById('mobClose');
+const mobHome=document.getElementById('mobHome');
+const closeMob=()=>{ham.classList.remove('open');mobMenu.classList.remove('open');document.body.style.overflow='';};
+ham.addEventListener('click',()=>{
+  ham.classList.toggle('open');mobMenu.classList.toggle('open');
+  document.body.style.overflow=mobMenu.classList.contains('open')?'hidden':'';
+});
+if(mobClose) mobClose.addEventListener('click',closeMob);
+if(mobHome)  mobHome.addEventListener('click',closeMob);
+mobMenu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMob));
 </script>
 </body>
 </html>
