@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,305 +6,709 @@
 <title>Vasuki iTech Labs — Ecosystem</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Outfit:wght@300;400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
-/* ─── DREELIO CORE TOKENS ─── */
-:root {
-  --bg: #030303;
-  --bg-card: #0a0a0a;
-  --accent: #8b5cf6; /* Electric Purple */
-  --accent-glow: rgba(139, 92, 246, 0.3);
-  --blue: #1a73e8;
-  --yellow: #ffca28;
-  --text: #ffffff;
-  --t2: #94a3b8;
-  --t3: #64748b;
-  --border: rgba(255, 255, 255, 0.08);
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
+/* ─── RESET & TOKENS ─── */
+@font-face{font-family:'Brand';src:url('brand-primary.ttf') format('truetype');font-display:swap;}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-body {
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
-  line-height: 1.6;
+:root{
+  --blue:#1a73e8; --bd:#1557b0; --bb:#e8f0fe;
+  --text:#202124; --t2:#3c4043; --t3:#5f6368; --t4:#80868b;
+  --border:#dadce0; --bg:#fff; --bg2:#f8f9fa;
+  --gold:#b8860b; --yellow:#ffca28;
+  --sh: 0 1px 3px rgba(60,64,67,.12), 0 2px 8px rgba(60,64,67,.08);
+  --shl: 0 4px 20px rgba(60,64,67,.14);
+  --ease: cubic-bezier(.16,1,.3,1);
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Brand','Google Sans',sans-serif;color:var(--text);background:var(--bg);overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+button{font-family:inherit;cursor:pointer;}
+
+/* ─── SCROLL PROGRESS ─── */
+#pbar{
+  position:fixed;top:0;left:0;height:2px;width:0;z-index:9999;
+  pointer-events:none;
+  background:linear-gradient(90deg,var(--blue),var(--yellow));
+  transition:width .1s linear;
 }
 
-/* ─── KINETIC BACKGROUND ─── */
-.mesh-bg {
-  position: fixed; inset: 0; z-index: -1;
-  background: radial-gradient(circle at 50% -10%, #1e1b4b 0%, transparent 40%),
-              radial-gradient(circle at 0% 100%, #0f172a 0%, transparent 30%);
-  animation: bgPulse 10s ease-in-out infinite alternate;
-}
-@keyframes bgPulse { from { opacity: 0.5; } to { opacity: 1; } }
+/* ─── CURSOR — normal system cursor ─── */
+*{cursor:auto;}
+a,button,[onclick],.fcard,.tcard,.ncard,.fcta,.stat-item,.ntab,.ftab{cursor:pointer;}
+.crip{position:fixed;pointer-events:none;z-index:99997;
+  width:4px;height:4px;border-radius:50%;background:rgba(26,115,232,.4);
+  transform:translate(-50%,-50%);animation:ripOut .55s ease-out forwards;}
+@keyframes ripOut{to{transform:translate(-50%,-50%) scale(20);opacity:0;}}
 
-#pbar {
-  position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 9999;
-  background: linear-gradient(90deg, var(--accent), var(--blue));
-  box-shadow: 0 0 15px var(--accent);
-}
+/* ─── PARTICLES CANVAS ─── */
+#pcv{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.4;}
 
 /* ─── TOPBAR ─── */
-.topbar {
-  background: linear-gradient(270deg, #1a1a1a, var(--accent), #1a1a1a);
-  background-size: 300% 100%;
-  animation: tbarWave 8s ease-in-out infinite;
-  color: #fff; text-align: center; font-size: 13px; padding: 10px;
+.topbar{
+  position:relative;
+  background:linear-gradient(270deg,#1a3a5c,#1a73e8,#1a3a5c);
+  background-size:300% 100%;
+  animation:tbarWave 10s ease-in-out infinite;
+  color:#fff;text-align:center;font-size:13px;padding:10px 24px;line-height:1.5;
+  animation:tbarIn .5s var(--ease) both, tbarWave 10s 0.5s ease-in-out infinite;
 }
-@keyframes tbarWave { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
-.topbar a { color: var(--yellow); text-decoration: underline; }
+@keyframes tbarIn{from{transform:translateY(-100%);opacity:0}to{transform:none;opacity:1}}
+@keyframes tbarWave{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.topbar a{color:var(--yellow);text-decoration:underline;}
+.topbar a:hover{color:#fff;}
 
-/* ─── HEADER (FLOATING) ─── */
-header {
-  position: sticky; top: 15px; z-index: 1000;
-  max-width: 1200px; margin: 15px auto;
-  background: rgba(10, 10, 10, 0.7);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border); border-radius: 100px;
-  display: flex; align-items: center; padding: 12px 28px;
-  transition: all 0.3s var(--ease);
+/* ─── HEADER ─── */
+header{
+  position:sticky;top:0;z-index:900;height:64px;
+  background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 28px;gap:0;
+  animation:hdrIn .5s .08s var(--ease) both;
+  transition:box-shadow .3s,border-color .3s;
 }
+@keyframes hdrIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+header.scrolled{box-shadow:var(--sh);}
+.logo-wrap{display:flex;align-items:center;gap:10px;margin-right:28px;flex-shrink:0;}
+.logo-icon{width:32px;height:32px;border-radius:7px;overflow:hidden;background:var(--yellow);
+  flex-shrink:0;transition:transform .4s var(--ease);}
+.logo-icon:hover{transform:rotate(16deg) scale(1.12);}
+.logo-icon img{width:100%;height:100%;object-fit:cover;display:block;}
+.logo-text{font-family:'DM Sans',sans-serif;font-size:17px;font-weight:400;
+  color:var(--text);letter-spacing:-.2px;white-space:nowrap;}
+.logo-text em{color:#6b7b8d;font-style:normal;}
 
-.logo-wrap { display: flex; align-items: center; gap: 10px; margin-right: 28px; }
-.logo-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--yellow); overflow: hidden; }
-.logo-icon img { width: 100%; height: 100%; object-fit: cover; }
-.logo-text { font-family: 'Outfit'; font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
-
-nav { display: flex; align-items: center; gap: 15px; flex: 1; }
-.ni { font-size: 14px; font-weight: 500; color: var(--t2); cursor: pointer; transition: 0.3s; }
-.ni:hover { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+/* ─── NAV ─── */
+nav{display:flex;align-items:center;flex:1;}
+.ni{position:relative;display:flex;align-items:center;gap:3px;font-size:13.5px;
+  font-weight:500;color:var(--t3);padding:0 13px;height:64px;white-space:nowrap;
+  cursor:pointer;border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;}
+.ni:hover{color:var(--blue);border-bottom-color:var(--blue);}
+.ni svg{width:15px;height:15px;fill:currentColor;opacity:.55;}
+.drop,.mega{display:none;position:absolute;top:100%;left:0;background:var(--bg);
+  border:1px solid var(--border);border-top:none;z-index:200;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+  animation:menuIn .16s var(--ease);}
+@keyframes menuIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.ni:hover .drop,.ni:hover .mega{display:block;}
+.drop{min-width:210px;padding:4px;}
+.mega{display:none;min-width:480px;padding:24px 28px;gap:28px;}
+.ni:hover .mega{display:flex;}
+.drop a,.mega a{display:block;padding:9px 12px;font-size:13px;color:var(--t2);
+  border-radius:4px;transition:background .1s,color .1s,transform .15s;}
+.drop a:hover,.mega a:hover{background:var(--bb);color:var(--blue);transform:translateX(3px);}
+.mcol h5{font-size:10.5px;font-weight:600;letter-spacing:1px;text-transform:uppercase;
+  color:var(--t4);margin-bottom:10px;}
+.nav-r{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0;}
+.nav-r>a{font-size:13.5px;font-weight:500;color:var(--t2);padding:7px 10px;
+  border-radius:5px;transition:background .12s,color .12s;white-space:nowrap;}
+.nav-r>a:hover{background:var(--bg2);}
 
 /* ─── BUTTONS ─── */
-.btn {
-  padding: 10px 24px; border-radius: 100px; font-weight: 700; font-size: 14px;
-  cursor: pointer; transition: all 0.3s var(--ease); border: none; font-family: inherit;
+.btn{
+  display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:500;
+  font-family:inherit;padding:9px 20px;border-radius:6px;border:none;cursor:pointer;
+  white-space:nowrap;position:relative;overflow:hidden;
+  transition:transform .2s var(--ease),box-shadow .2s;
 }
-.btn-blue { background: #fff; color: #000; }
-.btn-blue:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--accent-glow); }
-.btn-out { background: transparent; color: #fff; border: 1px solid var(--border); }
-.btn-out:hover { background: var(--border); }
+/* Shine sweep on hover */
+.btn::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.2) 50%,transparent 60%);
+  transform:translateX(-100%) skewX(-12deg);transition:transform .45s;
+}
+.btn:hover::after{transform:translateX(200%) skewX(-12deg);}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(26,115,232,.2);}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-blue:hover{background:var(--bd);}
+.btn-out{background:transparent;color:var(--blue);border:1.5px solid var(--blue);}
+.btn-out:hover{background:var(--bb);}
+.btn-y{background:var(--yellow);color:var(--gold);font-weight:600;}
+.btn-y:hover{background:#f0c800;}
+
+/* ─── HAMBURGER ─── */
+.ham{display:none;flex-direction:column;justify-content:center;align-items:center;
+  gap:5px;width:36px;height:36px;border:1px solid var(--border);border-radius:5px;
+  background:transparent;margin-left:auto;}
+.ham span{display:block;width:16px;height:1.5px;background:var(--t3);
+  border-radius:1px;transition:all .25s;}
+.ham.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.ham.open span:nth-child(2){opacity:0;}
+.ham.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+.mob-menu{display:none;position:fixed;inset:0;z-index:1100;background:var(--bg);
+  flex-direction:column;overflow-y:auto;}
+.mob-menu.open{display:flex;}
+.mob-head{position:sticky;top:0;height:64px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 20px;border-bottom:1px solid var(--border);
+  background:var(--bg);flex-shrink:0;}
+.mob-home{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;
+  color:var(--blue);background:var(--bb);border:1px solid rgba(26,115,232,.2);
+  padding:7px 14px;border-radius:5px;}
+.mob-close{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;
+  color:var(--t3);background:var(--bg2);border:1px solid var(--border);
+  padding:7px 14px;border-radius:5px;}
+.mob-body{padding:8px 18px 56px;}
+.mob-sec{display:block;font-size:10px;font-weight:600;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--t4);padding:18px 8px 5px;
+  border-top:1px solid var(--border);margin-top:6px;}
+.mob-sec:first-child{border-top:none;margin-top:0;padding-top:10px;}
+.mob-link{display:flex;align-items:center;justify-content:space-between;
+  padding:11px 8px;font-size:14px;font-weight:500;color:var(--t2);border-radius:5px;
+  transition:background .1s,color .1s;}
+.mob-link:hover{background:var(--bb);color:var(--blue);}
 
 /* ─── HERO ─── */
-.hero-wrap { max-width: 1200px; margin: 0 auto; padding: 100px 20px 60px; }
-.hero { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center; }
+.hero-wrap{max-width:1400px;margin:0 auto;padding:72px 80px 64px;position:relative;}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center;}
 
-.hero-l h1 { 
-  font-family: 'Outfit'; font-size: clamp(40px, 8vw, 80px); 
-  font-weight: 900; letter-spacing: -4px; line-height: 0.9; margin-bottom: 24px;
+/* Hero left — slides in from left */
+.hero-l{animation:heroL .75s .15s var(--ease) both;}
+@keyframes heroL{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+.hero-l h1{font-size:clamp(28px,3.4vw,50px);font-weight:400;line-height:1.16;
+  letter-spacing:-.5px;color:var(--text);margin-bottom:18px;}
+/* Animated gradient on the bold word */
+.hero-l h1 strong{
+  font-weight:700;
+  background:linear-gradient(90deg,var(--blue) 0%,#4285f4 45%,var(--blue) 100%);
+  background-size:200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:hGrad 4s linear infinite;
 }
-.hero-l h1 strong {
-  background: linear-gradient(90deg, #fff, var(--accent), #fff);
-  background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  animation: shimmer 3s linear infinite;
+@keyframes hGrad{0%{background-position:0%}100%{background-position:200%}}
+.hero-l p{font-size:16px;color:var(--t3);line-height:1.65;margin-bottom:28px;
+  animation:heroL .75s .28s var(--ease) both;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;
+  animation:heroL .75s .38s var(--ease) both;}
+
+/* Hero right — terminal card */
+.hero-r{
+  background:#0f1117;border-radius:10px;padding:28px 30px;color:#fff;
+  min-height:270px;display:flex;flex-direction:column;justify-content:center;
+  border:1px solid rgba(26,115,232,.18);position:relative;overflow:hidden;
+  animation:heroR .75s .22s var(--ease) both;
 }
-@keyframes shimmer { to { background-position: 200% center; } }
-.hero-l p { font-size: 18px; color: var(--t2); margin-bottom: 32px; max-width: 600px; }
-
-/* TERMINAL DATA */
-.hero-r {
-  background: #000; border: 1px solid var(--border); border-radius: 20px;
-  padding: 30px; position: relative; overflow: hidden;
-  box-shadow: 0 40px 100px rgba(0,0,0,0.5);
-  animation: float 6s ease-in-out infinite;
+@keyframes heroR{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+/* Moving top border */
+.hero-r::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 0%,var(--blue) 35%,rgba(255,202,40,.7) 65%,transparent 100%);
+  background-size:200%;animation:borderMove 3s linear infinite;
 }
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
-
-.hr-label { font-size: 10px; font-weight: 700; color: var(--yellow); margin-bottom: 15px; letter-spacing: 2px; }
-.prompt { font-family: monospace; font-size: 13px; color: rgba(255,255,255,0.4); padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-.prompt:hover { color: var(--accent); padding-left: 8px; transition: 0.3s; }
-.hero-badge {
-  font-size: 13px; background: rgba(255, 202, 40, 0.05); border: 1px solid rgba(255, 202, 40, 0.15);
-  color: var(--yellow); padding: 10px 15px; border-radius: 12px; margin-top: 15px;
+@keyframes borderMove{0%{background-position:100%}100%{background-position:-100%}}
+/* Vertical scan line */
+.hero-r::after{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:1px;
+  background:linear-gradient(to bottom,transparent,rgba(26,115,232,.3),transparent);
+  animation:vScan 4s ease-in-out infinite;
 }
-
-/* ─── GRID SECTIONS ─── */
-.section { max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
-.sh { font-family: 'Outfit'; font-size: 42px; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 40px; }
-
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-.card {
-  background: var(--bg-card); border: 1px solid var(--border);
-  padding: 32px; border-radius: 28px; transition: all 0.4s var(--ease);
-  position: relative; overflow: hidden;
+@keyframes vScan{0%,100%{left:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{left:100%;opacity:0}}
+.hr-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--yellow);margin-bottom:16px;display:flex;align-items:center;gap:7px;}
+.hr-label-dot{width:5px;height:5px;border-radius:50%;background:var(--yellow);
+  animation:dotBlink 1.4s step-end infinite;}
+@keyframes dotBlink{0%,100%{opacity:1}50%{opacity:0}}
+.prompt{font-size:13px;color:rgba(255,255,255,.5);padding:9px 8px;
+  border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;min-height:38px;
+  transition:color .15s,padding-left .2s,background .15s;border-radius:4px;}
+.prompt:last-of-type{border-bottom:none;}
+.prompt:hover{color:rgba(255,255,255,.9);padding-left:12px;background:rgba(26,115,232,.08);}
+.hero-badge{
+  font-size:13px;background:rgba(255,202,40,.07);border:1px solid rgba(255,202,40,.18);
+  color:var(--yellow);padding:9px 13px;border-radius:6px;margin-top:14px;
+  animation:badgePulse 3s ease-in-out infinite;
 }
-.card:hover { transform: translateY(-10px); border-color: var(--accent); background: #0f0f0f; }
-
-.ncard-img, .fcard-thumb, .tcard-thumb { font-size: 40px; margin-bottom: 20px; transition: 0.4s; }
-.card:hover .ncard-img { transform: scale(1.2) rotate(10deg); }
-
-/* ─── STATS ─── */
-.stats-row { 
-  display: flex; justify-content: space-around; padding: 100px 0; 
-  border-top: 1px solid var(--border); margin: 60px 0;
+@keyframes badgePulse{
+  0%,100%{border-color:rgba(255,202,40,.18);}
+  50%{border-color:rgba(255,202,40,.5);}
 }
-.stat-num { font-size: 56px; font-weight: 900; color: var(--accent); font-family: 'Outfit'; letter-spacing: -2px; }
-.stat-lbl { color: var(--t3); text-transform: uppercase; letter-spacing: 2px; font-size: 12px; margin-top: 10px; }
+.hero-badge a{color:var(--yellow);text-decoration:underline;}
+
+/* ─── NEWS ─── */
+.news-sec{border-top:1px solid var(--border);}
+.news-in{max-width:1400px;margin:0 auto;padding:0 80px;}
+.news-tabs{display:flex;position:relative;border-bottom:1px solid var(--border);}
+.ntab{font-size:13.5px;font-weight:500;color:var(--t3);padding:14px 20px;border:none;
+  background:transparent;border-bottom:2px solid transparent;margin-bottom:-1px;
+  cursor:pointer;transition:color .15s;white-space:nowrap;}
+.ntab.active,.ntab:hover{color:var(--blue);}
+.ntab.active{border-bottom-color:var(--blue);}
+.tab-ink{position:absolute;bottom:0;height:2px;background:var(--blue);pointer-events:none;
+  transition:left .22s var(--ease),width .22s var(--ease);}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:24px 0;}
+.ncard{
+  display:flex;gap:14px;align-items:flex-start;padding:16px;
+  border:1px solid var(--border);border-radius:8px;cursor:pointer;position:relative;overflow:hidden;
+  transition:border-color .2s,transform .25s var(--ease),box-shadow .25s;
+  background:var(--bg);
+}
+/* Sheen on hover */
+.ncard::before{content:'';position:absolute;top:0;left:-100%;width:55%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(26,115,232,.04),transparent);
+  transition:left .5s;}
+.ncard:hover::before{left:150%;}
+.ncard:hover{border-color:rgba(26,115,232,.4);transform:translateY(-3px);box-shadow:var(--sh);}
+.ncard-img{width:48px;height:48px;border-radius:6px;background:var(--bg2);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;
+  border:1px solid var(--border);transition:transform .35s var(--ease);}
+.ncard:hover .ncard-img{transform:scale(1.12) rotate(5deg);}
+.ncard-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--t4);margin-bottom:4px;}
+.ncard-ttl{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;}
+
+/* ─── DIVIDER ─── */
+.divider{border:none;border-top:1px solid var(--border);}
+
+/* ─── SECTION ─── */
+.section{max-width:1400px;margin:0 auto;padding:60px 80px;}
+
+/* Section headings with animated underline */
+.sh{
+  font-size:clamp(22px,2.5vw,32px);font-weight:400;letter-spacing:-.3px;
+  line-height:1.2;margin-bottom:10px;display:inline-block;position:relative;
+}
+.sh::after{
+  content:'';position:absolute;bottom:-5px;left:0;height:2px;width:0;
+  background:linear-gradient(90deg,var(--blue),rgba(26,115,232,.3));
+  transition:width .8s var(--ease);
+}
+.sh.vis::after{width:48px;}
+.sp{font-size:15px;color:var(--t3);margin-bottom:28px;line-height:1.65;max-width:600px;}
+
+/* ─── FEATURE ─── */
+.feat-sec{
+  background:var(--bg2);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.feat-in{max-width:1400px;margin:0 auto;padding:60px 80px;}
+.feat-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:28px;}
+.ftab{font-size:13.5px;font-weight:500;color:var(--t3);padding:12px 18px;border:none;
+  background:transparent;border-bottom:2px solid transparent;margin-bottom:-1px;
+  cursor:pointer;transition:color .15s,border-color .15s;}
+.ftab.active,.ftab:hover{color:var(--blue);}
+.ftab.active{border-bottom-color:var(--blue);}
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.fcard{
+  background:var(--bg);border:1px solid var(--border);border-radius:8px;
+  overflow:hidden;cursor:pointer;position:relative;
+  transition:border-color .2s,transform .3s var(--ease),box-shadow .3s;
+}
+.fcard:hover{border-color:rgba(26,115,232,.4);box-shadow:0 6px 20px rgba(26,115,232,.08);}
+/* Inner glow on hover */
+.fcard::after{content:'';position:absolute;inset:0;border-radius:8px;
+  background:radial-gradient(circle at 50% 0%,rgba(26,115,232,.06),transparent 70%);
+  opacity:0;transition:opacity .3s;pointer-events:none;}
+.fcard:hover::after{opacity:1;}
+.fcard-thumb{
+  height:120px;display:flex;align-items:center;justify-content:center;font-size:34px;
+  background:#0f1117;transition:transform .4s var(--ease);}
+.fcard:hover .fcard-thumb{transform:scale(1.1) translateY(-4px);}
+.fcard-body{padding:14px 16px;font-size:13px;color:var(--t2);line-height:1.5;font-weight:500;}
+.feat-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-top:24px;}
+.fcta{
+  display:flex;align-items:center;gap:12px;padding:14px 18px;
+  border:1px solid var(--border);border-radius:8px;background:var(--bg);
+  flex:1;min-width:180px;cursor:pointer;position:relative;overflow:hidden;
+  transition:border-color .2s,background .2s,transform .2s,box-shadow .2s;
+}
+/* Bottom line reveal */
+.fcta::before{content:'';position:absolute;bottom:0;left:0;height:2px;width:0;
+  background:var(--blue);transition:width .3s;}
+.fcta:hover{border-color:rgba(26,115,232,.4);background:var(--bb);
+  transform:translateY(-2px);box-shadow:0 4px 12px rgba(26,115,232,.08);}
+.fcta:hover::before{width:100%;}
+.fcta-ico{font-size:22px;transition:transform .3s var(--ease);}
+.fcta:hover .fcta-ico{transform:scale(1.25) rotate(-8deg);}
+.fcta-txt p{font-size:11px;color:var(--t4);margin-bottom:2px;}
+.fcta-txt strong{font-size:13px;color:var(--text);}
+
+/* ─── TEAM ─── */
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:28px;}
+.tcard{
+  border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;
+  transition:border-color .2s,transform .25s var(--ease),box-shadow .25s;background:var(--bg);
+}
+.tcard:hover{border-color:rgba(26,115,232,.4);transform:translateY(-4px);box-shadow:var(--shl);}
+.tcard-thumb{
+  height:100px;background:var(--bg2);display:flex;align-items:center;
+  justify-content:center;font-size:30px;border-bottom:1px solid var(--border);
+  transition:transform .35s var(--ease),background .3s;}
+.tcard:hover .tcard-thumb{transform:scale(1.15) rotate(5deg);background:#e8f0fe;}
+.tcard-body{padding:14px 16px;}
+.tcard-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.tcard-desc{font-size:12px;color:var(--t3);line-height:1.5;}
+
+/* ─── STATS ROW — animated counters woven between team and CTA ─── */
+.stats-row{
+  max-width:1400px;margin:0 auto;padding:0 80px 60px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  border-top:1px solid var(--border);
+}
+.stat-item{
+  padding:36px 24px;border-right:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.stat-item:last-child{border-right:none;}
+/* Animated blue line top on hover */
+.stat-item::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;
+  background:var(--blue);transition:width .4s var(--ease);}
+.stat-item:hover::before{width:100%;}
+.stat-num{
+  font-size:40px;font-weight:300;color:var(--blue);letter-spacing:-1px;
+  display:block;margin-bottom:6px;line-height:1;
+}
+.stat-lbl{font-size:13px;color:var(--t3);}
+
+/* ─── CTA BAND ─── */
+.cta-band{
+  background:var(--bg2);border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);position:relative;overflow:hidden;
+}
+/* Sweeping top line */
+.cta-band::before{
+  content:'';position:absolute;top:0;left:-100%;width:100%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--blue),rgba(255,202,40,.7),var(--blue),transparent);
+  animation:ctaSweep 5s linear infinite;
+}
+@keyframes ctaSweep{0%{left:-100%}100%{left:100%}}
+.cta-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;}
+.cta-item{padding:44px 80px;border-right:1px solid var(--border);
+  transition:background .25s;}
+.cta-item:last-child{border-right:none;}
+.cta-item:hover{background:rgba(26,115,232,.025);}
+.cta-item h3{font-size:17px;font-weight:400;line-height:1.5;margin-bottom:18px;}
+.cta-item h3 strong{font-weight:700;}
 
 /* ─── FOOTER ─── */
-footer { border-top: 1px solid var(--border); padding: 100px 20px; background: #000; }
-.footer-main { 
-  max-width: 1200px; margin: 0 auto; display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;
+footer{border-top:1px solid var(--border);background:var(--bg);position:relative;}
+/* Animated top line */
+footer::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--blue),var(--yellow),var(--blue),transparent);
+  background-size:200%;animation:footLine 6s linear infinite;
 }
-.fcol h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--t3); margin-bottom: 20px; }
-.fcol a { display: block; color: var(--t2); margin-bottom: 12px; font-size: 14px; transition: 0.3s; }
-.fcol a:hover { color: var(--accent); transform: translateX(5px); }
+@keyframes footLine{0%{background-position:0%}100%{background-position:200%}}
+.footer-main{max-width:1400px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:32px;padding:52px 80px 44px;}
+.fcol h4{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--text);margin-bottom:16px;}
+.fcol a{display:block;font-size:13px;color:var(--t3);padding:3px 0;
+  transition:color .15s,transform .15s;}
+.fcol a:hover{color:var(--blue);transform:translateX(4px);}
+.footer-bot{border-top:1px solid var(--border);max-width:1400px;margin:0 auto;
+  padding:16px 80px;display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;}
+.footer-bot p{font-size:12px;color:var(--t4);}
+.fbl{display:flex;gap:20px;}
+.fbl a{font-size:12px;color:var(--t3);transition:color .15s;}
+.fbl a:hover{color:var(--blue);}
+
+/* ─── SCROLL REVEAL — pure CSS keyframes ─── */
+@keyframes riseUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
+@keyframes slideL{from{opacity:0;transform:translateX(-32px)}to{opacity:1;transform:none}}
+@keyframes slideR{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:none}}
+
+/* All reveal elements: visible immediately, animate in */
+.rUp   {animation:riseUp .7s var(--ease) both;}
+.rLeft {animation:slideL .7s var(--ease) both;}
+.rRight{animation:slideR .7s var(--ease) both;}
+.d1{animation-delay:.08s;} .d2{animation-delay:.16s;}
+.d3{animation-delay:.24s;} .d4{animation-delay:.32s;}
+
+/* Section headings always animate underline once visible */
+.sh.vis::after{width:48px;}
+
+/* ─── ALWAYS-ON CSS ANIMATIONS ─── */
+
+/* Hero h1 slides up on load */
+.hero-l h1  {animation:riseUp .75s .1s var(--ease) both;}
+.hero-l p   {animation:riseUp .75s .22s var(--ease) both;}
+.hero-btns  {animation:riseUp .75s .32s var(--ease) both;}
+
+/* News cards stagger up */
+.ncard:nth-child(1){animation:riseUp .65s .05s var(--ease) both;}
+.ncard:nth-child(2){animation:riseUp .65s .14s var(--ease) both;}
+.ncard:nth-child(3){animation:riseUp .65s .23s var(--ease) both;}
+
+/* Feature cards stagger */
+.fcard:nth-child(1){animation:riseUp .6s .05s var(--ease) both;}
+.fcard:nth-child(2){animation:riseUp .6s .13s var(--ease) both;}
+.fcard:nth-child(3){animation:riseUp .6s .21s var(--ease) both;}
+.fcard:nth-child(4){animation:riseUp .6s .29s var(--ease) both;}
+
+/* Feature CTAs stagger */
+.fcta:nth-child(1){animation:riseUp .6s .08s var(--ease) both;}
+.fcta:nth-child(2){animation:riseUp .6s .16s var(--ease) both;}
+.fcta:nth-child(3){animation:riseUp .6s .24s var(--ease) both;}
+
+/* Team cards stagger */
+.tcard:nth-child(1){animation:riseUp .65s .05s var(--ease) both;}
+.tcard:nth-child(2){animation:riseUp .65s .13s var(--ease) both;}
+.tcard:nth-child(3){animation:riseUp .65s .21s var(--ease) both;}
+.tcard:nth-child(4){animation:riseUp .65s .29s var(--ease) both;}
+
+/* Stat items stagger */
+.stat-item:nth-child(1){animation:riseUp .65s .06s var(--ease) both;}
+.stat-item:nth-child(2){animation:riseUp .65s .14s var(--ease) both;}
+.stat-item:nth-child(3){animation:riseUp .65s .22s var(--ease) both;}
+.stat-item:nth-child(4){animation:riseUp .65s .30s var(--ease) both;}
+
+/* Footer columns stagger */
+.fcol:nth-child(1){animation:riseUp .6s .04s var(--ease) both;}
+.fcol:nth-child(2){animation:riseUp .6s .10s var(--ease) both;}
+.fcol:nth-child(3){animation:riseUp .6s .16s var(--ease) both;}
+.fcol:nth-child(4){animation:riseUp .6s .22s var(--ease) both;}
+
+/* CTA items */
+.cta-item:nth-child(1){animation:slideL .7s .08s var(--ease) both;}
+.cta-item:nth-child(2){animation:slideR .7s .16s var(--ease) both;}
+
+/* Infinite: stat numbers glow */
+.stat-num{
+  animation:statGlow 3s ease-in-out infinite;
+  display:block;
+}
+@keyframes statGlow{
+  0%,100%{color:var(--blue);}
+  50%{color:#4285f4;text-shadow:0 0 20px rgba(26,115,232,.25);}
+}
+
+/* Infinite: hero badge border pulse */
+.hero-badge{animation:badgePulse 3s ease-in-out infinite;}
+@keyframes badgePulse{
+  0%,100%{border-color:rgba(255,202,40,.18);}
+  50%{border-color:rgba(255,202,40,.55);}
+}
+
+/* Infinite: feature section bg breathe */
+.feat-sec{animation:bgBreath 9s ease-in-out infinite;}
+@keyframes bgBreath{0%,100%{background:var(--bg2)}50%{background:#eef3fd}}
+
+/* Infinite: divider top line grow */
+.divider{position:relative;}
+.divider::after{content:'';position:absolute;top:-1px;left:0;height:2px;width:0;
+  background:linear-gradient(90deg,var(--blue),rgba(26,115,232,.2));
+  animation:divGrow 4s ease-in-out infinite alternate;}
+@keyframes divGrow{from{width:0;opacity:.4}to{width:40%;opacity:1}}
+
+/* ══════════════════════════════════════════
+   EXTRA ANIMATIONS — 25+ MORE
+══════════════════════════════════════════ */
+
+/* 1. Floating logo bob */
+.logo-wrap { animation: logoBob 4s ease-in-out infinite; }
+@keyframes logoBob {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+
+/* 2. Nav items slide in one by one on load */
+.ni:nth-child(1){ animation: riseUp .5s .1s var(--ease) both; }
+.ni:nth-child(2){ animation: riseUp .5s .17s var(--ease) both; }
+.ni:nth-child(3){ animation: riseUp .5s .24s var(--ease) both; }
+.ni:nth-child(4){ animation: riseUp .5s .31s var(--ease) both; }
+.ni:nth-child(5){ animation: riseUp .5s .38s var(--ease) both; }
+.ni:nth-child(6){ animation: riseUp .5s .45s var(--ease) both; }
+
+/* 3. Nav-right buttons slide in from right */
+.nav-r { animation: slideR .6s .3s var(--ease) both; }
+
+/* 4. Hero right — pulsing border glow */
+.hero-r {
+  animation: heroR .75s .22s var(--ease) both, borderGlow 4s 1s ease-in-out infinite;
+}
+@keyframes borderGlow {
+  0%,100% { border-color: rgba(26,115,232,.18); box-shadow: none; }
+  50%      { border-color: rgba(26,115,232,.4); box-shadow: 0 0 24px rgba(26,115,232,.08); }
+}
+
+/* 5. Prompt lines type-flash on hover */
+.prompt::before {
+  content: '›';
+  color: var(--blue);
+  margin-right: 6px;
+  opacity: 0;
+  display: inline-block;
+  transform: translateX(-4px);
+  transition: opacity .2s, transform .2s;
+}
+.prompt:hover::before { opacity: 1; transform: translateX(0); }
+
+/* 6. News section slides in from bottom */
+.news-sec { animation: riseUp .7s .2s var(--ease) both; }
+
+/* 7. Tab ink bar appears */
+.tab-ink { animation: slideL .4s .5s var(--ease) both; }
+
+/* 8. Section headings fade + slide left */
+.sh { animation: slideL .65s var(--ease) both; }
+.sp { animation: riseUp .65s .1s var(--ease) both; }
+
+/* 9. Feature tabs fade in */
+.feat-tabs { animation: riseUp .5s .15s var(--ease) both; }
+
+/* 10. fcard thumb — continuous float on hover */
+.fcard:hover .fcard-thumb { animation: thumbFloat .6s var(--ease) forwards; }
+@keyframes thumbFloat { to { transform: scale(1.12) translateY(-6px); } }
+
+/* 11. Team section heading underline shimmer */
+.sh::after {
+  background: linear-gradient(90deg, var(--blue), #4285f4, var(--blue));
+  background-size: 200%;
+  animation: underlineShimmer 3s linear infinite;
+}
+@keyframes underlineShimmer { 0%{background-position:0%} 100%{background-position:200%} }
+
+/* 12. Stat items — top accent line draws on load */
+.stat-item::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; height: 2px; width: 0;
+  background: var(--blue);
+  animation: statLine 1.2s var(--ease) both;
+}
+.stat-item:nth-child(1)::after { animation-delay: .1s; }
+.stat-item:nth-child(2)::after { animation-delay: .2s; }
+.stat-item:nth-child(3)::after { animation-delay: .3s; }
+.stat-item:nth-child(4)::after { animation-delay: .4s; }
+@keyframes statLine { from{width:0} to{width:100%} }
+
+/* 13. Stat numbers — count-up bounce */
+.stat-num { animation: statGlow 3s ease-in-out infinite, statBounce .6s var(--ease) both; }
+@keyframes statBounce { from{opacity:0;transform:scale(.5)} 70%{transform:scale(1.1)} to{opacity:1;transform:scale(1)} }
+
+/* 14. CTA band — right side fades in from right */
+.cta-band { animation: riseUp .6s var(--ease) both; }
+
+/* 15. CTA items h3 — fade up */
+.cta-item h3 { animation: riseUp .6s .12s var(--ease) both; }
+.cta-item .btn { animation: riseUp .6s .22s var(--ease) both; }
+
+/* 16. Footer heading — letter spacing expands */
+.fcol h4 {
+  animation: headExpand .6s var(--ease) both;
+  letter-spacing: .8px;
+}
+@keyframes headExpand { from{opacity:0;letter-spacing:-.5px} to{opacity:1;letter-spacing:.8px} }
+
+/* 17. Footer links — slide in staggered */
+.fcol a:nth-child(2){ animation: slideL .5s .05s var(--ease) both; }
+.fcol a:nth-child(3){ animation: slideL .5s .10s var(--ease) both; }
+.fcol a:nth-child(4){ animation: slideL .5s .15s var(--ease) both; }
+.fcol a:nth-child(5){ animation: slideL .5s .20s var(--ease) both; }
+
+/* 18. Footer bottom bar fade in */
+.footer-bot { animation: riseUp .5s .3s var(--ease) both; }
+
+/* 19. Topbar link pulse */
+.topbar a {
+  animation: linkPulse 3s ease-in-out infinite;
+}
+@keyframes linkPulse {
+  0%,100%{ opacity:1; }
+  50%    { opacity:.75; }
+}
+
+/* 20. Hero badge — subtle float */
+.hero-badge {
+  animation: badgePulse 3s ease-in-out infinite, badgeFloat 5s ease-in-out infinite;
+}
+@keyframes badgeFloat {
+  0%,100%{ transform:translateY(0); }
+  50%    { transform:translateY(-2px); }
+}
+
+/* 21. ncard image — continuous slow spin on hover */
+.ncard:hover .ncard-img { animation: imgSpin .5s var(--ease) forwards; }
+@keyframes imgSpin { to{ transform:scale(1.14) rotate(8deg); } }
+
+/* 22. Scrollbar styled + progress track */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--blue), #4285f4);
+  border-radius: 10px;
+}
+
+/* 23. Focus rings on interactive elements */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* 24. Header border bottom animates on scroll */
+header.scrolled {
+  border-bottom-color: transparent;
+  animation: hdrIn .5s .08s var(--ease) both, headerBorder .3s var(--ease) forwards;
+}
+@keyframes headerBorder { to{ border-bottom-color: transparent; } }
+
+/* 25. Section divider — bidirectional pulse */
+.divider::before {
+  content:''; position:absolute; top:-1px; right:0;
+  height:2px; width:0; background:linear-gradient(270deg, rgba(255,202,40,.5), transparent);
+  animation: divGrowR 4s ease-in-out infinite alternate;
+}
+@keyframes divGrowR { from{width:0;opacity:.3} to{width:30%;opacity:.8} }
+
+/* 26. Btn-blue infinite subtle pulse when idle */
+.btn-blue {
+  animation: btnPulse 4s ease-in-out infinite;
+}
+@keyframes btnPulse {
+  0%,100%{ box-shadow:0 2px 8px rgba(26,115,232,.2); }
+  50%    { box-shadow:0 4px 18px rgba(26,115,232,.35); }
+}
+
+/* 27. Feature cta row — slides up as a group */
+.feat-ctas { animation: riseUp .65s .35s var(--ease) both; }
+
+/* 28. Hero wrap background subtle radial pulse */
+.hero-wrap::before {
+  content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
+  background: radial-gradient(ellipse 60% 40% at 80% 50%, rgba(26,115,232,.04) 0%, transparent 70%);
+  animation: heroBg 6s ease-in-out infinite alternate;
+}
+@keyframes heroBg {
+  from{ opacity:.5; transform:scale(1); }
+  to  { opacity:1; transform:scale(1.05); }
+}
+
+/* 29. Team section wrapper slide */
+.section { animation: riseUp .6s .05s var(--ease) both; }
+
+/* 30. Stats row — scale in */
+.stats-row { animation: popIn .6s .1s var(--ease) both; }
+@keyframes popIn { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:none} }
 
 /* ─── RESPONSIVE ─── */
-@media (max-width: 768px) {
-  .hero { grid-template-columns: 1fr; }
-  header { margin: 10px; padding: 10px 20px; }
-  nav { display: none; }
-  .stats-row { flex-direction: column; gap: 40px; text-align: center; }
+@media(max-width:1100px){
+  .hero-wrap,.section,.feat-in{padding:48px 40px;}
+  .news-in{padding:0 40px;}
+  .cta-item{padding:36px 40px;}
+  .stats-row{padding:0 40px 48px;}
+  .footer-main{padding:40px;grid-template-columns:repeat(3,1fr);}
+  .footer-bot{padding:16px 40px;}
+  .feat-grid{grid-template-columns:repeat(2,1fr);}
+  .team-grid{grid-template-columns:repeat(2,1fr);}
+  .stats-row{grid-template-columns:repeat(2,1fr);}
 }
-</style>
-</head>
-<body>
-
-<div id="pbar"></div>
-<div class="mesh-bg"></div>
-
-<div class="topbar">
-  Welcome to <strong>Vasuki iTech Labs</strong> — Ecosystem of High Performance Web Infrastructure. <a href="#">Learn More &rarr;</a>
-</div>
-
-<header>
-  <div class="logo-wrap">
-    <div class="logo-icon"><img src="brand-primary.ttf" alt="Icon"></div>
-    <span class="logo-text">VASUKI <em>iTech</em></span>
-  </div>
-  <nav>
-    <div class="ni">Web Dev</div>
-    <div class="ni">Database</div>
-    <div class="ni">Hosting</div>
-    <div class="ni">Academic</div>
-  </nav>
-  <div class="nav-r" style="margin-left:auto; display:flex; gap:10px;">
-    <button class="btn btn-out">Support</button>
-    <button class="btn btn-blue">Launch App</button>
-  </div>
-</header>
-
-<main>
-  <section class="hero-wrap">
-    <div class="hero">
-      <div class="hero-l">
-        <h1>The Future of <strong>Intelligent</strong> Ecosystems</h1>
-        <p>Scaling personal site hosting (GitHub Pages), technical hardware maintenance, and logical academic challenges for Grade 7 & 8.</p>
-        <div class="hero-btns" style="display:flex; gap:12px;">
-          <button class="btn btn-blue">Explore Repos</button>
-          <button class="btn btn-out">Documentation</button>
-        </div>
-      </div>
-
-      <div class="hero-r">
-        <div class="hr-label">● VASUKI_LABS_STATUS</div>
-        <div class="prompt">> Initializing: shauryachr.github.io</div>
-        <div class="prompt">> Initializing: Proboiz961.github.io</div>
-        <div class="prompt">> Sanskrit Mode: Mati, Vad, Likh (Shabdrup/Dhaturup)</div>
-        <div class="prompt">> Hardware: A2485 MacBook Pro Recovery Monitor [OK]</div>
-        <div class="hero-badge">
-          Deployment via <a href="#">GitHub Pages Infrastructure</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <h2 class="sh">Active Nodes</h2>
-    <div class="grid">
-      <div class="card">
-        <div class="ncard-img">🌐</div>
-        <div style="font-weight:700; margin-bottom:8px;">GitHub Hosting</div>
-        <p style="color:var(--t2); font-size:14px;">Management and debugging for personal site repositories.</p>
-      </div>
-      <div class="card">
-        <div class="ncard-img">💻</div>
-        <div style="font-weight:700; margin-bottom:8px;">Linux Systems</div>
-        <p style="color:var(--t2); font-size:14px;">Troubleshooting Puppy Linux and Linux Mint on Dell Vostro 2420.</p>
-      </div>
-      <div class="card">
-        <div class="ncard-img">🏎️</div>
-        <div style="font-weight:700; margin-bottom:8px;">Automotive Specs</div>
-        <p style="color:var(--t2); font-size:14px;">Market analysis for MG Windsor EV, Kia Sonet, and Tata Harrier.</p>
-      </div>
-      <div class="card">
-        <div class="ncard-img">🛡️</div>
-        <div style="font-weight:700; margin-bottom:8px;">Logic Prep</div>
-        <p style="color:var(--t2); font-size:14px;">Olympiad-level Coding-Decoding and Blood Relation modules.</p>
-      </div>
-    </div>
-  </section>
-
-  <div class="stats-row">
-    <div class="stat-item">
-      <div class="stat-num">VIII A</div>
-      <div class="stat-lbl">Academic Level</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">99.9%</div>
-      <div class="stat-lbl">Linux Uptime</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">2+</div>
-      <div class="stat-lbl">Repo Domains</div>
-    </div>
-  </div>
-
-  <section class="section">
-    <h2 class="sh">Founding Architects</h2>
-    <div class="grid">
-      <div class="card">
-        <div class="tcard-thumb">👨‍💻</div>
-        <div style="font-weight:700; margin-bottom:5px;">Shaurya Chauhan</div>
-        <p style="color:var(--t2); font-size:13px;">Lead Web Developer & System Architect</p>
-      </div>
-      <div class="card">
-        <div class="tcard-thumb">💎</div>
-        <div style="font-weight:700; margin-bottom:5px;">Adamya Khairwal</div>
-        <p style="color:var(--t2); font-size:13px;">Team Member & Technology Partner</p>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="footer-main">
-    <div class="fcol">
-      <h4>Platforms</h4>
-      <a href="https://shauryachr.github.io">Personal Portfolio</a>
-      <a href="https://github.com/Proboiz961">Proboiz961 Repo</a>
-      <a href="#">Vasuki iTech Labs</a>
-    </div>
-    <div class="fcol">
-      <h4>Academic</h4>
-      <a href="#">Sanskrit Grammar</a>
-      <a href="#">Logical Reasoning</a>
-      <a href="#">Mathematics VII-A</a>
-    </div>
-    <div class="fcol">
-      <h4>Contact</h4>
-      <a href="#">LinkedIn Profile</a>
-      <a href="#">GitHub Support</a>
-      <a href="#">Team Vasuki</a>
-    </div>
-  </div>
-  <div style="text-align:center; margin-top:80px; color:var(--t3); font-size:12px;">
-    © 2026 Vasuki iTech Labs. Built for Class 8 Academic Excellence.
-  </div>
-</footer>
-
-<script>
-  window.onscroll = function() {
-    let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-    let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    let scrolled = (winScroll / height) * 100;
-    document.getElementById("pbar").style.width = scrolled + "%";
-  };
-</script>
-
-</body>
-</html>
+@media(max-width:768px){
+  nav,.nav-r{display:none;}
+  .ham{display:flex;}
+  header{padding:0 16px;}
+  .hero{grid-template-columns:1fr;padding:0;gap:24px;}
+  .hero-wrap{padding:32px 20px;}
+  .news-in{padding:0 20px;}
+  .news-grid{grid-template-columns:1fr;}
+  .section{padding:36px 20px;}
+  .feat-in{padding:36px 20px;}
+  .feat-grid,.team-grid{grid-template-columns:1fr;}
+  .stats-row{grid-template-columns:repeat(2,1fr);padding:0 20px 36px;}
+  .feat-ctas{flex-direction:column;}
+  .cta-inner{grid-template-columns:1fr;}
+  .cta-item{padding:28px 20px;border-right:none;border-bottom:1px solid var(--border);}
+  .cta-item:last-child{border-bottom:none;}
+  .footer-main{grid-template-columns:repeat(2,1fr);padding:28px 20px;}
+  .
