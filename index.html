@@ -1,1642 +1,261 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vasuki iTech Labs — Ecosystem</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
-<style>
-/* ─── RESET & TOKENS ─── */
-@font-face{font-family:'Brand';src:url('brand-primary.ttf') format('truetype');font-display:swap;}
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --blue:#1a73e8; --bd:#1557b0; --bb:#e8f0fe;
-  --text:#202124; --t2:#3c4043; --t3:#5f6368; --t4:#80868b;
-  --border:#dadce0; --bg:#fff; --bg2:#f8f9fa;
-  --gold:#b8860b; --yellow:#ffca28;
-  --sh: 0 1px 3px rgba(60,64,67,.12), 0 2px 8px rgba(60,64,67,.08);
-  --shl: 0 4px 20px rgba(60,64,67,.14);
-  --ease: cubic-bezier(.16,1,.3,1);
-}
-html{scroll-behavior:smooth;}
-body{font-family:'Brand','Google Sans',sans-serif;color:var(--text);background:var(--bg);overflow-x:hidden;}
-a{text-decoration:none;color:inherit;}
-button{font-family:inherit;cursor:pointer;}
-
-/* ─── SCROLL PROGRESS ─── */
-#pbar{
-  position:fixed;top:0;left:0;height:2px;width:0;z-index:9999;
-  pointer-events:none;
-  background:linear-gradient(90deg,var(--blue),var(--yellow));
-  transition:width .1s linear;
-}
-
-/* ─── CURSOR — normal system cursor ─── */
-*{cursor:auto;}
-a,button,[onclick],.fcard,.tcard,.ncard,.fcta,.stat-item,.ntab,.ftab{cursor:pointer;}
-.crip{position:fixed;pointer-events:none;z-index:99997;
-  width:4px;height:4px;border-radius:50%;background:rgba(26,115,232,.4);
-  transform:translate(-50%,-50%);animation:ripOut .55s ease-out forwards;}
-@keyframes ripOut{to{transform:translate(-50%,-50%) scale(20);opacity:0;}}
-
-/* ─── PARTICLES CANVAS ─── */
-#pcv{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.4;}
-
-/* ─── TOPBAR ─── */
-.topbar{
-  position:relative;
-  background:linear-gradient(270deg,#1a3a5c,#1a73e8,#1a3a5c);
-  background-size:300% 100%;
-  animation:tbarWave 10s ease-in-out infinite;
-  color:#fff;text-align:center;font-size:13px;padding:10px 24px;line-height:1.5;
-  animation:tbarIn .5s var(--ease) both, tbarWave 10s 0.5s ease-in-out infinite;
-}
-@keyframes tbarIn{from{transform:translateY(-100%);opacity:0}to{transform:none;opacity:1}}
-@keyframes tbarWave{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.topbar a{color:var(--yellow);text-decoration:underline;}
-.topbar a:hover{color:#fff;}
-
-/* ─── HEADER ─── */
-header{
-  position:sticky;top:0;z-index:900;height:64px;
-  background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 28px;gap:0;
-  animation:hdrIn .5s .08s var(--ease) both;
-  transition:box-shadow .3s,border-color .3s;
-}
-@keyframes hdrIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
-header.scrolled{box-shadow:var(--sh);}
-.logo-wrap{display:flex;align-items:center;gap:10px;margin-right:28px;flex-shrink:0;}
-.logo-icon{width:32px;height:32px;border-radius:7px;overflow:hidden;background:var(--yellow);
-  flex-shrink:0;transition:transform .4s var(--ease);}
-.logo-icon:hover{transform:rotate(16deg) scale(1.12);}
-.logo-icon img{width:100%;height:100%;object-fit:cover;display:block;}
-.logo-text{font-family:'DM Sans',sans-serif;font-size:17px;font-weight:400;
-  color:var(--text);letter-spacing:-.2px;white-space:nowrap;}
-.logo-text em{color:#6b7b8d;font-style:normal;}
-
-/* ─── NAV ─── */
-nav{display:flex;align-items:center;flex:1;}
-.ni{position:relative;display:flex;align-items:center;gap:3px;font-size:13.5px;
-  font-weight:500;color:var(--t3);padding:0 13px;height:64px;white-space:nowrap;
-  cursor:pointer;border-bottom:2px solid transparent;
-  transition:color .15s,border-color .15s;}
-.ni:hover{color:var(--blue);border-bottom-color:var(--blue);}
-.ni svg{width:15px;height:15px;fill:currentColor;opacity:.55;}
-.drop,.mega{display:none;position:absolute;top:100%;left:0;background:var(--bg);
-  border:1px solid var(--border);border-top:none;z-index:200;
-  box-shadow:0 4px 12px rgba(0,0,0,.08);
-  animation:menuIn .16s var(--ease);}
-@keyframes menuIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-.ni:hover .drop,.ni:hover .mega{display:block;}
-.drop{min-width:210px;padding:4px;}
-.mega{display:none;min-width:480px;padding:24px 28px;gap:28px;}
-.ni:hover .mega{display:flex;}
-.drop a,.mega a{display:block;padding:9px 12px;font-size:13px;color:var(--t2);
-  border-radius:4px;transition:background .1s,color .1s,transform .15s;}
-.drop a:hover,.mega a:hover{background:var(--bb);color:var(--blue);transform:translateX(3px);}
-.mcol h5{font-size:10.5px;font-weight:600;letter-spacing:1px;text-transform:uppercase;
-  color:var(--t4);margin-bottom:10px;}
-.nav-r{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0;}
-.nav-r>a{font-size:13.5px;font-weight:500;color:var(--t2);padding:7px 10px;
-  border-radius:5px;transition:background .12s,color .12s;white-space:nowrap;}
-.nav-r>a:hover{background:var(--bg2);}
-
-/* ─── BUTTONS ─── */
-.btn{
-  display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:500;
-  font-family:inherit;padding:9px 20px;border-radius:6px;border:none;cursor:pointer;
-  white-space:nowrap;position:relative;overflow:hidden;
-  transition:transform .2s var(--ease),box-shadow .2s;
-}
-/* Shine sweep on hover */
-.btn::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.2) 50%,transparent 60%);
-  transform:translateX(-100%) skewX(-12deg);transition:transform .45s;
-}
-.btn:hover::after{transform:translateX(200%) skewX(-12deg);}
-.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(26,115,232,.2);}
-.btn-blue{background:var(--blue);color:#fff;}
-.btn-blue:hover{background:var(--bd);}
-.btn-out{background:transparent;color:var(--blue);border:1.5px solid var(--blue);}
-.btn-out:hover{background:var(--bb);}
-.btn-y{background:var(--yellow);color:var(--gold);font-weight:600;}
-.btn-y:hover{background:#f0c800;}
-
-/* ─── HAMBURGER ─── */
-.ham{display:none;flex-direction:column;justify-content:center;align-items:center;
-  gap:5px;width:36px;height:36px;border:1px solid var(--border);border-radius:5px;
-  background:transparent;margin-left:auto;}
-.ham span{display:block;width:16px;height:1.5px;background:var(--t3);
-  border-radius:1px;transition:all .25s;}
-.ham.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
-.ham.open span:nth-child(2){opacity:0;}
-.ham.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
-.mob-menu{display:none;position:fixed;inset:0;z-index:1100;background:var(--bg);
-  flex-direction:column;overflow-y:auto;}
-.mob-menu.open{display:flex;}
-.mob-head{position:sticky;top:0;height:64px;display:flex;align-items:center;
-  justify-content:space-between;padding:0 20px;border-bottom:1px solid var(--border);
-  background:var(--bg);flex-shrink:0;}
-.mob-home{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;
-  color:var(--blue);background:var(--bb);border:1px solid rgba(26,115,232,.2);
-  padding:7px 14px;border-radius:5px;}
-.mob-close{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;
-  color:var(--t3);background:var(--bg2);border:1px solid var(--border);
-  padding:7px 14px;border-radius:5px;}
-.mob-body{padding:8px 18px 56px;}
-.mob-sec{display:block;font-size:10px;font-weight:600;letter-spacing:1.4px;
-  text-transform:uppercase;color:var(--t4);padding:18px 8px 5px;
-  border-top:1px solid var(--border);margin-top:6px;}
-.mob-sec:first-child{border-top:none;margin-top:0;padding-top:10px;}
-.mob-link{display:flex;align-items:center;justify-content:space-between;
-  padding:11px 8px;font-size:14px;font-weight:500;color:var(--t2);border-radius:5px;
-  transition:background .1s,color .1s;}
-.mob-link:hover{background:var(--bb);color:var(--blue);}
-
-/* ─── HERO ─── */
-.hero-wrap{max-width:1400px;margin:0 auto;padding:72px 80px 64px;position:relative;}
-.hero{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center;}
-
-/* Hero left — slides in from left */
-.hero-l{animation:heroL .75s .15s var(--ease) both;}
-@keyframes heroL{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
-.hero-l h1{font-size:clamp(28px,3.4vw,50px);font-weight:400;line-height:1.16;
-  letter-spacing:-.5px;color:var(--text);margin-bottom:18px;}
-/* Animated gradient on the bold word */
-.hero-l h1 strong{
-  font-weight:700;
-  background:linear-gradient(90deg,var(--blue) 0%,#4285f4 45%,var(--blue) 100%);
-  background-size:200%;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  animation:hGrad 4s linear infinite;
-}
-@keyframes hGrad{0%{background-position:0%}100%{background-position:200%}}
-.hero-l p{font-size:16px;color:var(--t3);line-height:1.65;margin-bottom:28px;
-  animation:heroL .75s .28s var(--ease) both;}
-.hero-btns{display:flex;gap:12px;flex-wrap:wrap;
-  animation:heroL .75s .38s var(--ease) both;}
-
-/* Hero right — terminal card */
-.hero-r{
-  background:#0f1117;border-radius:10px;padding:28px 30px;color:#fff;
-  min-height:270px;display:flex;flex-direction:column;justify-content:center;
-  border:1px solid rgba(26,115,232,.18);position:relative;overflow:hidden;
-  animation:heroR .75s .22s var(--ease) both;
-}
-@keyframes heroR{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
-/* Moving top border */
-.hero-r::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent 0%,var(--blue) 35%,rgba(255,202,40,.7) 65%,transparent 100%);
-  background-size:200%;animation:borderMove 3s linear infinite;
-}
-@keyframes borderMove{0%{background-position:100%}100%{background-position:-100%}}
-/* Vertical scan line */
-.hero-r::after{
-  content:'';position:absolute;top:0;left:0;bottom:0;width:1px;
-  background:linear-gradient(to bottom,transparent,rgba(26,115,232,.3),transparent);
-  animation:vScan 4s ease-in-out infinite;
-}
-@keyframes vScan{0%,100%{left:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{left:100%;opacity:0}}
-.hr-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  color:var(--yellow);margin-bottom:16px;display:flex;align-items:center;gap:7px;}
-.hr-label-dot{width:5px;height:5px;border-radius:50%;background:var(--yellow);
-  animation:dotBlink 1.4s step-end infinite;}
-@keyframes dotBlink{0%,100%{opacity:1}50%{opacity:0}}
-.prompt{font-size:13px;color:rgba(255,255,255,.5);padding:9px 8px;
-  border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;min-height:38px;
-  transition:color .15s,padding-left .2s,background .15s;border-radius:4px;}
-.prompt:last-of-type{border-bottom:none;}
-.prompt:hover{color:rgba(255,255,255,.9);padding-left:12px;background:rgba(26,115,232,.08);}
-.hero-badge{
-  font-size:13px;background:rgba(255,202,40,.07);border:1px solid rgba(255,202,40,.18);
-  color:var(--yellow);padding:9px 13px;border-radius:6px;margin-top:14px;
-  animation:badgePulse 3s ease-in-out infinite;
-}
-@keyframes badgePulse{
-  0%,100%{border-color:rgba(255,202,40,.18);}
-  50%{border-color:rgba(255,202,40,.5);}
-}
-.hero-badge a{color:var(--yellow);text-decoration:underline;}
-
-/* ─── NEWS ─── */
-.news-sec{border-top:1px solid var(--border);}
-.news-in{max-width:1400px;margin:0 auto;padding:0 80px;}
-.news-tabs{display:flex;position:relative;border-bottom:1px solid var(--border);}
-.ntab{font-size:13.5px;font-weight:500;color:var(--t3);padding:14px 20px;border:none;
-  background:transparent;border-bottom:2px solid transparent;margin-bottom:-1px;
-  cursor:pointer;transition:color .15s;white-space:nowrap;}
-.ntab.active,.ntab:hover{color:var(--blue);}
-.ntab.active{border-bottom-color:var(--blue);}
-.tab-ink{position:absolute;bottom:0;height:2px;background:var(--blue);pointer-events:none;
-  transition:left .22s var(--ease),width .22s var(--ease);}
-.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:24px 0;}
-.ncard{
-  display:flex;gap:14px;align-items:flex-start;padding:16px;
-  border:1px solid var(--border);border-radius:8px;cursor:pointer;position:relative;overflow:hidden;
-  transition:border-color .2s,transform .25s var(--ease),box-shadow .25s;
-  background:var(--bg);
-}
-/* Sheen on hover */
-.ncard::before{content:'';position:absolute;top:0;left:-100%;width:55%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(26,115,232,.04),transparent);
-  transition:left .5s;}
-.ncard:hover::before{left:150%;}
-.ncard:hover{border-color:rgba(26,115,232,.4);transform:translateY(-3px);box-shadow:var(--sh);}
-.ncard-img{width:48px;height:48px;border-radius:6px;background:var(--bg2);
-  flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;
-  border:1px solid var(--border);transition:transform .35s var(--ease);}
-.ncard:hover .ncard-img{transform:scale(1.12) rotate(5deg);}
-.ncard-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;
-  color:var(--t4);margin-bottom:4px;}
-.ncard-ttl{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;}
-
-/* ─── DIVIDER ─── */
-.divider{border:none;border-top:1px solid var(--border);}
-
-/* ─── SECTION ─── */
-.section{max-width:1400px;margin:0 auto;padding:60px 80px;}
-
-/* Section headings with animated underline */
-.sh{
-  font-size:clamp(22px,2.5vw,32px);font-weight:400;letter-spacing:-.3px;
-  line-height:1.2;margin-bottom:10px;display:inline-block;position:relative;
-}
-.sh::after{
-  content:'';position:absolute;bottom:-5px;left:0;height:2px;width:0;
-  background:linear-gradient(90deg,var(--blue),rgba(26,115,232,.3));
-  transition:width .8s var(--ease);
-}
-.sh.vis::after{width:48px;}
-.sp{font-size:15px;color:var(--t3);margin-bottom:28px;line-height:1.65;max-width:600px;}
-
-/* ─── FEATURE ─── */
-.feat-sec{
-  background:var(--bg2);
-  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-}
-.feat-in{max-width:1400px;margin:0 auto;padding:60px 80px;}
-.feat-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:28px;}
-.ftab{font-size:13.5px;font-weight:500;color:var(--t3);padding:12px 18px;border:none;
-  background:transparent;border-bottom:2px solid transparent;margin-bottom:-1px;
-  cursor:pointer;transition:color .15s,border-color .15s;}
-.ftab.active,.ftab:hover{color:var(--blue);}
-.ftab.active{border-bottom-color:var(--blue);}
-.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
-.fcard{
-  background:var(--bg);border:1px solid var(--border);border-radius:8px;
-  overflow:hidden;cursor:pointer;position:relative;
-  transition:border-color .2s,transform .3s var(--ease),box-shadow .3s;
-}
-.fcard:hover{border-color:rgba(26,115,232,.4);box-shadow:0 6px 20px rgba(26,115,232,.08);}
-/* Inner glow on hover */
-.fcard::after{content:'';position:absolute;inset:0;border-radius:8px;
-  background:radial-gradient(circle at 50% 0%,rgba(26,115,232,.06),transparent 70%);
-  opacity:0;transition:opacity .3s;pointer-events:none;}
-.fcard:hover::after{opacity:1;}
-.fcard-thumb{
-  height:120px;display:flex;align-items:center;justify-content:center;font-size:34px;
-  background:#0f1117;transition:transform .4s var(--ease);}
-.fcard:hover .fcard-thumb{transform:scale(1.1) translateY(-4px);}
-.fcard-body{padding:14px 16px;font-size:13px;color:var(--t2);line-height:1.5;font-weight:500;}
-.feat-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-top:24px;}
-.fcta{
-  display:flex;align-items:center;gap:12px;padding:14px 18px;
-  border:1px solid var(--border);border-radius:8px;background:var(--bg);
-  flex:1;min-width:180px;cursor:pointer;position:relative;overflow:hidden;
-  transition:border-color .2s,background .2s,transform .2s,box-shadow .2s;
-}
-/* Bottom line reveal */
-.fcta::before{content:'';position:absolute;bottom:0;left:0;height:2px;width:0;
-  background:var(--blue);transition:width .3s;}
-.fcta:hover{border-color:rgba(26,115,232,.4);background:var(--bb);
-  transform:translateY(-2px);box-shadow:0 4px 12px rgba(26,115,232,.08);}
-.fcta:hover::before{width:100%;}
-.fcta-ico{font-size:22px;transition:transform .3s var(--ease);}
-.fcta:hover .fcta-ico{transform:scale(1.25) rotate(-8deg);}
-.fcta-txt p{font-size:11px;color:var(--t4);margin-bottom:2px;}
-.fcta-txt strong{font-size:13px;color:var(--text);}
-
-/* ─── TEAM ─── */
-.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:28px;}
-.tcard{
-  border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;
-  transition:border-color .2s,transform .25s var(--ease),box-shadow .25s;background:var(--bg);
-}
-.tcard:hover{border-color:rgba(26,115,232,.4);transform:translateY(-4px);box-shadow:var(--shl);}
-.tcard-thumb{
-  height:100px;background:var(--bg2);display:flex;align-items:center;
-  justify-content:center;font-size:30px;border-bottom:1px solid var(--border);
-  transition:transform .35s var(--ease),background .3s;}
-.tcard:hover .tcard-thumb{transform:scale(1.15) rotate(5deg);background:#e8f0fe;}
-.tcard-body{padding:14px 16px;}
-.tcard-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
-.tcard-desc{font-size:12px;color:var(--t3);line-height:1.5;}
-
-/* ─── STATS ROW — animated counters woven between team and CTA ─── */
-.stats-row{
-  max-width:1400px;margin:0 auto;padding:0 80px 60px;
-  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
-  border-top:1px solid var(--border);
-}
-.stat-item{
-  padding:36px 24px;border-right:1px solid var(--border);
-  position:relative;overflow:hidden;
-}
-.stat-item:last-child{border-right:none;}
-/* Animated blue line top on hover */
-.stat-item::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;
-  background:var(--blue);transition:width .4s var(--ease);}
-.stat-item:hover::before{width:100%;}
-.stat-num{
-  font-size:40px;font-weight:300;color:var(--blue);letter-spacing:-1px;
-  display:block;margin-bottom:6px;line-height:1;
-}
-.stat-lbl{font-size:13px;color:var(--t3);}
-
-/* ─── CTA BAND ─── */
-.cta-band{
-  background:var(--bg2);border-top:1px solid var(--border);
-  border-bottom:1px solid var(--border);position:relative;overflow:hidden;
-}
-/* Sweeping top line */
-.cta-band::before{
-  content:'';position:absolute;top:0;left:-100%;width:100%;height:2px;
-  background:linear-gradient(90deg,transparent,var(--blue),rgba(255,202,40,.7),var(--blue),transparent);
-  animation:ctaSweep 5s linear infinite;
-}
-@keyframes ctaSweep{0%{left:-100%}100%{left:100%}}
-.cta-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;}
-.cta-item{padding:44px 80px;border-right:1px solid var(--border);
-  transition:background .25s;}
-.cta-item:last-child{border-right:none;}
-.cta-item:hover{background:rgba(26,115,232,.025);}
-.cta-item h3{font-size:17px;font-weight:400;line-height:1.5;margin-bottom:18px;}
-.cta-item h3 strong{font-weight:700;}
-
-/* ─── FOOTER ─── */
-footer{border-top:1px solid var(--border);background:var(--bg);position:relative;}
-/* Animated top line */
-footer::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--blue),var(--yellow),var(--blue),transparent);
-  background-size:200%;animation:footLine 6s linear infinite;
-}
-@keyframes footLine{0%{background-position:0%}100%{background-position:200%}}
-.footer-main{max-width:1400px;margin:0 auto;
-  display:grid;grid-template-columns:repeat(4,1fr);gap:32px;padding:52px 80px 44px;}
-.fcol h4{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;
-  color:var(--text);margin-bottom:16px;}
-.fcol a{display:block;font-size:13px;color:var(--t3);padding:3px 0;
-  transition:color .15s,transform .15s;}
-.fcol a:hover{color:var(--blue);transform:translateX(4px);}
-.footer-bot{border-top:1px solid var(--border);max-width:1400px;margin:0 auto;
-  padding:16px 80px;display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:12px;}
-.footer-bot p{font-size:12px;color:var(--t4);}
-.fbl{display:flex;gap:20px;}
-.fbl a{font-size:12px;color:var(--t3);transition:color .15s;}
-.fbl a:hover{color:var(--blue);}
-
-/* ─── SCROLL REVEAL — pure CSS keyframes ─── */
-@keyframes riseUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
-@keyframes slideL{from{opacity:0;transform:translateX(-32px)}to{opacity:1;transform:none}}
-@keyframes slideR{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:none}}
-
-/* All reveal elements: visible immediately, animate in */
-.rUp   {animation:riseUp .7s var(--ease) both;}
-.rLeft {animation:slideL .7s var(--ease) both;}
-.rRight{animation:slideR .7s var(--ease) both;}
-.d1{animation-delay:.08s;} .d2{animation-delay:.16s;}
-.d3{animation-delay:.24s;} .d4{animation-delay:.32s;}
-
-/* Section headings always animate underline once visible */
-.sh.vis::after{width:48px;}
-
-/* ─── ALWAYS-ON CSS ANIMATIONS ─── */
-
-/* Hero h1 slides up on load */
-.hero-l h1  {animation:riseUp .75s .1s var(--ease) both;}
-.hero-l p   {animation:riseUp .75s .22s var(--ease) both;}
-.hero-btns  {animation:riseUp .75s .32s var(--ease) both;}
-
-/* News cards stagger up */
-.ncard:nth-child(1){animation:riseUp .65s .05s var(--ease) both;}
-.ncard:nth-child(2){animation:riseUp .65s .14s var(--ease) both;}
-.ncard:nth-child(3){animation:riseUp .65s .23s var(--ease) both;}
-
-/* Feature cards stagger */
-.fcard:nth-child(1){animation:riseUp .6s .05s var(--ease) both;}
-.fcard:nth-child(2){animation:riseUp .6s .13s var(--ease) both;}
-.fcard:nth-child(3){animation:riseUp .6s .21s var(--ease) both;}
-.fcard:nth-child(4){animation:riseUp .6s .29s var(--ease) both;}
-
-/* Feature CTAs stagger */
-.fcta:nth-child(1){animation:riseUp .6s .08s var(--ease) both;}
-.fcta:nth-child(2){animation:riseUp .6s .16s var(--ease) both;}
-.fcta:nth-child(3){animation:riseUp .6s .24s var(--ease) both;}
-
-/* Team cards stagger */
-.tcard:nth-child(1){animation:riseUp .65s .05s var(--ease) both;}
-.tcard:nth-child(2){animation:riseUp .65s .13s var(--ease) both;}
-.tcard:nth-child(3){animation:riseUp .65s .21s var(--ease) both;}
-.tcard:nth-child(4){animation:riseUp .65s .29s var(--ease) both;}
-
-/* Stat items stagger */
-.stat-item:nth-child(1){animation:riseUp .65s .06s var(--ease) both;}
-.stat-item:nth-child(2){animation:riseUp .65s .14s var(--ease) both;}
-.stat-item:nth-child(3){animation:riseUp .65s .22s var(--ease) both;}
-.stat-item:nth-child(4){animation:riseUp .65s .30s var(--ease) both;}
-
-/* Footer columns stagger */
-.fcol:nth-child(1){animation:riseUp .6s .04s var(--ease) both;}
-.fcol:nth-child(2){animation:riseUp .6s .10s var(--ease) both;}
-.fcol:nth-child(3){animation:riseUp .6s .16s var(--ease) both;}
-.fcol:nth-child(4){animation:riseUp .6s .22s var(--ease) both;}
-
-/* CTA items */
-.cta-item:nth-child(1){animation:slideL .7s .08s var(--ease) both;}
-.cta-item:nth-child(2){animation:slideR .7s .16s var(--ease) both;}
-
-/* Infinite: stat numbers glow */
-.stat-num{
-  animation:statGlow 3s ease-in-out infinite;
-  display:block;
-}
-@keyframes statGlow{
-  0%,100%{color:var(--blue);}
-  50%{color:#4285f4;text-shadow:0 0 20px rgba(26,115,232,.25);}
-}
-
-/* Infinite: hero badge border pulse */
-.hero-badge{animation:badgePulse 3s ease-in-out infinite;}
-@keyframes badgePulse{
-  0%,100%{border-color:rgba(255,202,40,.18);}
-  50%{border-color:rgba(255,202,40,.55);}
-}
-
-/* Infinite: feature section bg breathe */
-.feat-sec{animation:bgBreath 9s ease-in-out infinite;}
-@keyframes bgBreath{0%,100%{background:var(--bg2)}50%{background:#eef3fd}}
-
-/* Infinite: divider top line grow */
-.divider{position:relative;}
-.divider::after{content:'';position:absolute;top:-1px;left:0;height:2px;width:0;
-  background:linear-gradient(90deg,var(--blue),rgba(26,115,232,.2));
-  animation:divGrow 4s ease-in-out infinite alternate;}
-@keyframes divGrow{from{width:0;opacity:.4}to{width:40%;opacity:1}}
-
-/* ══════════════════════════════════════════
-   EXTRA ANIMATIONS — 25+ MORE
-══════════════════════════════════════════ */
-
-/* 1. Floating logo bob */
-.logo-wrap { animation: logoBob 4s ease-in-out infinite; }
-@keyframes logoBob {
-  0%,100% { transform: translateY(0); }
-  50%      { transform: translateY(-3px); }
-}
-
-/* 2. Nav items slide in one by one on load */
-.ni:nth-child(1){ animation: riseUp .5s .1s var(--ease) both; }
-.ni:nth-child(2){ animation: riseUp .5s .17s var(--ease) both; }
-.ni:nth-child(3){ animation: riseUp .5s .24s var(--ease) both; }
-.ni:nth-child(4){ animation: riseUp .5s .31s var(--ease) both; }
-.ni:nth-child(5){ animation: riseUp .5s .38s var(--ease) both; }
-.ni:nth-child(6){ animation: riseUp .5s .45s var(--ease) both; }
-
-/* 3. Nav-right buttons slide in from right */
-.nav-r { animation: slideR .6s .3s var(--ease) both; }
-
-/* 4. Hero right — pulsing border glow */
-.hero-r {
-  animation: heroR .75s .22s var(--ease) both, borderGlow 4s 1s ease-in-out infinite;
-}
-@keyframes borderGlow {
-  0%,100% { border-color: rgba(26,115,232,.18); box-shadow: none; }
-  50%      { border-color: rgba(26,115,232,.4); box-shadow: 0 0 24px rgba(26,115,232,.08); }
-}
-
-/* 5. Prompt lines type-flash on hover */
-.prompt::before {
-  content: '›';
-  color: var(--blue);
-  margin-right: 6px;
-  opacity: 0;
-  display: inline-block;
-  transform: translateX(-4px);
-  transition: opacity .2s, transform .2s;
-}
-.prompt:hover::before { opacity: 1; transform: translateX(0); }
-
-/* 6. News section slides in from bottom */
-.news-sec { animation: riseUp .7s .2s var(--ease) both; }
-
-/* 7. Tab ink bar appears */
-.tab-ink { animation: slideL .4s .5s var(--ease) both; }
-
-/* 8. Section headings fade + slide left */
-.sh { animation: slideL .65s var(--ease) both; }
-.sp { animation: riseUp .65s .1s var(--ease) both; }
-
-/* 9. Feature tabs fade in */
-.feat-tabs { animation: riseUp .5s .15s var(--ease) both; }
-
-/* 10. fcard thumb — continuous float on hover */
-.fcard:hover .fcard-thumb { animation: thumbFloat .6s var(--ease) forwards; }
-@keyframes thumbFloat { to { transform: scale(1.12) translateY(-6px); } }
-
-/* 11. Team section heading underline shimmer */
-.sh::after {
-  background: linear-gradient(90deg, var(--blue), #4285f4, var(--blue));
-  background-size: 200%;
-  animation: underlineShimmer 3s linear infinite;
-}
-@keyframes underlineShimmer { 0%{background-position:0%} 100%{background-position:200%} }
-
-/* 12. Stat items — top accent line draws on load */
-.stat-item::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; height: 2px; width: 0;
-  background: var(--blue);
-  animation: statLine 1.2s var(--ease) both;
-}
-.stat-item:nth-child(1)::after { animation-delay: .1s; }
-.stat-item:nth-child(2)::after { animation-delay: .2s; }
-.stat-item:nth-child(3)::after { animation-delay: .3s; }
-.stat-item:nth-child(4)::after { animation-delay: .4s; }
-@keyframes statLine { from{width:0} to{width:100%} }
-
-/* 13. Stat numbers — count-up bounce */
-.stat-num { animation: statGlow 3s ease-in-out infinite, statBounce .6s var(--ease) both; }
-@keyframes statBounce { from{opacity:0;transform:scale(.5)} 70%{transform:scale(1.1)} to{opacity:1;transform:scale(1)} }
-
-/* 14. CTA band — right side fades in from right */
-.cta-band { animation: riseUp .6s var(--ease) both; }
-
-/* 15. CTA items h3 — fade up */
-.cta-item h3 { animation: riseUp .6s .12s var(--ease) both; }
-.cta-item .btn { animation: riseUp .6s .22s var(--ease) both; }
-
-/* 16. Footer heading — letter spacing expands */
-.fcol h4 {
-  animation: headExpand .6s var(--ease) both;
-  letter-spacing: .8px;
-}
-@keyframes headExpand { from{opacity:0;letter-spacing:-.5px} to{opacity:1;letter-spacing:.8px} }
-
-/* 17. Footer links — slide in staggered */
-.fcol a:nth-child(2){ animation: slideL .5s .05s var(--ease) both; }
-.fcol a:nth-child(3){ animation: slideL .5s .10s var(--ease) both; }
-.fcol a:nth-child(4){ animation: slideL .5s .15s var(--ease) both; }
-.fcol a:nth-child(5){ animation: slideL .5s .20s var(--ease) both; }
-
-/* 18. Footer bottom bar fade in */
-.footer-bot { animation: riseUp .5s .3s var(--ease) both; }
-
-/* 19. Topbar link pulse */
-.topbar a {
-  animation: linkPulse 3s ease-in-out infinite;
-}
-@keyframes linkPulse {
-  0%,100%{ opacity:1; }
-  50%    { opacity:.75; }
-}
-
-/* 20. Hero badge — subtle float */
-.hero-badge {
-  animation: badgePulse 3s ease-in-out infinite, badgeFloat 5s ease-in-out infinite;
-}
-@keyframes badgeFloat {
-  0%,100%{ transform:translateY(0); }
-  50%    { transform:translateY(-2px); }
-}
-
-/* 21. ncard image — continuous slow spin on hover */
-.ncard:hover .ncard-img { animation: imgSpin .5s var(--ease) forwards; }
-@keyframes imgSpin { to{ transform:scale(1.14) rotate(8deg); } }
-
-/* 22. Scrollbar styled + progress track */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: var(--bg2); }
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, var(--blue), #4285f4);
-  border-radius: 10px;
-}
-
-/* 23. Focus rings on interactive elements */
-a:focus-visible, button:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: 3px;
-  border-radius: 4px;
-}
-
-/* 24. Header border bottom animates on scroll */
-header.scrolled {
-  border-bottom-color: transparent;
-  animation: hdrIn .5s .08s var(--ease) both, headerBorder .3s var(--ease) forwards;
-}
-@keyframes headerBorder { to{ border-bottom-color: transparent; } }
-
-/* 25. Section divider — bidirectional pulse */
-.divider::before {
-  content:''; position:absolute; top:-1px; right:0;
-  height:2px; width:0; background:linear-gradient(270deg, rgba(255,202,40,.5), transparent);
-  animation: divGrowR 4s ease-in-out infinite alternate;
-}
-@keyframes divGrowR { from{width:0;opacity:.3} to{width:30%;opacity:.8} }
-
-/* 26. Btn-blue infinite subtle pulse when idle */
-.btn-blue {
-  animation: btnPulse 4s ease-in-out infinite;
-}
-@keyframes btnPulse {
-  0%,100%{ box-shadow:0 2px 8px rgba(26,115,232,.2); }
-  50%    { box-shadow:0 4px 18px rgba(26,115,232,.35); }
-}
-
-/* 27. Feature cta row — slides up as a group */
-.feat-ctas { animation: riseUp .65s .35s var(--ease) both; }
-
-/* 28. Hero wrap background subtle radial pulse */
-.hero-wrap::before {
-  content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
-  background: radial-gradient(ellipse 60% 40% at 80% 50%, rgba(26,115,232,.04) 0%, transparent 70%);
-  animation: heroBg 6s ease-in-out infinite alternate;
-}
-@keyframes heroBg {
-  from{ opacity:.5; transform:scale(1); }
-  to  { opacity:1; transform:scale(1.05); }
-}
-
-/* 29. Team section wrapper slide */
-.section { animation: riseUp .6s .05s var(--ease) both; }
-
-/* 30. Stats row — scale in */
-.stats-row { animation: popIn .6s .1s var(--ease) both; }
-@keyframes popIn { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:none} }
-
-/* ─── RESPONSIVE ─── */
-@media(max-width:1100px){
-  .hero-wrap,.section,.feat-in{padding:48px 40px;}
-  .news-in{padding:0 40px;}
-  .cta-item{padding:36px 40px;}
-  .stats-row{padding:0 40px 48px;}
-  .footer-main{padding:40px;grid-template-columns:repeat(3,1fr);}
-  .footer-bot{padding:16px 40px;}
-  .feat-grid{grid-template-columns:repeat(2,1fr);}
-  .team-grid{grid-template-columns:repeat(2,1fr);}
-  .stats-row{grid-template-columns:repeat(2,1fr);}
-}
-@media(max-width:768px){
-  nav,.nav-r{display:none;}
-  .ham{display:flex;}
-  header{padding:0 16px;}
-  .hero{grid-template-columns:1fr;padding:0;gap:24px;}
-  .hero-wrap{padding:32px 20px;}
-  .news-in{padding:0 20px;}
-  .news-grid{grid-template-columns:1fr;}
-  .section{padding:36px 20px;}
-  .feat-in{padding:36px 20px;}
-  .feat-grid,.team-grid{grid-template-columns:1fr;}
-  .stats-row{grid-template-columns:repeat(2,1fr);padding:0 20px 36px;}
-  .feat-ctas{flex-direction:column;}
-  .cta-inner{grid-template-columns:1fr;}
-  .cta-item{padding:28px 20px;border-right:none;border-bottom:1px solid var(--border);}
-  .cta-item:last-child{border-bottom:none;}
-  .footer-main{grid-template-columns:repeat(2,1fr);padding:28px 20px;}
-  .footer-bot{padding:16px 20px;flex-direction:column;align-items:flex-start;}
-  .rUp,.rLeft,.rRight{opacity:1!important;transform:none!important;transition:none!important;}
-  .hero-l,.hero-r{transform:none!important;}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vasuki iTech Labs — Ecosystem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* ─── DREELIO TOKENS ─── */
+        :root {
+            --bg: #050505;
+            --bg-card: #0f0f0f;
+            --accent: #7c3aed; /* Electric Purple */
+            --accent-glow: rgba(124, 58, 237, 0.3);
+            --text: #ffffff;
+            --t2: #a1a1aa;
+            --t3: #71717a;
+            --border: rgba(255, 255, 255, 0.08);
+            --ease: cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ─── BACKGROUND GLOWS ─── */
+        .glow-mesh {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -20%, #1e1b4b 0%, transparent 50%),
+                        radial-gradient(circle at 0% 100%, #1e1b4b 0%, transparent 30%);
+            z-index: -1; pointer-events: none;
+        }
+
+        /* ─── HEADER ─── */
+        header {
+            position: sticky; top: 20px; z-index: 1000;
+            max-width: 1200px; margin: 0 auto;
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border); border-radius: 100px;
+            display: flex; align-items: center; padding: 12px 24px;
+            justify-content: space-between; margin-top: 20px;
+        }
+
+        .logo-wrap { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; }
+        .logo-text { font-family: 'Outfit', sans-serif; font-weight: 700; letter-spacing: -1px; font-size: 20px; }
+
+        nav { display: flex; gap: 24px; }
+        .ni { font-size: 14px; font-weight: 500; color: var(--t2); cursor: pointer; transition: color 0.3s; }
+        .ni:hover { color: var(--text); }
+
+        /* ─── BUTTONS ─── */
+        .btn {
+            padding: 12px 24px; border-radius: 100px; font-weight: 600; font-size: 14px;
+            cursor: pointer; transition: all 0.3s var(--ease); border: none;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-blue { background: var(--text); color: var(--bg); }
+        .btn-blue:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+        .btn-out { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .btn-out:hover { background: var(--border); }
+
+        /* ─── HERO ─── */
+        .hero-wrap { max-width: 1200px; margin: 0 auto; padding: 100px 20px; text-align: center; }
+        .hero-l h1 { 
+            font-family: 'Outfit', sans-serif; font-size: clamp(40px, 8vw, 90px); 
+            line-height: 0.9; font-weight: 800; letter-spacing: -4px; margin-bottom: 24px;
+        }
+        .hero-l h1 strong { color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); }
+        .hero-l p { color: var(--t2); font-size: 18px; max-width: 600px; margin: 0 auto 40px; }
+
+        /* Terminal Display - Dreelio Style */
+        .hero-r {
+            background: #000; border: 1px solid var(--border); border-radius: 20px;
+            padding: 30px; margin-top: 60px; text-align: left;
+            position: relative; box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+        }
+        .hr-label { color: var(--accent); font-family: monospace; margin-bottom: 20px; }
+        .prompt { font-family: monospace; color: var(--t3); padding: 8px 0; border-bottom: 1px solid var(--border); }
+
+        /* ─── GRID SECTIONS ─── */
+        .section { max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
+        .sh { font-family: 'Outfit', sans-serif; font-size: 40px; font-weight: 700; letter-spacing: -1.5px; margin-bottom: 40px; }
+        
+        .feat-grid, .team-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;
+        }
+
+        .fcard, .tcard, .ncard {
+            background: var(--bg-card); border: 1px solid var(--border);
+            padding: 30px; border-radius: 24px; transition: all 0.4s var(--ease);
+        }
+        .fcard:hover, .tcard:hover { 
+            border-color: var(--accent); background: #121212; 
+            transform: translateY(-5px);
+        }
+
+        .fcard-thumb, .tcard-thumb { font-size: 40px; margin-bottom: 20px; }
+        .fcard-body, .tcard-name { font-size: 18px; font-weight: 600; color: var(--text); }
+        .tcard-desc { color: var(--t2); font-size: 14px; margin-top: 8px; }
+
+        /* ─── STATS ─── */
+        .stats-row { 
+            display: flex; justify-content: space-around; padding: 60px 0; 
+            border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            margin: 60px 0;
+        }
+        .stat-num { font-size: 48px; font-weight: 800; color: var(--accent); font-family: 'Outfit'; }
+        .stat-lbl { color: var(--t3); text-transform: uppercase; letter-spacing: 2px; font-size: 12px; }
+
+        /* ─── FOOTER ─── */
+        footer { border-top: 1px solid var(--border); padding: 80px 20px; background: #000; }
+        .footer-main { 
+            max-width: 1200px; margin: 0 auto; display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;
+        }
+        .fcol h4 { margin-bottom: 20px; font-size: 14px; text-transform: uppercase; color: var(--t3); }
+        .fcol a { display: block; color: var(--t2); margin-bottom: 10px; text-decoration: none; }
+        .fcol a:hover { color: var(--accent); }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .reveal { animation: fadeIn 0.8s var(--ease) forwards; }
+
+        @media (max-width: 768px) {
+            nav { display: none; }
+            .hero-l h1 { font-size: 50px; letter-spacing: -2px; }
+            .stats-row { flex-direction: column; gap: 40px; text-align: center; }
+        }
+    </style>
 </head>
 <body>
 
-<!-- BOOT SCREEN -->
-<div id="boot">
-  <div id="boot-inner">
-    <div id="boot-logo">
-      <img src="WhatsApp Image 2026-03-18 at 10.58.25.jpeg" alt="V"
-           onerror="this.style.display='none'"/>
-    </div>
-    <div id="boot-lines"></div>
-    <div id="boot-bar-wrap"><div id="boot-bar"></div></div>
-    <div id="boot-skip">press any key to skip</div>
-  </div>
-</div>
+    <div class="glow-mesh"></div>
+
+    <header>
+        <div class="logo-wrap">
+            <div class="logo-icon"></div>
+            <span class="logo-text">VASUKI <em>iTech</em></span>
+        </div>
+        <nav>
+            <span class="ni">Solutions</span>
+            <span class="ni">Infrastructure</span>
+            <span class="ni">Cloud</span>
+            <span class="ni">Team</span>
+        </nav>
+        <div class="nav-r">
+            <button class="btn btn-blue">Launch App</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-wrap reveal">
+            <div class="hero-l">
+                <h1>The Future of <strong>Intelligent</strong> Ecosystems</h1>
+                <p>Scaling AI database solutions and high-performance web infrastructure for the next generation of digital ventures.</p>
+                <div class="hero-btns">
+                    <button class="btn btn-blue">Explore Services</button>
+                    <button class="btn btn-out">View Documentation</button>
+                </div>
+            </div>
+
+            <div class="hero-r">
+                <div class="hr-label">● VASUKI_TERMINAL_V2.0</div>
+                <div class="prompt">> Initializing Vasuki Cloud Core...</div>
+                <div class="prompt">> Connecting to AI Database...</div>
+                <div class="prompt">> Ecosystem Status: OPTIMAL</div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="sh">Ecosystem Nodes</h2>
+            <div class="feat-grid">
+                <div class="fcard">
+                    <div class="fcard-thumb">☁️</div>
+                    <div class="fcard-body">Cloud Database Integration</div>
+                </div>
+                <div class="fcard">
+                    <div class="fcard-thumb">⚡</div>
+                    <div class="fcard-body">High-Speed Portfolio Hosting</div>
+                </div>
+                <div class="fcard">
+                    <div class="fcard-thumb">🤖</div>
+                    <div class="fcard-body">AI Automation Scripts</div>
+                </div>
+                <div class="fcard">
+                    <div class="fcard-thumb">🛠️</div>
+                    <div class="fcard-body">Custom Tech Architecture</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="stats-row">
+            <div class="stat-item">
+                <span class="stat-num">99.9%</span>
+                <span class="stat-lbl">Uptime</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">250+</span>
+                <span class="stat-lbl">Deployments</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">15ms</span>
+                <span class="stat-lbl">Latency</span>
+            </div>
+        </div>
+
+        <section class="section">
+            <h2 class="sh">Core Architects</h2>
+            <div class="team-grid">
+                <div class="tcard">
+                    <div class="tcard-thumb">🛡️</div>
+                    <div class="tcard-body">Shaurya Chauhan</div>
+                    <div class="tcard-desc">Lead Systems Architect & Web Developer</div>
+                </div>
+                <div class="tcard">
+                    <div class="tcard-thumb">💎</div>
+                    <div class="tcard-body">Adamya Khairwal</div>
+                    <div class="tcard-desc">Technology & Strategy Partner</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-main">
+            <div class="fcol">
+                <h4>Platform</h4>
+                <a href="#">Github Pages</a>
+                <a href="#">Vasuki Cloud</a>
+                <a href="#">Dev Terminal</a>
+            </div>
+            <div class="fcol">
+                <h4>Company</h4>
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+                <a href="#">Pricing</a>
+            </div>
+            <div class="fcol">
+                <h4>Resources</h4>
+                <a href="#">Documentation</a>
+                <a href="#">API Reference</a>
+                <a href="#">Community</a>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 60px; color: var(--t3); font-size: 12px;">
+            © 2026 Vasuki iTech Labs. All Rights Reserved.
+        </div>
+    </footer>
 
-<style>
-/* ── BOOT SCREEN ── */
-#boot{
-  position:fixed;inset:0;z-index:99999;
-  background:#05060d;
-  display:flex;align-items:center;justify-content:center;
-  transition:opacity .6s ease, visibility .6s;
-}
-#boot.done{opacity:0;visibility:hidden;pointer-events:none;}
-#boot-inner{
-  width:min(480px,90vw);
-  font-family:'DM Sans',monospace,sans-serif;
-}
-#boot-logo{
-  width:52px;height:52px;margin:0 auto 28px;
-  opacity:0;animation:bootLogoIn .5s .1s ease both;
-}
-#boot-logo img{width:100%;height:100%;object-fit:contain;}
-@keyframes bootLogoIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
-#boot-lines{
-  font-size:12px;line-height:1.9;color:rgba(26,115,232,.75);
-  font-family:monospace;letter-spacing:.3px;
-  min-height:180px;
-}
-#boot-lines .bl{
-  opacity:0;display:block;
-  animation:blIn .2s ease both;
-}
-#boot-lines .bl.ok::after{content:' OK';color:#34a853;}
-#boot-lines .bl.warn::after{content:' WARN';color:#ffca28;}
-@keyframes blIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
-#boot-bar-wrap{
-  margin-top:20px;height:2px;background:rgba(26,115,232,.12);border-radius:2px;overflow:hidden;
-}
-#boot-bar{
-  height:100%;width:0%;background:linear-gradient(90deg,var(--blue),#4285f4);
-  border-radius:2px;transition:width .35s ease;
-}
-#boot-skip{
-  margin-top:14px;font-size:10px;color:rgba(255,255,255,.18);
-  text-align:center;letter-spacing:1.5px;text-transform:uppercase;
-  animation:blinkSlow 2s step-end infinite;
-}
-@keyframes blinkSlow{0%,100%{opacity:.4}50%{opacity:1}}
-</style>
-
-<canvas id="pcv"></canvas>
-<div id="pbar"></div>
-
-<!-- TOPBAR -->
-<div class="topbar">
-  ☁️ <strong>Vasuki Intelligence</strong> is live — ask, research, code, and write for free.
-  <a href="https://shauryachr.github.io/vasuki.github.io/General-AI">Try it now →</a>
-</div>
-
-<!-- HEADER -->
-<header id="hdr">
-  <div class="logo-wrap">
-    <div class="logo-icon">
-      <img src="WhatsApp Image 2026-03-18 at 10.58.25.jpeg" alt="logo"
-           onerror="this.parentElement.style.background='#ffca28';this.style.display='none'"/>
-    </div>
-    <span class="logo-text">vasuki itech <em>labs</em></span>
-  </div>
-  <nav>
-    <div class="ni">Overview <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-      <div class="mega">
-        <div class="mcol"><h5>Key Benefits</h5><a href="#">Why Vasuki iTech</a><a href="#">AI and ML</a><a href="#">Open Ecosystem</a><a href="#">Infrastructure</a></div>
-        <div class="mcol"><h5>Reports &amp; Info</h5><a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About Us</a><a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">User Reviews</a><a href="contact-us.html">Contact</a></div>
-      </div>
-    </div>
-    <div class="ni">Products <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-      <div class="drop">
-        <a href="https://shauryachr.github.io/vasuki.github.io/General-AI">🤖 Vasuki Intelligence</a>
-        <a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">📖 Wiki Knowledge</a>
-        <a href="code-lab.html">⚡ Code Lab</a>
-      </div>
-    </div>
-    <div class="ni">Team <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-      <div class="drop">
-        <a href="https://www.linkedin.com/in/shaurya-chauhan-1307742bb/" target="_blank">Shaurya Chauhan</a>
-        <a href="https://www.linkedin.com/in/adamya-r-khairwal-8b51b235b/" target="_blank">Adamya Khairwal</a>
-      </div>
-    </div>
-    <a class="ni" href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Review</a>
-    <a class="ni" href="contact-us.html">Contact Us</a>
-    <a class="ni" href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a>
-  </nav>
-  <div class="nav-r">
-    <a href="https://vasuki-cloud.codeclutch-adamyarao.workers.dev/forms/">Docs</a>
-    <a href="contact-us.html">Support</a>
-    <a href="brain.html"   class="btn btn-y">🧠 Test Your Brain</a>
-    <a href="code-lab.html" class="btn btn-out">⚡ Code Lab</a>
-    <a href="https://vasuki-cloud.codeclutch-adamyarao.workers.dev/login" class="btn btn-blue">Get started</a>
-  </div>
-  <button class="ham" id="ham"><span></span><span></span><span></span></button>
-</header>
-
-<!-- MOBILE MENU -->
-<div class="mob-menu" id="mobMenu">
-  <div class="mob-head">
-    <a href="https://shauryachr.github.io/vasuki.github.io/General-AI" class="mob-home" id="mobHome">🏠 Home</a>
-    <button class="mob-close" id="mobClose">✕ Close</button>
-  </div>
-  <div class="mob-body">
-    <span class="mob-sec">Products</span>
-    <a class="mob-link" href="https://shauryachr.github.io/vasuki.github.io/General-AI">🤖 Vasuki Intelligence</a>
-    <a class="mob-link" href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">📖 Wiki Knowledge</a>
-    <a class="mob-link" href="code-lab.html">⚡ Code Lab</a>
-    <span class="mob-sec">Team</span>
-    <a class="mob-link" href="https://www.linkedin.com/in/shaurya-chauhan-1307742bb/" target="_blank">Shaurya Chauhan</a>
-    <a class="mob-link" href="https://www.linkedin.com/in/adamya-r-khairwal-8b51b235b/" target="_blank">Adamya Khairwal</a>
-    <span class="mob-sec">Others</span>
-    <a class="mob-link" href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Review</a>
-    <a class="mob-link" href="contact-us.html">Contact Us</a>
-    <a class="mob-link" href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a>
-    <a class="mob-link" href="brain.html">🧠 Test Your Brain</a>
-    <a class="mob-link" href="https://vasuki-cloud.codeclutch-adamyarao.workers.dev/login">Get started →</a>
-  </div>
-</div>
-
-<!-- HERO -->
-<div class="hero-wrap">
-  <div class="hero">
-    <div class="hero-l">
-      <h1>We Experiment.<br><strong>Try.</strong><br>Publish for Everyone.</h1>
-      <p>Vasuki iTech Labs — build, experiment, and create with Vasuki Intelligence and the Wiki Knowledge Explorer.</p>
-      <div class="hero-btns">
-        <a href="https://shauryachr.github.io/vasuki.github.io/General-AI" class="btn btn-blue">Try Vasuki Intelligence</a>
-        <a href="contact-us.html" class="btn btn-out">Contact us</a>
-      </div>
-    </div>
-    <div class="hero-r">
-      <div class="hr-label"><span class="hr-label-dot"></span>Vasuki Intelligence</div>
-      <div class="prompt" id="p0">Ask anything</div>
-      <div class="prompt" id="p1">Research any topic</div>
-      <div class="prompt" id="p2">Get coding help</div>
-      <div class="prompt" id="p3">Write anything</div>
-      <div class="prompt" id="p4">Boost your day</div>
-      <div class="hero-badge">☁️ <strong>Enjoy our Cloud!</strong> — <a href="https://vasuki.cloud/" target="_blank">vasuki.cloud</a></div>
-    </div>
-  </div>
-</div>
-
-<!-- NEWS -->
-<div class="news-sec">
-  <div class="news-in">
-    <div class="news-tabs" id="newsTabs">
-      <button class="ntab active" onclick="switchNTab(this)">What's new in AI</button>
-      <button class="ntab" onclick="switchNTab(this)">Developers</button>
-      <button class="ntab" onclick="switchNTab(this)">For Teams</button>
-      <div class="tab-ink" id="tabInk"></div>
-    </div>
-    <div class="news-grid">
-      <div class="ncard rUp d1">
-        <div class="ncard-img">🤖</div>
-        <div><div class="ncard-lbl">AI Product</div><div class="ncard-ttl">Vasuki Intelligence — Ask, Research, Code, Write. Where should we start?</div></div>
-      </div>
-      <div class="ncard rUp d2">
-        <div class="ncard-img">📖</div>
-        <div><div class="ncard-lbl">Knowledge Explorer</div><div class="ncard-ttl">Wiki Knowledge — Generate summaries and explore the Vasuki Research Platform</div></div>
-      </div>
-      <div class="ncard rUp d3">
-        <div class="ncard-img">☁️</div>
-        <div><div class="ncard-lbl">Vasuki Cloud</div><div class="ncard-ttl">Enjoy our Cloud! — vasuki.cloud powering the Vasuki ecosystem</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<hr class="divider">
-
-<!-- FEATURE -->
-<div class="feat-sec">
-  <div class="feat-in">
-    <h2 class="sh rUp">Build and scale with Vasuki Intelligence</h2>
-    <p class="sp rUp d1">Our AI platform for asking questions, researching topics, coding help, and more — free on the cloud.</p>
-    <div class="feat-tabs">
-      <button class="ftab active" onclick="switchFTab(this)">Overview</button>
-      <button class="ftab" onclick="switchFTab(this)">Ask</button>
-      <button class="ftab" onclick="switchFTab(this)">Research</button>
-      <button class="ftab" onclick="switchFTab(this)">Coder</button>
-    </div>
-    <div class="feat-grid">
-      <div class="fcard rUp d1"><div class="fcard-thumb">❓</div><div class="fcard-body">Ask — get intelligent answers to any question instantly</div></div>
-      <div class="fcard rUp d2"><div class="fcard-thumb">🔬</div><div class="fcard-body">Research — deep dive into any topic with the Vasuki Research Platform</div></div>
-      <div class="fcard rUp d3"><div class="fcard-thumb">💻</div><div class="fcard-body">Coder — get coding help, debug, and write code with AI</div></div>
-      <div class="fcard rUp d4"><div class="fcard-thumb">✍️</div><div class="fcard-body">Write anything — boost your day or make yourself smile</div></div>
-    </div>
-    <div class="feat-ctas">
-      <div class="fcta rUp d1"><div class="fcta-ico">🤖</div><div class="fcta-txt"><p>Free AI assistant</p><strong>Try Vasuki Intelligence</strong></div></div>
-      <div class="fcta rUp d2"><div class="fcta-ico">📖</div><div class="fcta-txt"><p>Knowledge Explorer</p><strong>Open Wiki Knowledge</strong></div></div>
-      <div class="fcta rUp d3"><div class="fcta-ico">☁️</div><div class="fcta-txt"><p>Our cloud platform</p><strong>Visit vasuki.cloud</strong></div></div>
-    </div>
-  </div>
-</div>
-
-<hr class="divider">
-
-<!-- TEAM -->
-<div class="section">
-  <h2 class="sh rLeft">Meet the team behind Vasuki iTech Labs</h2>
-  <p class="sp rLeft d1">The people building Vasuki Intelligence, Wiki Knowledge, and the Vasuki Cloud ecosystem.</p>
-  <div class="team-grid">
-    <div class="tcard rUp d1"><div class="tcard-thumb">👨‍💻</div><div class="tcard-body"><div class="tcard-name">Shaurya Chauhan — Developer</div><div class="tcard-desc">Building Vasuki Intelligence and the developer tools powering Vasuki iTech Labs.</div></div></div>
-    <div class="tcard rUp d2"><div class="tcard-thumb">👔</div><div class="tcard-body"><div class="tcard-name">Adamya Khairwal — CEO</div><div class="tcard-desc">Leading the vision and growth of Vasuki iTech Labs and vasuki.cloud.</div></div></div>
-    <div class="tcard rUp d3"><div class="tcard-thumb">☁️</div><div class="tcard-body"><div class="tcard-name">Vasuki Cloud</div><div class="tcard-desc">Our cloud platform — visit vasuki.cloud to explore the full Vasuki ecosystem.</div></div></div>
-    <div class="tcard rUp d4"><div class="tcard-thumb">⭐</div><div class="tcard-body"><div class="tcard-name">Leave a Review</div><div class="tcard-desc">Used Vasuki Intelligence or Wiki Knowledge? Share your experience with us.</div></div></div>
-  </div>
-</div>
-
-<!-- STATS ROW -->
-<div class="stats-row">
-  <div class="stat-item rUp d1">
-    <span class="stat-num" data-count="5">0</span>
-    <span class="stat-lbl">Products built</span>
-  </div>
-  <div class="stat-item rUp d2">
-    <span class="stat-num" data-count="2">0</span>
-    <span class="stat-lbl">Team members</span>
-  </div>
-  <div class="stat-item rUp d3">
-    <span class="stat-num" data-count="100">0</span>
-    <span class="stat-lbl">% free to use</span>
-  </div>
-  <div class="stat-item rUp d4">
-    <span class="stat-num" data-count="2026">0</span>
-    <span class="stat-lbl">Year founded</span>
-  </div>
-</div>
-
-<!-- CTA BAND -->
-<div class="cta-band">
-  <div class="cta-inner">
-    <div class="cta-item rLeft">
-      <h3>Try <strong>Vasuki Intelligence</strong> and <strong>Wiki Knowledge</strong> for free</h3>
-      <a href="https://shauryachr.github.io/vasuki.github.io/General-AI" class="btn btn-blue">Open Vasuki Intelligence</a>
-    </div>
-    <div class="cta-item rRight">
-      <h3>Explore the <strong>Vasuki Cloud</strong> ecosystem at vasuki.cloud</h3>
-      <a href="https://vasuki.cloud/" target="_blank" class="btn btn-out">Visit vasuki.cloud</a>
-    </div>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-main">
-    <div class="fcol"><h4>Why Vasuki</h4><a href="#">Our Mission</a><a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About Us</a><a href="https://vasuki.cloud/" target="_blank">Vasuki Cloud</a><a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Reviews</a></div>
-    <div class="fcol"><h4>Products</h4><a href="https://shauryachr.github.io/vasuki.github.io/General-AI">Vasuki Intelligence</a><a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Wiki Knowledge</a><a href="code-lab.html">Code Lab</a><a href="https://vasuki.cloud/" target="_blank">Vasuki Cloud</a></div>
-    <div class="fcol"><h4>Team</h4><a href="https://www.linkedin.com/in/shaurya-chauhan-1307742bb/" target="_blank">Shaurya Chauhan</a><a href="https://www.linkedin.com/in/adamya-r-khairwal-8b51b235b/" target="_blank">Adamya Khairwal</a><a href="contact-us.html">Contact Us</a></div>
-    <div class="fcol"><h4>Resources</h4><a href="https://vasuki-cloud.codeclutch-adamyarao.workers.dev/forms/">Documentation</a><a href="https://dev.to/adamya_khairwal_9d2286eac/vasuki-ai-revolutionizing-tech-with-seamless-generation-say-no-to-gpts-20em" target="_blank">Blog</a><a href="https://vasuki.cloud/view-form.html?id=f-rktpe1" target="_blank">Feedback</a><a href="contact-us.html">Support</a></div>
-  </div>
-  <div class="footer-bot">
-    <p>© 2026 Vasuki iTech Labs · Built by Shaurya &amp; Adamya</p>
-    <div class="fbl"><a href="#">Privacy</a><a href="#">Terms</a><a href="contact-us.html">Contact</a><a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516" target="_blank">About</a></div>
-  </div>
-</footer>
-
-<style>
-/* ── INTERACTIVE ANIMATION CSS ── */
-
-/* Spotlight overlay on hero — follows mouse */
-.hero-spotlight {
-  position:absolute;inset:0;pointer-events:none;z-index:1;border-radius:10px;
-  background:radial-gradient(circle 200px at var(--sx,50%) var(--sy,50%),
-    rgba(26,115,232,.12) 0%, transparent 70%);
-  opacity:0;transition:opacity .3s;
-}
-.hero-r:hover .hero-spotlight { opacity:1; }
-
-/* Magnetic warp on cards */
-.card-inner { transition:transform .1s linear; will-change:transform; }
-
-/* Stagger text — each word animates */
-.stagger-word { display:inline-block; overflow:hidden; }
-.stagger-word span {
-  display:inline-block;
-  animation:wordUp .6s var(--ease) both;
-  animation-delay:var(--wd,0s);
-}
-@keyframes wordUp { from{transform:translateY(100%);opacity:0} to{transform:none;opacity:1} }
-
-/* Underline hover draw on nav items */
-.ni::after {
-  content:'';position:absolute;bottom:0;left:50%;right:50%;
-  height:2px;background:var(--blue);
-  transition:left .2s var(--ease),right .2s var(--ease);
-}
-.ni:hover::after { left:12px; right:12px; }
-
-/* Card ripple on click */
-.card-rip {
-  position:absolute;border-radius:50%;
-  background:rgba(26,115,232,.15);pointer-events:none;
-  transform:scale(0);animation:cardRipple .6s ease-out forwards;
-}
-@keyframes cardRipple { to{transform:scale(4);opacity:0;} }
-
-/* Scroll-linked section fade (no opacity:0 default) */
-.scroll-fade { transition:opacity .5s, filter .5s; }
-.scroll-fade.far { opacity:.4; filter:blur(1px); }
-.scroll-fade.near { opacity:1; filter:none; }
-
-/* Text cursor blink on h1 */
-.hero-l h1::after {
-  content:'|'; color:var(--blue);
-  animation:cursorBlink .8s step-end infinite;
-  margin-left:2px;font-weight:300;
-}
-@keyframes cursorBlink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-/* Hover lift with shadow for CTA items */
-.cta-item { transition:transform .25s var(--ease),background .2s; }
-.cta-item:hover { transform:translateY(-2px); }
-
-/* Floating particles burst on button click */
-.btn-burst {
-  position:fixed;width:6px;height:6px;border-radius:50%;
-  pointer-events:none;z-index:99998;
-  animation:burstOut .7s ease-out forwards;
-}
-@keyframes burstOut {
-  0%   { transform:translate(0,0) scale(1); opacity:1; }
-  100% { transform:translate(var(--bx),var(--by)) scale(0); opacity:0; }
-}
-
-/* Shake on wrong interaction */
-@keyframes shake {
-  0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)}
-  40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)}
-}
-.shake { animation:shake .4s ease !important; }
-
-/* Scroll progress sections highlight */
-.section-active > .sh::after { width:60px !important; }
-
-/* Trail dots */
-.trail {
-  position:fixed;border-radius:50%;pointer-events:none;z-index:9997;
-  animation:trailFade .5s ease-out forwards;
-}
-@keyframes trailFade { to{opacity:0;transform:scale(0);} }
-
-/* Tooltip */
-.v-tip {
-  position:fixed;background:#202124;color:#fff;font-size:11px;font-weight:500;
-  padding:5px 10px;border-radius:4px;pointer-events:none;z-index:9996;
-  opacity:0;transform:translateY(4px);transition:opacity .15s,transform .15s;
-  white-space:nowrap;letter-spacing:.2px;
-}
-.v-tip.show { opacity:1;transform:translateY(0); }
-
-/* Scroll velocity warp on header */
-header.warp { transform:scaleY(1.03); }
-header { transform-origin:top center; transition:transform .2s; }
-
-/* Active nav indicator dot */
-.nav-active-dot {
-  position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
-  width:4px;height:4px;border-radius:50%;background:var(--blue);
-  animation:dotPop .3s var(--ease) both;
-}
-@keyframes dotPop { from{transform:translateX(-50%) scale(0)} to{transform:translateX(-50%) scale(1)} }
-
-/* Hovered section glow */
-.feat-sec:hover { background:linear-gradient(135deg,var(--bg2),#eef3fd); transition:background .4s; }
-</style>
-
-<script>
-'use strict';
-
-// ═══════════════════════════════════════════
-//  BOOT SEQUENCE
-// ═══════════════════════════════════════════
-(function boot() {
-  const screen  = document.getElementById('boot');
-  const lines   = document.getElementById('boot-lines');
-  const bar     = document.getElementById('boot-bar');
-  const MSGS = [
-    ['Initialising Vasuki Laboratory...', 'ok', 0],
-    ['Loading AI subsystems...', 'ok', 320],
-    ['Connecting to vasuki.cloud...', 'ok', 640],
-    ['Mounting Wiki Knowledge engine...', 'ok', 960],
-    ['Calibrating Code Lab environment...', 'ok', 1260],
-    ['Verifying team credentials...', 'ok', 1540],
-    ['Running diagnostics...', 'warn', 1800],
-    ['All systems nominal.', 'ok', 2100],
-    ['Welcome to Vasuki iTech Labs.', '', 2400],
-  ];
-
-  let dismissed = false;
-  const dismiss = () => {
-    if (dismissed) return;
-    dismissed = true;
-    bar.style.width = '100%';
-    setTimeout(() => { screen.classList.add('done'); }, 400);
-  };
-
-  // Skip on any key or click
-  document.addEventListener('keydown', dismiss, { once: true });
-  screen.addEventListener('click', dismiss);
-
-  MSGS.forEach(([msg, type, delay]) => {
-    setTimeout(() => {
-      if (dismissed) return;
-      const span = document.createElement('span');
-      span.className = 'bl' + (type ? ' ' + type : '');
-      span.textContent = '> ' + msg;
-      lines.appendChild(span);
-      // progress bar
-      const pct = ((MSGS.indexOf(MSGS.find(m => m[0] === msg)) + 1) / MSGS.length * 100);
-      bar.style.width = pct + '%';
-    }, delay);
-  });
-
-  // Auto dismiss after all lines
-  setTimeout(() => dismiss(), 3000);
-})();
-
-// ═══════════════════════════════════════════
-//  CORE SETUP
-// ═══════════════════════════════════════════
-const mob = window.matchMedia('(pointer:coarse)').matches;
-
-// ── PROGRESS BAR ──
-const pbar = document.getElementById('pbar');
-window.addEventListener('scroll', () => {
-  const p = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-  pbar.style.width = (p * 100) + '%';
-}, { passive: true });
-
-// ── HEADER SCROLL ──
-const hdr = document.getElementById('hdr');
-window.addEventListener('scroll', () => {
-  hdr.classList.toggle('scrolled', window.scrollY > 50);
-}, { passive: true });
-
-// ═══════════════════════════════════════════
-//  INTERACTIVE ANIMATIONS
-// ═══════════════════════════════════════════
-
-// ── 1. CLICK RIPPLE (every click on page) ──
-document.addEventListener('click', e => {
-  const r = document.createElement('div');
-  r.className = 'crip';
-  r.style.cssText = `left:${e.clientX}px;top:${e.clientY}px`;
-  document.body.appendChild(r);
-  setTimeout(() => r.remove(), 700);
-});
-
-// ── 2. PARTICLE NETWORK (mouse-attracted canvas) ──
-const cv = document.getElementById('pcv'), ctx = cv.getContext('2d');
-let W, H;
-const resize = () => { W = cv.width = window.innerWidth; H = cv.height = window.innerHeight; };
-resize(); window.addEventListener('resize', resize);
-let pmx = -999, pmy = -999;
-document.addEventListener('mousemove', e => { pmx = e.clientX; pmy = e.clientY; });
-
-class Particle {
-  constructor() { this.reset(true); }
-  reset(rand) {
-    this.x  = rand ? Math.random()*W : pmx + (Math.random()-0.5)*60;
-    this.y  = rand ? Math.random()*H : pmy + (Math.random()-0.5)*60;
-    this.vx = (Math.random()-0.5)*0.5;
-    this.vy = (Math.random()-0.5)*0.5;
-    this.r  = Math.random()*1.6+0.4;
-    this.a  = Math.random()*0.2+0.04;
-    this.ph = Math.random()*Math.PI*2;
-    this.life = 1;
-  }
-  step() {
-    const dx = pmx-this.x, dy = pmy-this.y, d = Math.hypot(dx,dy);
-    if (d < 180 && d > 1) { this.vx += dx/d*0.012; this.vy += dy/d*0.012; }
-    const s = Math.hypot(this.vx,this.vy);
-    if (s > 1.5) { this.vx /= s/1.5; this.vy /= s/1.5; }
-    this.x += this.vx; this.y += this.vy; this.ph += 0.016;
-    if (this.x<0||this.x>W||this.y<0||this.y>H) this.reset(true);
-  }
-  draw() {
-    const a = this.a*(0.6+0.4*Math.sin(this.ph));
-    ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
-    ctx.fillStyle = `rgba(26,115,232,${a})`; ctx.fill();
-  }
-}
-
-const pts = Array.from({length:70}, () => new Particle());
-
-(function ploop() {
-  ctx.clearRect(0,0,W,H);
-  pts.forEach(p => { p.step(); p.draw(); });
-  for (let i=0; i<pts.length; i++) for (let j=i+1; j<pts.length; j++) {
-    const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.hypot(dx,dy);
-    if (d < 120) {
-      ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y);
-      ctx.strokeStyle = `rgba(26,115,232,${0.07*(1-d/120)})`;
-      ctx.lineWidth = 0.5; ctx.stroke();
-    }
-  }
-  requestAnimationFrame(ploop);
-})();
-
-// ── 3. DRAG TO SPRAY PARTICLES (drag mouse = more particles) ──
-let isDragging = false;
-document.addEventListener('mousedown', () => isDragging = true);
-document.addEventListener('mouseup',   () => isDragging = false);
-document.addEventListener('mousemove', e => {
-  if (!isDragging) return;
-  const p = new Particle(); p.reset(false);
-  p.x = e.clientX; p.y = e.clientY;
-  p.vx = (Math.random()-0.5)*3; p.vy = (Math.random()-0.5)*3;
-  pts.push(p);
-  if (pts.length > 120) pts.shift(); // cap
-});
-
-// ── 4. DOUBLE CLICK = BURST of particles ──
-document.addEventListener('dblclick', e => {
-  for (let i=0; i<16; i++) {
-    const p = new Particle(); p.reset(false);
-    p.x = e.clientX; p.y = e.clientY;
-    const angle = (i/16)*Math.PI*2;
-    p.vx = Math.cos(angle)*2.5; p.vy = Math.sin(angle)*2.5;
-    pts.push(p);
-  }
-  if (pts.length > 140) pts.splice(0, pts.length-70);
-});
-
-// ── 5. 3D TILT on all cards (mouse-position driven) ──
-if (!mob) {
-  document.querySelectorAll('.fcard,.tcard,.ncard').forEach(card => {
-    // Inject inner spotlight
-    const sp = document.createElement('div'); sp.className = 'hero-spotlight';
-    card.style.overflow = 'hidden'; card.appendChild(sp);
-
-    card.addEventListener('mousemove', e => {
-      const r = card.getBoundingClientRect();
-      const x = (e.clientX-r.left)/r.width, y = (e.clientY-r.top)/r.height;
-      card.style.transform = `perspective(600px) rotateY(${(x-.5)*10}deg) rotateX(${-(y-.5)*10}deg) translateZ(6px)`;
-      card.style.transition = 'transform .05s linear, box-shadow .2s';
-      card.style.boxShadow = `${(x-.5)*-15}px ${(y-.5)*-15}px 30px rgba(26,115,232,0.12)`;
-      sp.style.setProperty('--sx', x*100+'%'); sp.style.setProperty('--sy', y*100+'%');
-      sp.style.opacity = '1';
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
-      card.style.boxShadow = '';
-      card.style.transition = 'transform .5s cubic-bezier(.16,1,.3,1), box-shadow .4s';
-      sp.style.opacity = '0';
-    });
-
-    // Click ripple inside card
-    card.addEventListener('click', e => {
-      const r = card.getBoundingClientRect();
-      const rip = document.createElement('div'); rip.className = 'card-rip';
-      const sz = Math.max(r.width,r.height)*2;
-      rip.style.cssText = `width:${sz}px;height:${sz}px;left:${e.clientX-r.left-sz/2}px;top:${e.clientY-r.top-sz/2}px`;
-      card.appendChild(rip); setTimeout(() => rip.remove(), 700);
-    });
-  });
-}
-
-// ── 6. MAGNETIC BUTTONS (follow cursor when nearby) ──
-if (!mob) {
-  document.querySelectorAll('.btn-blue,.btn-out,.btn-y').forEach(btn => {
-    btn.addEventListener('mousemove', e => {
-      const r = btn.getBoundingClientRect();
-      const x = (e.clientX-r.left-r.width/2)*0.22;
-      const y = (e.clientY-r.top-r.height/2)*0.22;
-      btn.style.transform = `translate(${x}px,${y}px)`;
-    });
-    btn.addEventListener('mouseleave', () => {
-      btn.style.transform = '';
-      btn.style.transition = 'transform .4s cubic-bezier(.34,1.56,.64,1)';
-    });
-    btn.addEventListener('mouseenter', () => {
-      btn.style.transition = 'transform .1s';
-    });
-
-    // Particle burst on click
-    btn.addEventListener('click', e => {
-      const r = btn.getBoundingClientRect();
-      const cx = r.left+r.width/2, cy = r.top+r.height/2;
-      for (let i=0;i<12;i++) {
-        const el = document.createElement('div'); el.className = 'btn-burst';
-        const angle = (i/12)*Math.PI*2, dist = 40+Math.random()*30;
-        el.style.cssText = `left:${cx}px;top:${cy}px;
-          --bx:${Math.cos(angle)*dist}px;--by:${Math.sin(angle)*dist}px;
-          background:${i%2?'var(--blue)':'var(--yellow)'};animation-delay:${i*0.02}s`;
-        document.body.appendChild(el); setTimeout(() => el.remove(), 800);
-      }
-    });
-  });
-}
-
-// ── 7. HERO PANEL MOUSE-TRACKED SPOTLIGHT ──
-if (!mob) {
-  const heroR = document.querySelector('.hero-r');
-  if (heroR) {
-    const sp = document.createElement('div'); sp.className = 'hero-spotlight';
-    heroR.appendChild(sp);
-    heroR.addEventListener('mousemove', e => {
-      const r = heroR.getBoundingClientRect();
-      sp.style.setProperty('--sx', ((e.clientX-r.left)/r.width*100)+'%');
-      sp.style.setProperty('--sy', ((e.clientY-r.top)/r.height*100)+'%');
-      sp.style.opacity = '1';
-    });
-    heroR.addEventListener('mouseleave', () => sp.style.opacity = '0');
-  }
-}
-
-// ── 8. INTERACTIVE PROMPTS — click to "send" ──
-document.querySelectorAll('.prompt').forEach((p, i) => {
-  const txt = p.textContent.trim(); p.textContent = ''; p.style.opacity = '0';
-  setTimeout(() => {
-    p.style.transition = 'opacity .2s'; p.style.opacity = '1';
-    let idx = 0;
-    const type = () => { if(idx<=txt.length){p.textContent=txt.slice(0,idx++);setTimeout(type,18);} };
-    type();
-  }, 200+i*240);
-
-  // Click prompt → it "sends" with animation
-  p.addEventListener('click', () => {
-    p.style.transform = 'translateX(8px)';
-    p.style.color = 'rgba(255,255,255,.9)';
-    p.style.transition = 'all .2s cubic-bezier(.16,1,.3,1)';
-    p.style.borderColor = 'rgba(26,115,232,.4)';
-    setTimeout(() => {
-      p.style.transform = '';
-      p.style.color = '';
-      p.style.borderColor = '';
-    }, 400);
-    // Ripple
-    const r = p.getBoundingClientRect();
-    const rip = document.createElement('div'); rip.className = 'card-rip';
-    const sz = 200;
-    rip.style.cssText=`width:${sz}px;height:${sz}px;left:${r.width/2-sz/2}px;top:${r.height/2-sz/2}px;background:rgba(26,115,232,.08)`;
-    p.style.position='relative'; p.style.overflow='hidden';
-    p.appendChild(rip); setTimeout(()=>rip.remove(),600);
-  });
-});
-
-// ── 9. FCTA TILES — 3D tilt + bottom line ──
-if (!mob) {
-  document.querySelectorAll('.fcta').forEach(fcta => {
-    fcta.addEventListener('mousemove', e => {
-      const r = fcta.getBoundingClientRect();
-      const x = (e.clientX-r.left)/r.width-.5;
-      const y = (e.clientY-r.top)/r.height-.5;
-      fcta.style.transform = `perspective(500px) rotateY(${x*7}deg) rotateX(${-y*7}deg) translateY(-3px) scale(1.02)`;
-      fcta.style.transition = 'transform .06s linear';
-    });
-    fcta.addEventListener('mouseleave', () => {
-      fcta.style.transform = '';
-      fcta.style.transition = 'transform .4s cubic-bezier(.16,1,.3,1)';
-    });
-  });
-}
-
-// ── 10. STAT ITEMS — click replays counter + bounces ──
-document.querySelectorAll('.stat-item').forEach(item => {
-  item.style.cursor = 'pointer';
-  item.addEventListener('click', () => {
-    const num = item.querySelector('[data-count]'); if(!num) return;
-    const target = parseInt(num.dataset.count);
-    let start = null;
-    const step = ts => {
-      if(!start) start=ts;
-      const p = Math.min((ts-start)/900,1), e = 1-Math.pow(1-p,3);
-      num.textContent = Math.round(e*target).toLocaleString();
-      if(p<1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-    item.style.transform='scale(1.06)';
-    item.style.transition='transform .3s cubic-bezier(.34,1.56,.64,1)';
-    setTimeout(()=>item.style.transform='',350);
-  });
-  // Hover tooltip
-  item.addEventListener('mouseenter', e => {
-    tipEl.textContent = item.dataset.tip || '';
-    tipEl.classList.add('show');
-  });
-  item.addEventListener('mousemove', e => {
-    tipEl.style.left = (e.clientX+14)+'px';
-    tipEl.style.top  = (e.clientY-30)+'px';
-  });
-  item.addEventListener('mouseleave', () => tipEl.classList.remove('show'));
-});
-
-const tipEl = document.createElement('div'); tipEl.className='v-tip'; document.body.appendChild(tipEl);
-const statTips=['5 products shipped','2-person team','Always free','Est. 2026, India'];
-document.querySelectorAll('.stat-item').forEach((el,i) => el.dataset.tip = statTips[i]||'');
-
-// ── 11. HERO BADGE CONFETTI CLICK ──
-const badge = document.querySelector('.hero-badge');
-if (badge) {
-  badge.style.cursor = 'pointer';
-  badge.addEventListener('click', e => {
-    const cols = ['var(--blue)','var(--yellow)','#34a853','#ea4335','#4285f4','#fff'];
-    for (let i=0;i<22;i++) {
-      const el = document.createElement('div'); el.className='btn-burst';
-      const angle = Math.random()*Math.PI*2, dist=40+Math.random()*70;
-      el.style.cssText=`left:${e.clientX}px;top:${e.clientY}px;
-        --bx:${Math.cos(angle)*dist}px;--by:${Math.sin(angle)*dist}px;
-        background:${cols[i%cols.length]};width:${Math.random()*6+3}px;height:${Math.random()*6+3}px;
-        animation-delay:${Math.random()*0.1}s;animation-duration:${0.5+Math.random()*0.4}s`;
-      document.body.appendChild(el); setTimeout(()=>el.remove(),900);
-    }
-  });
-}
-
-// ── 12. LOGO 5× CLICK EASTER EGG ──
-let spinN=0;
-const logoIco = document.querySelector('.logo-icon');
-if (logoIco) {
-  logoIco.style.cursor='pointer';
-  logoIco.addEventListener('click', () => {
-    spinN++;
-    logoIco.style.transition='transform .5s cubic-bezier(.34,1.56,.64,1)';
-    logoIco.style.transform=`rotate(${spinN*360}deg) scale(1.2)`;
-    setTimeout(()=>logoIco.style.transform=`rotate(${spinN*360}deg)`,500);
-    if (spinN===5) {
-      // Confetti burst from logo
-      const r=logoIco.getBoundingClientRect();
-      const cx=r.left+r.width/2, cy=r.top+r.height/2;
-      ['🎉','🚀','⚡','🧠','☁️'].forEach((emoji,i)=>{
-        const el=document.createElement('div');
-        el.textContent=emoji;
-        const angle=(i/5)*Math.PI*2, dist=80;
-        el.style.cssText=`position:fixed;font-size:24px;left:${cx}px;top:${cy}px;
-          z-index:99998;pointer-events:none;
-          animation:burstOut .9s ease-out forwards;
-          --bx:${Math.cos(angle)*dist}px;--by:${Math.sin(angle)*dist}px`;
-        document.body.appendChild(el); setTimeout(()=>el.remove(),1000);
-      });
-      spinN=0;
-    }
-  });
-}
-
-// ── 13. KEYBOARD INTERACTIONS ──
-document.addEventListener('keydown', e => {
-  // '/' → go to Vasuki Intelligence
-  if (e.key==='/' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
-    e.preventDefault();
-    window.location.href='https://shauryachr.github.io/vasuki.github.io/General-AI';
-  }
-  // 'b' → go to Brain
-  if (e.key==='b' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
-    window.location.href='brain.html';
-  }
-  // Escape → close mobile menu
-  if (e.key==='Escape') closeMob();
-  // Space at top → scroll to hero
-  if (e.key===' ' && window.scrollY===0) {
-    e.preventDefault();
-    document.querySelector('.hero-wrap')?.scrollIntoView({behavior:'smooth'});
-  }
-});
-
-// ── 14. PARALLAX HERO ──
-if (!mob) {
-  const hl=document.querySelector('.hero-l'), hr=document.querySelector('.hero-r');
-  window.addEventListener('scroll', () => {
-    const sy=window.scrollY;
-    if(hl) hl.style.transform=`translateY(${sy*0.04}px)`;
-    if(hr) hr.style.transform=`translateY(${sy*0.02}px)`;
-  },{passive:true});
-}
-
-// ── 15. SCROLL REVEAL ──
-const io=new IntersectionObserver(es=>{
-  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target);}});
-},{threshold:0,rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('.rUp,.rLeft,.rRight,.sh').forEach(el=>io.observe(el));
-
-// ── 16. ANIMATED COUNTERS ──
-const cio=new IntersectionObserver(es=>{
-  es.forEach(e=>{
-    if(!e.isIntersecting) return;
-    const el=e.target, target=parseInt(el.dataset.count); let start=null;
-    const step=ts=>{if(!start)start=ts;const p=Math.min((ts-start)/1400,1),ease=1-Math.pow(1-p,3);el.textContent=Math.round(ease*target).toLocaleString();if(p<1)requestAnimationFrame(step);};
-    requestAnimationFrame(step); cio.unobserve(el);
-  });
-},{threshold:.5});
-document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
-
-// ── 17. TAB INK ──
-function updInk(){
-  const ink=document.getElementById('tabInk'),tabs=document.getElementById('newsTabs');
-  if(!ink||!tabs) return;
-  const a=tabs.querySelector('.active'); if(!a) return;
-  const ar=a.getBoundingClientRect(),pr=tabs.getBoundingClientRect();
-  ink.style.left=(ar.left-pr.left)+'px'; ink.style.width=ar.width+'px';
-}
-setTimeout(updInk,80);
-function switchNTab(el){
-  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active'); updInk();
-  el.style.transform='scale(.95)'; setTimeout(()=>el.style.transform='',120);
-}
-function switchFTab(el){
-  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  el.style.transform='scale(.95)'; setTimeout(()=>el.style.transform='',120);
-}
-
-// ── 18. FOOTER LETTER HOVER ──
-document.querySelectorAll('.fcol a').forEach(link=>{
-  if(link.dataset.s) return; link.dataset.s='1';
-  const txt=link.textContent;
-  link.innerHTML=txt.split('').map((c,i)=>`<span style="display:inline-block;transition:transform .13s ease ${i*.014}s,color .13s">${c===' '?'&nbsp;':c}</span>`).join('');
-  link.addEventListener('mouseenter',()=>link.querySelectorAll('span').forEach(s=>{s.style.transform='translateY(-3px)';s.style.color='var(--blue)';}));
-  link.addEventListener('mouseleave',()=>link.querySelectorAll('span').forEach(s=>{s.style.transform='';s.style.color='';}));
-});
-
-// ── 19. SECTION HEADINGS GLOW on hover ──
-document.querySelectorAll('.sh').forEach(h=>{
-  h.style.cursor='default';
-  h.addEventListener('mouseenter',()=>{h.style.color='var(--blue)';h.style.transition='color .2s';});
-  h.addEventListener('mouseleave',()=>h.style.color='');
-});
-
-// ── 20. NCARD IMAGE ROTATE on hover ──
-document.querySelectorAll('.ncard').forEach(nc=>{
-  const img=nc.querySelector('.ncard-img'); if(!img) return;
-  nc.addEventListener('mousemove', e=>{
-    const r=nc.getBoundingClientRect();
-    const x=(e.clientX-r.left)/r.width-.5;
-    img.style.transform=`rotate(${x*14}deg) scale(1.15)`;
-    img.style.transition='transform .1s linear';
-  });
-  nc.addEventListener('mouseleave',()=>{img.style.transform='';img.style.transition='transform .4s cubic-bezier(.34,1.56,.64,1)';});
-});
-
-// ── 21. DIVIDER CLICK BURST ──
-document.querySelectorAll('.divider').forEach(div=>{
-  div.style.cursor='pointer';
-  div.addEventListener('click', e=>{
-    for(let i=0;i<10;i++){
-      const p=document.createElement('div'); p.className='btn-burst';
-      const angle=Math.random()*Math.PI*2;
-      p.style.cssText=`left:${e.clientX}px;top:${e.clientY}px;
-        --bx:${Math.cos(angle)*30}px;--by:${Math.sin(angle)*20}px;
-        background:var(--blue);animation-delay:${i*.02}s;width:4px;height:4px`;
-      document.body.appendChild(p); setTimeout(()=>p.remove(),700);
-    }
-  });
-});
-
-// ── 22. TEAM CARD CLICK BOUNCE ──
-document.querySelectorAll('.tcard').forEach(card=>{
-  card.addEventListener('click', ()=>{
-    const thumb=card.querySelector('.tcard-thumb'); if(!thumb) return;
-    thumb.style.transition='transform .3s cubic-bezier(.34,1.56,.64,1)';
-    thumb.style.transform='scale(1.5) rotate(15deg)';
-    setTimeout(()=>{thumb.style.transform='';},350);
-  });
-});
-
-// ── 23. CTA ITEM HOVER LIFT ──
-document.querySelectorAll('.cta-item').forEach(item=>{
-  item.addEventListener('mouseenter',()=>{
-    item.style.transform='translateY(-3px)';
-    item.style.background='rgba(26,115,232,.03)';
-    item.style.transition='transform .25s cubic-bezier(.16,1,.3,1),background .2s';
-  });
-  item.addEventListener('mouseleave',()=>{item.style.transform='';item.style.background='';});
-});
-
-// ── 24. FEATURE CARD THUMB BOUNCE on hover ──
-document.querySelectorAll('.fcard').forEach(card=>{
-  const thumb=card.querySelector('.fcard-thumb'); if(!thumb) return;
-  card.addEventListener('mouseenter',()=>{
-    thumb.style.transform='scale(1.15) translateY(-5px)';
-    thumb.style.transition='transform .35s cubic-bezier(.34,1.56,.64,1)';
-  });
-  card.addEventListener('mouseleave',()=>{thumb.style.transform='';});
-});
-
-// ── 25. SCROLL-SPEED PARTICLE BURST ──
-let lastSY2=0;
-window.addEventListener('scroll',()=>{
-  const vel=Math.abs(window.scrollY-lastSY2);
-  if(vel>20){
-    const p=new Particle(); p.reset(false);
-    p.x=Math.random()*W; p.y=window.scrollY%H;
-    p.vx=(Math.random()-.5)*3; p.vy=(Math.random()-.5)*3;
-    pts.push(p); if(pts.length>100) pts.shift();
-  }
-  lastSY2=window.scrollY;
-},{passive:true});
-
-// ── 26. HAMBURGER ──
-const ham=document.getElementById('ham');
-const mobMenu=document.getElementById('mobMenu');
-const mobClose=document.getElementById('mobClose');
-const mobHome=document.getElementById('mobHome');
-const closeMob=()=>{ham.classList.remove('open');mobMenu.classList.remove('open');document.body.style.overflow='';};
-ham.addEventListener('click',()=>{
-  ham.classList.toggle('open');mobMenu.classList.toggle('open');
-  document.body.style.overflow=mobMenu.classList.contains('open')?'hidden':'';
-});
-if(mobClose) mobClose.addEventListener('click',closeMob);
-if(mobHome)  mobHome.addEventListener('click',closeMob);
-mobMenu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMob));
-</script>
 </body>
 </html>
