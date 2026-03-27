@@ -3,24 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vasuki iTech Labs — Ecosystem</title>
+<title>Vasuki iTech Labs — Ultra Animated</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-/* ─── DREELIO THEME TOKENS ─── */
+/* ─── DREELIO CORE & ANIMATION TOKENS ─── */
 :root {
-  --bg: #050505;
-  --bg-card: #0f0f0f;
-  --accent: #7c3aed; /* Electric Purple */
-  --accent-glow: rgba(124, 58, 237, 0.2);
+  --bg: #030303;
+  --bg-card: #0a0a0a;
+  --accent: #8b5cf6;
+  --accent-glow: rgba(139, 92, 246, 0.4);
   --text: #ffffff;
-  --t2: #a1a1aa;
-  --t3: #71717a;
-  --border: rgba(255, 255, 255, 0.08);
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --blue: #1a73e8; /* Keeping your brand blue as secondary */
-  --yellow: #ffca28;
+  --t2: #94a3b8;
+  --border: rgba(255, 255, 255, 0.05);
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
@@ -29,263 +25,217 @@ body{
   color: var(--text);
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
-  line-height: 1.6;
+  perspective: 1000px;
 }
 
-/* ─── DREELIO BACKGROUND ─── */
+/* ─── 1. KINETIC BACKGROUND ─── */
 .mesh-bg {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: radial-gradient(circle at 50% -10%, #1e1b4b 0%, transparent 40%);
-  z-index: -1;
+  position: fixed; inset: 0; z-index: -1;
+  background: radial-gradient(circle at 50% -20%, #1e1b4b 0%, transparent 50%),
+              radial-gradient(circle at 10% 80%, #0f172a 0%, transparent 40%);
+  animation: bgBreathe 10s ease-in-out infinite alternate;
+}
+@keyframes bgBreathe { 
+  0% { transform: scale(1); opacity: 0.8; } 
+  100% { transform: scale(1.1); opacity: 1; } 
 }
 
-/* ─── TOPBAR (Restored Data) ─── */
-.topbar {
-  background: linear-gradient(90deg, #1a3a5c, var(--accent), #1a3a5c);
-  color: #fff; text-align: center; font-size: 13px; padding: 10px;
+/* ─── 2. SCROLL PROGRESS LINE ─── */
+#scroll-line {
+  position: fixed; top: 0; left: 0; height: 3px; background: var(--accent);
+  z-index: 10001; width: 0%; transition: width 0.2s;
+  box-shadow: 0 0 15px var(--accent);
 }
-.topbar a { color: var(--yellow); text-decoration: underline; }
 
-/* ─── HEADER (Framer Floating Style) ─── */
+/* ─── 3. HEADER (FLOATING) ─── */
 header {
-  position: sticky; top: 15px; z-index: 1000;
-  max-width: 1200px; margin: 15px auto;
-  background: rgba(15, 15, 15, 0.7);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border); border-radius: 100px;
-  display: flex; align-items: center; padding: 10px 24px;
+  position: sticky; top: 20px; z-index: 1000;
+  max-width: 1000px; margin: 20px auto;
+  background: rgba(10, 10, 10, 0.6);
+  backdrop-filter: blur(15px); border: 1px solid var(--border);
+  border-radius: 100px; padding: 12px 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  animation: slideDown 1s var(--ease);
 }
+@keyframes slideDown { from { transform: translateY(-100px); opacity: 0; } }
 
-.logo-wrap { display: flex; align-items: center; gap: 10px; margin-right: 20px; }
-.logo-icon { width: 32px; height: 32px; border-radius: 8px; overflow: hidden; background: var(--yellow); }
-.logo-icon img { width: 100%; height: 100%; object-fit: cover; }
-.logo-text { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+.logo-text { font-family: 'Outfit'; font-weight: 900; letter-spacing: -1px; }
+.logo-text em { color: var(--accent); font-style: normal; animation: glowPulse 2s infinite; }
 
-nav { display: flex; align-items: center; gap: 20px; flex: 1; }
-.ni { font-size: 14px; font-weight: 500; color: var(--t2); cursor: pointer; transition: color 0.3s; position: relative; }
-.ni:hover { color: #fff; }
+/* ─── 4. HERO SECTION ─── */
+.hero-wrap { max-width: 1200px; margin: 0 auto; padding: 140px 20px 80px; text-align: center; }
 
-.nav-r { margin-left: auto; display: flex; gap: 10px; }
-
-/* ─── BUTTONS ─── */
-.btn {
-  padding: 10px 20px; border-radius: 100px; font-weight: 600; font-size: 14px;
-  cursor: pointer; transition: all 0.3s var(--ease); border: none; font-family: inherit;
-}
-.btn-blue { background: #fff; color: #000; }
-.btn-blue:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--accent-glow); }
-.btn-out { background: transparent; color: #fff; border: 1px solid var(--border); }
-.btn-out:hover { background: var(--border); }
-.btn-y { background: var(--yellow); color: #000; }
-
-/* ─── HERO ─── */
-.hero-wrap { max-width: 1200px; margin: 0 auto; padding: 120px 20px 60px; text-align: center; }
 .hero-l h1 { 
-  font-family: 'Outfit', sans-serif; font-size: clamp(40px, 8vw, 84px); 
-  line-height: 0.95; font-weight: 800; letter-spacing: -4px; margin-bottom: 24px;
+  font-family: 'Outfit'; font-size: clamp(48px, 10vw, 100px); 
+  font-weight: 900; letter-spacing: -5px; line-height: 0.85; margin-bottom: 30px;
+  animation: heroText 1.2s var(--ease);
 }
-.hero-l h1 strong { color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); }
-.hero-l p { color: var(--t2); font-size: 18px; max-width: 700px; margin: 0 auto 40px; }
+@keyframes heroText { 
+  from { letter-spacing: -20px; filter: blur(10px); opacity: 0; } 
+  to { letter-spacing: -5px; filter: blur(0); opacity: 1; }
+}
 
-/* TERMINAL DATA (RESTORED) */
+.hero-l h1 strong {
+  background: linear-gradient(90deg, #fff, var(--accent), #fff);
+  background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+}
+@keyframes shimmer { to { background-position: 200% center; } }
+
+.hero-btns { display: flex; gap: 15px; justify-content: center; animation: fadeInUp 1s 0.5s both; }
+
+/* ─── 5. THE TERMINAL (ULTRA PASSIVE ANIMATIONS) ─── */
 .hero-r {
-  background: #000; border: 1px solid var(--border); border-radius: 20px;
-  padding: 30px; margin-top: 80px; text-align: left;
-  position: relative; box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+  background: #000; border: 1px solid var(--border); border-radius: 24px;
+  padding: 40px; margin: 80px auto 0; max-width: 800px; text-align: left;
+  box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+  animation: float 6s ease-in-out infinite;
 }
-.hr-label { font-size: 10px; font-weight: 700; color: var(--yellow); margin-bottom: 16px; letter-spacing: 2px; }
-.prompt { font-family: 'Courier New', monospace; font-size: 14px; color: var(--t3); padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-.prompt:hover { color: var(--accent); background: rgba(124, 58, 237, 0.05); }
-.hero-badge {
-  font-size: 13px; color: var(--yellow); background: rgba(255, 202, 40, 0.05);
-  border: 1px solid rgba(255, 202, 40, 0.1); padding: 10px 16px; border-radius: 12px; margin-top: 20px;
-}
-.hero-badge a { color: var(--yellow); text-decoration: underline; }
+@keyframes float { 0%, 100% { transform: translateY(0) rotateX(0); } 50% { transform: translateY(-20px) rotateX(2deg); } }
 
-/* ─── SECTIONS ─── */
+.prompt { 
+  font-family: monospace; color: var(--t2); padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.03); 
+  overflow: hidden; white-space: nowrap; border-right: 2px solid transparent;
+  width: 0; animation: typing 3s steps(40) forwards, blink 0.8s infinite;
+}
+.p1 { animation-delay: 1s; }
+.p2 { animation-delay: 3s; }
+.p3 { animation-delay: 5s; }
+
+@keyframes typing { from { width: 0; } to { width: 100%; } }
+@keyframes blink { 50% { border-color: var(--accent); } }
+
+/* ─── 6. INTERACTIVE CARDS (HOVER EFFECTS) ─── */
 .section { max-width: 1200px; margin: 0 auto; padding: 100px 20px; }
-.sh { font-family: 'Outfit', sans-serif; font-size: 42px; font-weight: 700; letter-spacing: -1.5px; margin-bottom: 40px; }
-.sp { color: var(--t2); font-size: 16px; max-width: 600px; margin-bottom: 30px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
 
-/* GRID DATA (RESTORED) */
-.news-grid, .feat-grid, .team-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;
-}
-
-.ncard, .fcard, .tcard, .fcta {
+.card {
   background: var(--bg-card); border: 1px solid var(--border);
-  padding: 32px; border-radius: 28px; transition: all 0.4s var(--ease);
-  cursor: pointer; position: relative; overflow: hidden;
-}
-.ncard:hover, .fcard:hover, .tcard:hover, .fcta:hover {
-  border-color: var(--accent); background: #121212;
-  transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  padding: 40px; border-radius: 32px; transition: all 0.5s var(--ease);
+  position: relative; overflow: hidden;
 }
 
-.ncard-img, .fcard-thumb, .tcard-thumb, .fcta-ico { font-size: 42px; margin-bottom: 24px; }
-.ncard-ttl, .fcard-body, .tcard-name { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-.ncard-lbl, .tcard-desc, .fcta-txt p { color: var(--t2); font-size: 14px; }
-
-/* ─── STATS ─── */
-.stats-row { 
-  display: flex; justify-content: space-around; padding: 100px 0; border-top: 1px solid var(--border); margin: 60px 0;
+.card:hover {
+  transform: scale(1.03) translateY(-10px);
+  border-color: var(--accent);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 0 20px var(--accent-glow);
 }
-.stat-item { text-align: center; }
-.stat-num { font-size: 56px; font-weight: 800; color: var(--accent); font-family: 'Outfit'; letter-spacing: -2px; }
-.stat-lbl { color: var(--t3); text-transform: uppercase; letter-spacing: 2px; font-size: 12px; margin-top: 8px; }
 
-/* ─── FOOTER ─── */
-footer { border-top: 1px solid var(--border); padding: 120px 20px 60px; background: #000; }
-.footer-main { 
-  max-width: 1200px; margin: 0 auto; display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;
+.card::before {
+  content: ''; position: absolute; top: -100%; left: -100%; width: 50%; height: 300%;
+  background: linear-gradient(transparent, rgba(255,255,255,0.05), transparent);
+  transform: rotate(45deg); transition: 0.6s;
 }
-.fcol h4 { margin-bottom: 24px; font-size: 12px; text-transform: uppercase; color: var(--t3); letter-spacing: 2px; }
-.fcol a { display: block; color: var(--t2); margin-bottom: 12px; text-decoration: none; font-size: 14px; }
-.fcol a:hover { color: var(--accent); transform: translateX(5px); }
+.card:hover::before { left: 150%; }
 
-/* ─── ANIMATIONS ─── */
-@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.reveal { animation: fadeIn 1s var(--ease) both; }
-
-@media (max-width: 768px) {
-  nav { display: none; }
-  .hero-l h1 { font-size: 52px; letter-spacing: -2px; }
-  .stats-row { flex-direction: column; gap: 60px; }
+/* ─── 7. SCROLL REVEAL (JS-Free CSS) ─── */
+.reveal { 
+  opacity: 0; transform: translateY(50px);
+  view-timeline-name: --rev; view-timeline-axis: block;
+  animation: reveal linear both; animation-timeline: --rev;
+  animation-range: entry 20% cover 40%;
 }
+@keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+
+/* ─── 8. BUTTONS ─── */
+.btn {
+  padding: 16px 32px; border-radius: 100px; font-weight: 700; cursor: pointer;
+  border: none; font-family: inherit; transition: 0.3s;
+}
+.btn-blue { background: #fff; color: #000; box-shadow: 0 10px 30px rgba(255,255,255,0.2); }
+.btn-blue:hover { transform: scale(1.1); filter: brightness(1.2); }
+
+/* ─── 9. STATS (PASSIVE GLOW) ─── */
+.stats { display: flex; justify-content: space-around; margin: 80px 0; }
+.stat-num { 
+  font-size: 64px; font-weight: 900; font-family: 'Outfit'; 
+  color: var(--accent); animation: glowPulse 2s ease-in-out infinite; 
+}
+@keyframes glowPulse { 0%, 100% { opacity: 0.8; text-shadow: none; } 50% { opacity: 1; text-shadow: 0 0 20px var(--accent-glow); } }
+
 </style>
 </head>
 <body>
 
+<div id="scroll-line"></div>
 <div class="mesh-bg"></div>
 
-<div class="topbar">
-  Welcome to <strong>Vasuki iTech Labs</strong> — Empowering Indian Developers. <a href="#">Learn More &rarr;</a>
-</div>
-
 <header>
-  <div class="logo-wrap">
-    <div class="logo-icon"><img src="https://via.placeholder.com/32" alt="Logo"></div>
-    <span class="logo-text">VASUKI <em>iTech</em></span>
-  </div>
-  <nav>
-    <div class="ni">Web Dev</div>
-    <div class="ni">AI Database</div>
-    <div class="ni">Portfolio</div>
-    <div class="ni">About</div>
+  <div class="logo-text">VASUKI <em>iTech</em></div>
+  <nav style="display:flex; gap:20px; font-size:14px; font-weight:500; color:var(--t2);">
+    <span>Infrastructure</span><span>Database</span><span>Support</span>
   </nav>
-  <div class="nav-r">
-    <a href="https://shauryachr.github.io" class="btn btn-out">My Website</a>
-    <button class="btn btn-blue">Launch Portal</button>
-  </div>
+  <button class="btn btn-blue" style="padding:10px 20px;">Launch App</button>
 </header>
 
 <main>
-  <section class="hero-wrap reveal">
+  <section class="hero-wrap">
     <div class="hero-l">
-      <h1>Vasuki iTech <strong>Ecosystem</strong></h1>
-      <p>Scaling personal site hosting (GitHub Pages), technical maintenance, and logic challenges at the Class 7 & 8 academic levels.</p>
+      <h1>Infinite <strong>Ecosystem</strong></h1>
+      <p style="color:var(--t2); font-size:20px; margin-bottom:40px;">Maintaining GitHub Pages: shauryachr.github.io & Proboiz961.github.io. Scaling Linux Infrastructure and Academic Logic.</p>
       <div class="hero-btns">
-        <button class="btn btn-blue">Explore Projects</button>
-        <button class="btn btn-out">Academic Quizzes</button>
+        <button class="btn btn-blue">GitHub Repos</button>
+        <button class="btn" style="background:transparent; color:#fff; border:1px solid var(--border);">Sanskrit Lexicon</button>
       </div>
     </div>
 
-    <div class="hero-r reveal">
-      <div class="hr-label">● VASUKI_LABS_RECOVERY</div>
-      <div class="prompt">>> Maintaining: shauryachr.github.io</div>
-      <div class="prompt">>> Maintaining: Proboiz961.github.io</div>
-      <div class="prompt">>> Installing: Linux Mint 22.2 Cinnamon</div>
-      <div class="prompt">>> Sanskrit Lexicon: "Mati", "Vad", "Likh" Shabdrup</div>
-      <div class="hero-badge">
-        Managed via A2485 MacBook Pro @ <a href="#">Hardware Status</a>
-      </div>
+    <div class="hero-r">
+      <div class="prompt p1">> Initializing Vasuki iTech Cloud...</div>
+      <div class="prompt p2">> Monitoring: Dell Vostro 2420 / Linux Mint...</div>
+      <div class="prompt p3">> Tracking: Kia Sonet & MG Windsor EV Market...</div>
+      <div style="margin-top:20px; font-size:12px; color:var(--accent);">HARDWARE: MACBOOK PRO A2485 [ACTIVE]</div>
     </div>
   </section>
 
   <section class="section">
-    <h2 class="sh">Active Infrastructure</h2>
-    <div class="feat-grid">
-      <div class="fcard reveal">
-        <div class="fcard-thumb">🌐</div>
-        <div class="fcard-body">GitHub Pages Hosting</div>
-        <p class="sp">Design & Expansion of shauryachr.github.io</p>
+    <h2 class="reveal" style="font-family:'Outfit'; font-size:48px; margin-bottom:50px;">Active Nodes</h2>
+    <div class="grid">
+      <div class="card reveal">
+        <div style="font-size:40px; margin-bottom:20px;">🌐</div>
+        <h3 style="margin-bottom:10px;">GitHub Pages</h3>
+        <p style="color:var(--t2);">Proboiz961.github.io & personal portfolio maintenance.</p>
       </div>
-      <div class="fcard reveal" style="animation-delay: 0.1s;">
-        <div class="fcard-thumb">💻</div>
-        <div class="fcard-body">Technical Maintenance</div>
-        <p class="sp">Linux OS Installation on Dell Vostro 2420</p>
+      <div class="card reveal">
+        <div style="font-size:40px; margin-bottom:20px;">⚡</div>
+        <h3 style="margin-bottom:10px;">Linux Systems</h3>
+        <p style="color:var(--t2);">Dual-booting Linux Mint 22.2 Cinnamon Edition on Dell Vostro.</p>
       </div>
-      <div class="fcard reveal" style="animation-delay: 0.2s;">
-        <div class="fcard-thumb">🏎️</div>
-        <div class="fcard-body">Automotive Specs</div>
-        <p class="sp">Analysis of MG Windsor EV & Kia Sonet Prices</p>
-      </div>
-      <div class="fcard reveal" style="animation-delay: 0.3s;">
-        <div class="fcard-thumb">🕉️</div>
-        <div class="fcard-body">Sanskrit Studies</div>
-        <p class="sp">Grammar Translation & Shabdrup Analysis</p>
+      <div class="card reveal">
+        <div style="font-size:40px; margin-bottom:20px;">📚</div>
+        <h3 style="margin-bottom:10px;">Academic Core</h3>
+        <p style="color:var(--t2);">Class 8 Sanskrit Grammar & Logical Reasoning challenges.</p>
       </div>
     </div>
   </section>
 
-  <div class="stats-row reveal">
-    <div class="stat-item">
-      <span class="stat-num">Class 8</span>
-      <span class="stat-lbl">Academic Level</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">2+</span>
-      <span class="stat-lbl">Active Repo Domains</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">99%</span>
-      <span class="stat-lbl">Linux Uptime</span>
-    </div>
+  <div class="stats reveal">
+    <div class="stat-item"><div class="stat-num">99.9%</div><div style="color:var(--t2);">UPTIME</div></div>
+    <div class="stat-item"><div class="stat-num">VIII</div><div style="color:var(--t2);">CLASS LEVEL</div></div>
+    <div class="stat-item"><div class="stat-num">24/7</div><div style="color:var(--t2);">SUPPORT</div></div>
   </div>
 
-  <section class="section">
-    <h2 class="sh">Project Team</h2>
-    <div class="team-grid">
-      <div class="tcard reveal">
-        <div class="tcard-thumb">👨‍💻</div>
-        <div class="tcard-name">Shaurya Chauhan</div>
-        <div class="tcard-desc">Full Stack Dev & System Architect</div>
-      </div>
-      <div class="tcard reveal">
-        <div class="tcard-thumb">🚀</div>
-        <div class="tcard-name">Adamya Khairwal</div>
-        <div class="tcard-desc">Partner @ Vasuki iTech Labs</div>
-      </div>
+  <section class="section reveal">
+    <div class="card" style="text-align:center; background:linear-gradient(rgba(139, 92, 246, 0.1), transparent); border-color:var(--accent);">
+      <h2 style="font-family:'Outfit'; font-size:42px; margin-bottom:20px;">Lead Architects</h2>
+      <p style="font-size:24px; font-weight:700;">Shaurya Chauhan & Adamya Khairwal</p>
+      <p style="color:var(--t2); margin-top:10px;">Vasuki iTech Labs Founders</p>
     </div>
   </section>
 </main>
 
-<footer>
-  <div class="footer-main">
-    <div class="fcol">
-      <h4>Platform</h4>
-      <a href="https://shauryachr.github.io">Personal Portfolio</a>
-      <a href="https://github.com">GitHub Repository</a>
-      <a href="#">Proboiz961 Pages</a>
-    </div>
-    <div class="fcol">
-      <h4>Academic</h4>
-      <a href="#">Class 8 Sanskrit</a>
-      <a href="#">Logical Reasoning Quizzes</a>
-      <a href="#">Math Geometry Solutions</a>
-    </div>
-    <div class="fcol">
-      <h4>Hardware</h4>
-      <a href="#">MacBook Pro Recovery</a>
-      <a href="#">Dell Vostro Linux Support</a>
-      <a href="#">Windows 7 Troubleshooting</a>
-    </div>
-  </div>
-  <div style="text-align: center; margin-top: 60px; color: var(--t3); font-size: 12px;">
-    © 2026 Vasuki iTech Labs. Built for Class 8 Academic Excellence.
-  </div>
+<footer style="padding:100px 20px; border-top:1px solid var(--border); text-align:center;">
+  <div style="color:var(--t3); font-size:14px;">© 2026 VASUKI ITECH LABS. ALL DATA RESTORED.</div>
 </footer>
+
+<script>
+  // Scroll Progress Logic
+  window.onscroll = function() {
+    let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    let scrolled = (winScroll / height) * 100;
+    document.getElementById("scroll-line").style.width = scrolled + "%";
+  };
+</script>
 
 </body>
 </html>
