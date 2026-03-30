@@ -1,823 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Vasuki Labs</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vasuki iTech Labs — Enterprise Ecosystem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
 <style>
-  /* ---------- RESET + PORTFOLITE DESIGN SYSTEM ---------- */
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+/* ─── DREELIO PROFESSIONAL TOKENS ─── */
+:root {
+  --bg: #050505;
+  --bg-alt: #0a0a0b;
+  --accent: #7c3aed; 
+  --blue: #2563eb;
+  --text: #ffffff;
+  --t2: #94a3b8;
+  --border: rgba(255, 255, 255, 0.06);
+  --glass: rgba(10, 10, 10, 0.7);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
 
-  :root {
-    --bg: #030303;
-    --surface: #0a0a0a;
-    --surface-2: #111111;
-    --border: #1f1f1f;
-    --text-primary: #f0f0f0;
-    --text-secondary: #a1a1aa;
-    --text-muted: #52525b;
-    --accent: #ffffff;
-    --accent-glow: rgba(255,255,255,0.08);
-    --radius-sm: 12px;
-    --radius-md: 20px;
-    --radius-xl: 28px;
-    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  }
+/* ─── BASE SETUP ─── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
 
-  body {
-    background-color: var(--bg);
-    color: var(--text-primary);
-    font-family: 'Inter', sans-serif;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-  }
+/* ─── SCROLL PROGRESS ─── */
+#pbar {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 10000;
+  background: linear-gradient(90deg, var(--accent), var(--blue));
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+}
 
-  /* custom scroll */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: #111; }
-  ::-webkit-scrollbar-thumb { background: #333; border-radius: 8px; }
+/* ─── FULL-WIDTH BACKGROUND MESH ─── */
+.mesh-wrap {
+  position: fixed; inset: 0; z-index: -1;
+  background: 
+    radial-gradient(circle at 80% 20%, rgba(124, 58, 237, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(37, 99, 235, 0.08) 0%, transparent 40%);
+  animation: meshBreath 15s ease-in-out infinite alternate;
+}
+@keyframes meshBreath { from { opacity: 0.6; transform: scale(1); } to { opacity: 1; transform: scale(1.1); } }
 
-  /* particle canvas */
-  #pcv {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.3;
-  }
+/* ─── HEADER (EDGE TO EDGE) ─── */
+header {
+  position: sticky; top: 0; z-index: 999;
+  width: 100%; height: 72px;
+  background: var(--glass);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 4%;
+  transition: all 0.4s var(--ease);
+}
+header.scrolled { height: 60px; background: rgba(0,0,0,0.9); }
 
-  #pbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 2px;
-    width: 0%;
-    background: var(--text-primary);
-    z-index: 9999;
-    transition: width 0.1s linear;
-  }
+.logo-wrap { display: flex; align-items: center; gap: 12px; }
+.logo-icon { width: 34px; height: 34px; border-radius: 8px; background: #ffca28; animation: logoSpin 10s linear infinite; }
+@keyframes logoSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.logo-text { font-family: 'Outfit'; font-size: 20px; font-weight: 600; letter-spacing: -0.5px; }
 
-  /* container */
-  .container {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 32px;
-    position: relative;
-    z-index: 2;
-  }
+nav { display: flex; gap: 30px; margin-left: 60px; }
+.ni { font-size: 14px; font-weight: 500; color: var(--t2); cursor: pointer; position: relative; transition: 0.3s; }
+.ni::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--accent); transition: 0.3s; }
+.ni:hover { color: #fff; } .ni:hover::after { width: 100%; }
 
-  /* typography */
-  h1, h2, h3 {
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
+/* ─── HERO SECTION (FIT TO SCREEN) ─── */
+.hero-sec {
+  width: 100%; min-height: 90vh;
+  display: flex; align-items: center; padding: 0 4%;
+  overflow: hidden;
+}
+.hero-grid {
+  display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; width: 100%;
+}
 
-  .section-tag {
-    font-size: 12px;
-    font-family: 'DM Mono', monospace;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--text-muted);
-    margin-bottom: 16px;
-    display: inline-block;
-  }
+.hero-content h1 {
+  font-family: 'Outfit'; font-size: clamp(48px, 6vw, 90px);
+  font-weight: 900; line-height: 0.95; letter-spacing: -4px;
+  animation: slideUp 1s var(--ease) both;
+}
+.hero-content h1 strong {
+  background: linear-gradient(90deg, #fff, var(--accent), var(--blue));
+  background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: shine 4s linear infinite;
+}
+@keyframes shine { to { background-position: 200% center; } }
 
-  .section-title {
-    font-size: clamp(32px, 5vw, 56px);
-    font-weight: 700;
-    line-height: 1.1;
-    margin-bottom: 48px;
-    letter-spacing: -0.02em;
-  }
+.hero-p { 
+  font-size: 18px; color: var(--t2); margin: 30px 0; max-width: 600px; line-height: 1.6;
+  animation: slideUp 1s 0.2s var(--ease) both; 
+}
 
-  /* ----- NAVIGATION (Portfolite style pill) ----- */
-  .nav-pill {
-    position: fixed;
-    top: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-    background: rgba(10,10,10,0.85);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: 8px 20px 8px 16px;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    transition: all 0.2s;
-  }
-  .nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .nav-icon {
-    width: 32px;
-    height: 32px;
-    background: #f5c842;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .nav-icon img { width: 100%; height: 100%; object-fit: cover; }
-  .nav-brand {
-    font-weight: 700;
-    font-size: 15px;
-  }
-  .nav-brand span { color: var(--text-muted); font-weight: 400; }
-  .nav-links {
-    display: flex;
-    gap: 8px;
-  }
-  .nav-link {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    padding: 6px 14px;
-    border-radius: 100px;
-    transition: all 0.2s;
-    cursor: pointer;
-  }
-  .nav-link:hover, .dropdown:hover .nav-link {
-    background: rgba(255,255,255,0.05);
-    color: white;
-  }
-  .dropdown {
-    position: relative;
-  }
-  .dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: #0c0c0c;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 8px;
-    min-width: 180px;
-    backdrop-filter: blur(12px);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(8px);
-    transition: 0.2s var(--ease-out);
-    z-index: 10;
-  }
-  .dropdown:hover .dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
-  .dropdown-menu a {
-    display: block;
-    padding: 10px 14px;
-    font-size: 13px;
-    color: var(--text-secondary);
-    border-radius: 10px;
-    transition: 0.1s;
-    text-decoration: none;
-  }
-  .dropdown-menu a:hover {
-    background: rgba(255,255,255,0.05);
-    color: white;
-  }
-  .nav-cta {
-    background: white;
-    color: black;
-    padding: 6px 18px;
-    border-radius: 100px;
-    font-size: 13px;
-    font-weight: 600;
-    transition: 0.2s;
-    text-decoration: none;
-  }
-  .nav-cta:hover {
-    background: #e0e0e0;
-    transform: scale(0.98);
-  }
+/* ─── ANIMATED TERMINAL ─── */
+.terminal {
+  background: #000; border: 1px solid var(--border); border-radius: 16px;
+  padding: 30px; position: relative;
+  box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+  animation: terminalFloat 6s ease-in-out infinite;
+}
+@keyframes terminalFloat { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-20px) rotate(1deg); } }
 
-  /* hero portfolite */
-  .hero {
-    padding: 180px 0 100px;
-    text-align: center;
-  }
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: 6px 16px 6px 12px;
-    font-size: 12px;
-    font-family: monospace;
-    margin-bottom: 32px;
-  }
-  .hero h1 {
-    font-size: clamp(48px, 8vw, 88px);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
-    margin-bottom: 24px;
-  }
-  .hero-desc {
-    font-size: 18px;
-    color: var(--text-secondary);
-    max-width: 640px;
-    margin: 0 auto 40px;
-  }
-  .btn-group {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .btn-primary {
-    background: white;
-    color: black;
-    padding: 12px 28px;
-    border-radius: 100px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: 0.2s;
-  }
-  .btn-outline {
-    border: 1px solid var(--border);
-    padding: 12px 28px;
-    border-radius: 100px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: 0.2s;
-  }
-  .btn-outline:hover, .btn-primary:hover {
-    transform: translateY(-2px);
-  }
+.t-header { display: flex; gap: 6px; margin-bottom: 20px; }
+.t-dot { width: 10px; height: 10px; border-radius: 50%; }
+.prompt { font-family: monospace; font-size: 13px; color: #4ade80; margin-bottom: 10px; opacity: 0; animation: typeIn 0.5s forwards; }
+@keyframes typeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
 
-  /* ticker */
-  .ticker {
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 0;
-    overflow: hidden;
-    margin: 40px 0;
-  }
-  .ticker-track {
-    display: inline-flex;
-    gap: 48px;
-    white-space: nowrap;
-    animation: scrollTicker 28s linear infinite;
-  }
-  @keyframes scrollTicker {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .ticker-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 13px;
-    font-family: monospace;
-    color: var(--text-muted);
-  }
+/* ─── GRID SYSTEMS ─── */
+.section { padding: 100px 4%; }
+.sh { font-family: 'Outfit'; font-size: 48px; font-weight: 600; letter-spacing: -2px; margin-bottom: 50px; }
 
-  /* project grid (Portfolite style) */
-  .project-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-    margin-bottom: 80px;
-  }
-  .project-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 28px;
-    padding: 32px;
-    transition: all 0.3s var(--ease-out);
-    text-decoration: none;
-    color: inherit;
-  }
-  .project-card:hover {
-    transform: translateY(-6px);
-    background: #0e0e0e;
-    border-color: #2c2c2c;
-  }
-  .card-icon {
-    font-size: 40px;
-    margin-bottom: 24px;
-  }
-  .project-title {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
-  .project-desc {
-    color: var(--text-secondary);
-    font-size: 15px;
-    margin-bottom: 24px;
-  }
-  .project-tag {
-    font-size: 12px;
-    font-family: monospace;
-    color: var(--text-muted);
-    text-transform: uppercase;
-  }
+.node-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;
+}
+.card {
+  background: var(--bg-alt); border: 1px solid var(--border);
+  padding: 40px; border-radius: 24px; transition: all 0.5s var(--ease);
+  position: relative; cursor: pointer;
+}
+.card:hover { 
+  transform: translateY(-10px) scale(1.02);
+  border-color: var(--accent);
+  background: #0e0e10;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+}
 
-  /* services list */
-  .services-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 48px 0;
-  }
-  .service-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 24px 0;
-    border-bottom: 1px solid var(--border);
-    cursor: default;
-    transition: 0.2s;
-  }
-  .service-left {
-    display: flex;
-    gap: 32px;
-    align-items: baseline;
-  }
-  .service-num {
-    font-family: monospace;
-    color: var(--text-muted);
-    width: 48px;
-  }
-  .service-name {
-    font-weight: 600;
-    font-size: 18px;
-  }
-  .service-desc {
-    color: var(--text-secondary);
-    font-size: 14px;
-  }
-  .service-badge {
-    font-size: 12px;
-    font-family: monospace;
-    border: 1px solid var(--border);
-    padding: 4px 14px;
-    border-radius: 100px;
-  }
+/* ─── STATS (FULL WIDTH) ─── */
+.stats-bar {
+  width: 100%; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  display: grid; grid-template-columns: repeat(4, 1fr); padding: 80px 4%;
+}
+.stat-item { text-align: center; border-right: 1px solid var(--border); }
+.stat-item:last-child { border-right: none; }
+.s-num { font-family: 'Outfit'; font-size: 64px; font-weight: 900; color: var(--accent); line-height: 1; }
 
-  /* team */
-  .team-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    background: var(--border);
-    margin: 48px 0;
-  }
-  .team-card {
-    background: var(--bg);
-    padding: 48px 40px;
-    transition: 0.2s;
-  }
-  .team-card:hover {
-    background: #0b0b0b;
-  }
-  .team-avatar {
-    font-size: 42px;
-    margin-bottom: 24px;
-  }
-  .team-name {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-  .team-role {
-    font-family: monospace;
-    color: var(--text-muted);
-    font-size: 12px;
-    margin-bottom: 16px;
-  }
-  .team-bio {
-    color: var(--text-secondary);
-    font-size: 14px;
-  }
+/* ─── FOOTER ─── */
+footer { padding: 80px 4%; background: #000; border-top: 1px solid var(--border); }
+.f-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
 
-  /* stats */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 1px;
-    background: var(--border);
-    margin: 48px 0;
-  }
-  .stat-cell {
-    background: var(--bg);
-    padding: 48px 32px;
-    text-align: center;
-  }
-  .stat-number {
-    font-size: 52px;
-    font-weight: 800;
-    letter-spacing: -2px;
-    line-height: 1;
-  }
-  .stat-label {
-    font-size: 13px;
-    font-family: monospace;
-    color: var(--text-muted);
-    margin-top: 8px;
-  }
+/* ─── UTILS ─── */
+@keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
 
-  /* viz panels */
-  .viz-panel {
-    background: var(--surface);
-    border-radius: 32px;
-    border: 1px solid var(--border);
-    padding: 32px;
-    margin: 48px 0;
-  }
-  .viz-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 32px;
-    flex-wrap: wrap;
-  }
-  canvas {
-    width: 100%;
-    background: #050505;
-    border-radius: 20px;
-  }
-  #netCanvas, #radarCanvas, #tlCanvas {
-    width: 100%;
-    background: #030303;
-  }
-  .net-controls {
-    margin-top: 20px;
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-  }
-  .net-btn {
-    background: #111;
-    border: 1px solid var(--border);
-    padding: 8px 18px;
-    border-radius: 100px;
-    color: white;
-    font-family: monospace;
-    cursor: pointer;
-  }
-  .radar-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 16px;
-    border-radius: 100px;
-    background: #0a0a0a;
-    cursor: pointer;
-    transition: 0.1s;
-  }
-  .legend-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
-  .timeline-buttons {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 24px;
-  }
-  .tl-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    padding: 5px 14px;
-    border-radius: 40px;
-    font-family: monospace;
-    color: var(--text-secondary);
-    cursor: pointer;
-  }
-  .tl-btn.active {
-    background: white;
-    color: black;
-    border-color: white;
-  }
+.btn {
+  padding: 16px 32px; border-radius: 12px; font-weight: 600; border: none; cursor: pointer;
+  transition: 0.3s; font-family: inherit;
+}
+.btn-p { background: var(--accent); color: #fff; }
+.btn-p:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(124, 58, 237, 0.4); }
 
-  /* cta section */
-  .cta-block {
-    text-align: center;
-    padding: 80px 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    margin: 40px 0;
-  }
-
-  /* footer */
-  .footer-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 48px;
-    padding: 64px 0 48px;
-  }
-  .footer-logo p {
-    color: var(--text-secondary);
-    font-size: 14px;
-    margin-top: 12px;
-  }
-  .footer-col h4 {
-    font-size: 12px;
-    font-family: monospace;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-  }
-  .footer-col a {
-    display: block;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 14px;
-    margin-bottom: 12px;
-    transition: 0.2s;
-  }
-  .footer-col a:hover { color: white; transform: translateX(4px); }
-  .copyright {
-    border-top: 1px solid var(--border);
-    padding: 24px 0;
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--text-muted);
-  }
-
-  /* mobile */
-  @media (max-width: 900px) {
-    .nav-links, .nav-cta { display: none; }
-    .project-grid { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: 1fr 1fr; }
-    .team-grid { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: 1fr 1fr; }
-    .container { padding: 0 20px; }
-    .hero { padding: 140px 0 60px; }
-  }
-  @media (max-width: 550px) {
-    .stats-grid { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: 1fr; }
-  }
-
-  /* boot screen */
-  #boot {
-    position: fixed;
-    inset: 0;
-    background: black;
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.8s;
-  }
-  #boot.done { opacity: 0; visibility: hidden; }
-  .boot-card {
-    text-align: center;
-    max-width: 400px;
-  }
-  .boot-logo img { width: 56px; margin-bottom: 24px; }
-  .boot-lines { font-family: monospace; font-size: 12px; color: #5f5f5f; margin: 24px 0; text-align: left; }
-  .boot-bar { height: 1px; background: #222; margin: 16px 0; }
-  .boot-progress { width: 0%; height: 1px; background: white; transition: 0.2s; }
-  .skip { font-size: 10px; color: #3a3a3a; cursor: pointer; }
-
-  /* mobile menu */
-  .mobile-menu {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.98);
-    z-index: 200;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-  }
-  .mobile-menu.open { display: flex; }
-  .mobile-menu a {
-    color: white;
-    font-size: 28px;
-    font-weight: 600;
-    text-decoration: none;
-  }
-  .ham {
-    display: none;
-    position: fixed;
-    top: 18px;
-    right: 20px;
-    z-index: 210;
-    background: #111;
-    border: 1px solid #222;
-    border-radius: 12px;
-    padding: 10px;
-    flex-direction: column;
-    gap: 5px;
-  }
-  .ham span {
-    width: 20px;
-    height: 2px;
-    background: white;
-    display: block;
-  }
-  @media (max-width: 900px) {
-    .ham { display: flex; }
-    .nav-pill { display: none; }
-  }
+@media (max-width: 1024px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+}
 </style>
 </head>
 <body>
 
-<div id="boot">
-  <div class="boot-card">
-    <div class="boot-logo"><img src="WhatsApp Image 2026-03-18 at 10.58.25.jpeg" alt="logo" onerror="this.style.display='none'"></div>
-    <div class="boot-lines" id="bootLines"></div>
-    <div class="boot-bar"><div class="boot-progress" id="bootProgress"></div></div>
-    <div class="skip" id="bootSkip">press any key</div>
-  </div>
-</div>
-
-<canvas id="pcv"></canvas>
 <div id="pbar"></div>
+<div class="mesh-wrap"></div>
 
-<button class="ham" id="hamBtn"><span></span><span></span><span></span></button>
-<div class="mobile-menu" id="mobileMenu">
-  <a href="https://shauryachr.github.io/vasuki.github.io/General-AI">🤖 Vasuki AI</a>
-  <a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">📖 Wiki</a>
-  <a href="code-lab.html">⚡ Code Lab</a>
-  <a href="contact-us.html">Contact</a>
-  <a href="https://vasuki-cloud.codeclutch-adamyarao.workers.dev/login" class="btn-primary" style="background:white;color:black;">Get started</a>
-</div>
-
-<nav class="nav-pill">
-  <div class="nav-logo">
-    <div class="nav-icon"><img src="WhatsApp Image 2026-03-18 at 10.58.25.jpeg" alt="V"></div>
-    <div class="nav-brand">vasuki <span>labs</span></div>
+<header id="navbar">
+  <div class="logo-wrap">
+    <div class="logo-icon"></div>
+    <span class="logo-text">VASUKI <span style="font-weight: 300; opacity: 0.6;">iTECH</span></span>
   </div>
-  <div class="nav-links">
-    <div class="dropdown"><span class="nav-link">Products</span><div class="dropdown-menu"><a href="https://shauryachr.github.io/vasuki.github.io/General-AI">🤖 Vasuki Intelligence</a><a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">📖 Wiki Knowledge</a><a href="code-lab.html">⚡ Code Lab</a><a href="brain.html">🧠 Brain Lab</a></div></div>
-    <div class="dropdown"><span class="nav-link">Company</span><div class="dropdown-menu"><a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516">About</a><a href="contact-us.html">Contact</a><a href="https://vasuki.cloud/view-form.html?id=f-rktpe1">Reviews</a><a href="https://dev.to/adamya_khairwal_9d2286eac/vasuki-ai-revolutionizing-tech-with-seamless-generation-say-no-to-gpts-20em">Blog</a></div></div>
-    <a class="nav-link" href="https://vasuki-cloud.codeclutch-adamyarao.workers.dev/forms/">Docs</a>
+  <nav>
+    <div class="ni">Infrastructure</div>
+    <div class="ni">Database</div>
+    <div class="ni">Security</div>
+    <div class="ni">Research</div>
+  </nav>
+  <div style="margin-left: auto; display: flex; gap: 15px;">
+    <button class="btn" style="background: transparent; color: #fff; border: 1px solid var(--border);">Sign In</button>
+    <button class="btn btn-p">Get Started</button>
   </div>
-  <a href="https://vasuki-cloud.codeclutch-adamyarao.workers.dev/login" class="nav-cta">Get started</a>
-</nav>
+</header>
 
-<div class="container">
-  <section class="hero">
-    <div class="hero-badge"><span>✦</span> Est. 2026 · vasuki.cloud</div>
-    <h1>We experiment.<br>We build.<br>We publish.</h1>
-    <p class="hero-desc">Vasuki iTech Labs creates free AI tools, research platforms, and developer playgrounds. Open for everyone.</p>
-    <div class="btn-group">
-      <a href="https://shauryachr.github.io/vasuki.github.io/General-AI" class="btn-primary">Try Vasuki Intelligence →</a>
-      <a href="contact-us.html" class="btn-outline">Contact us</a>
+<main>
+  <section class="hero-sec">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <h1>Intelligent<br><strong>Infrastructure</strong><br>Optimized.</h1>
+        <p class="hero-p">Building high-fidelity decentralized web nodes and logical systems designed for extreme scalability and 1.2ms latency thresholds.</p>
+        <div style="display: flex; gap: 20px;">
+          <button class="btn btn-p">Deploy Ecosystem</button>
+          <button class="btn" style="background: var(--bg-alt); color: #fff; border: 1px solid var(--border);">View Documentation</button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="terminal">
+          <div class="t-header">
+            <div class="t-dot" style="background: #ff5f56;"></div>
+            <div class="t-dot" style="background: #ffbd2e;"></div>
+            <div class="t-dot" style="background: #27c93f;"></div>
+          </div>
+          <div class="prompt" style="animation-delay: 0.5s;">> establishing_handshake...</div>
+          <div class="prompt" style="animation-delay: 1s;">> loading_vasuki_kernel_v8.0...</div>
+          <div class="prompt" style="animation-delay: 1.5s;">> encryption_layers: ACTIVE</div>
+          <div class="prompt" style="animation-delay: 2s;">> node_status: 1024_NODES_ONLINE</div>
+          <div class="prompt" style="animation-delay: 2.5s; color: #7c3aed;">> system_optimized for_laptop_display</div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <div class="ticker"><div class="ticker-track" id="tickerTrack"></div></div>
-
-  <section>
-    <span class="section-tag">PRODUCTS</span>
-    <h2 class="section-title">What we've built</h2>
-    <div class="project-grid">
-      <a class="project-card" href="https://shauryachr.github.io/vasuki.github.io/General-AI"><div class="card-icon">🤖</div><div class="project-title">Vasuki Intelligence</div><div class="project-desc">Free AI assistant — research, code, write, answer anything.</div><div class="project-tag">AI · FREE</div></a>
-      <a class="project-card" href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html"><div class="card-icon">📖</div><div class="project-title">Wiki Knowledge</div><div class="project-desc">Deep-dive into any topic, generate summaries instantly.</div><div class="project-tag">RESEARCH</div></a>
-      <a class="project-card" href="code-lab.html"><div class="card-icon">⚡</div><div class="project-title">Code Lab</div><div class="project-desc">Live HTML/CSS/JS editor with preview — like CodePen.</div><div class="project-tag">DEV TOOL</div></a>
-      <a class="project-card" href="https://vasuki.cloud/"><div class="card-icon">☁️</div><div class="project-title">Vasuki Cloud</div><div class="project-desc">Ecosystem platform, forms, reviews and hosting.</div><div class="project-tag">CLOUD</div></a>
-    </div>
+  <section class="stats-bar">
+    <div class="stat-item"><div class="s-num">99.9</div><p style="color:var(--t2);">Uptime Stability</p></div>
+    <div class="stat-item"><div class="stat-num">1.2ms</div><p style="color:var(--t2);">Core Latency</p></div>
+    <div class="stat-item"><div class="stat-num">24/7</div><p style="color:var(--t2);">Node Monitoring</p></div>
+    <div class="stat-item"><div class="stat-num">∞</div><p style="color:var(--t2);">Linear Scaling</p></div>
   </section>
 
-  <section>
-    <span class="section-tag">CAPABILITIES</span>
-    <h2 class="section-title">What we do</h2>
-    <div class="services-list">
-      <div class="service-item"><div class="service-left"><span class="service-num">01</span><div><div class="service-name">Artificial Intelligence</div><div class="service-desc">Free AI assistant — ask, research, code, write.</div></div></div><span class="service-badge">Vasuki Intel</span></div>
-      <div class="service-item"><div class="service-left"><span class="service-num">02</span><div><div class="service-name">Knowledge Research</div><div class="service-desc">Deep-dive summaries on any topic, instantly.</div></div></div><span class="service-badge">Wiki Knowledge</span></div>
-      <div class="service-item"><div class="service-left"><span class="service-num">03</span><div><div class="service-name">Developer Tools</div><div class="service-desc">Live code editor, debug environment, instant preview.</div></div></div><span class="service-badge">Code Lab</span></div>
-      <div class="service-item"><div class="service-left"><span class="service-num">04</span><div><div class="service-name">Cloud Platform</div><div class="service-desc">Full ecosystem hosting, forms, reviews, and more.</div></div></div><span class="service-badge">vasuki.cloud</span></div>
-      <div class="service-item"><div class="service-left"><span class="service-num">05</span><div><div class="service-name">Brain Challenges</div><div class="service-desc">Daily riddles and puzzles — test your thinking.</div></div></div><span class="service-badge">Brain Lab</span></div>
+  <section class="section">
+    <h2 class="sh">Active Infrastructure</h2>
+    <div class="node-grid">
+      <div class="card" style="animation: slideUp 1s 0.1s both;">
+        <div style="font-size: 40px; margin-bottom: 20px;">🛡️</div>
+        <h3 style="font-family: 'Outfit'; font-size: 24px; margin-bottom: 15px;">Edge Security</h3>
+        <p style="color: var(--t2); font-size: 14px;">Advanced biometric handshake and SSL-pinning for decentralized data streams.</p>
+      </div>
+      <div class="card" style="animation: slideUp 1s 0.2s both;">
+        <div style="font-size: 40px; margin-bottom: 20px;">⚡</div>
+        <h3 style="font-family: 'Outfit'; font-size: 24px; margin-bottom: 15px;">Compute Nodes</h3>
+        <p style="color: var(--t2); font-size: 14px;">Serverless execution across global clusters with automated load balancing.</p>
+      </div>
+      <div class="card" style="animation: slideUp 1s 0.3s both;">
+        <div style="font-size: 40px; margin-bottom: 20px;">🧠</div>
+        <h3 style="font-family: 'Outfit'; font-size: 24px; margin-bottom: 15px;">Logic Engines</h3>
+        <p style="color: var(--t2); font-size: 14px;">Predictive algorithmic logic for sorting and managing complex data structures.</p>
+      </div>
     </div>
   </section>
+</main>
 
-  <div class="viz-panel">
-    <div class="viz-header"><div><div class="section-tag">ECOSYSTEM MAP</div><h3 style="font-size: 24px;">Interactive Network</h3><p style="color:#777;">drag / double-click to add</p></div><div id="netStats" style="font-family:monospace;">nodes:5 links:7</div></div>
-    <canvas id="netCanvas" width="800" height="400" style="width:100%; height:400px; background:#050505; border-radius: 20px;"></canvas>
-    <div class="net-controls"><button class="net-btn" id="addNodeBtn">+ Add Node</button><button class="net-btn" id="resetNetBtn">Reset</button><button class="net-btn" id="pulseNetBtn">Pulse</button></div>
+<footer>
+  <div class="f-grid">
+    <div>
+      <h2 style="font-family:'Outfit'; margin-bottom: 20px;">VASUKI iTECH</h2>
+      <p style="color:var(--t2); font-size: 14px;">The standard for next-generation professional web infrastructure.</p>
+    </div>
+    <div>
+      <h4 style="margin-bottom: 15px;">Product</h4>
+      <p style="color:var(--t2); margin-bottom: 8px;">Ecosystem</p>
+      <p style="color:var(--t2); margin-bottom: 8px;">Nodes</p>
+      <p style="color:var(--t2);">Security</p>
+    </div>
+    <div>
+      <h4 style="margin-bottom: 15px;">Support</h4>
+      <p style="color:var(--t2); margin-bottom: 8px;">Documentation</p>
+      <p style="color:var(--t2);">API</p>
+    </div>
+    <div>
+      <h4 style="margin-bottom: 15px;">Contact</h4>
+      <p style="color:var(--t2);">LinkedIn</p>
+    </div>
   </div>
-
-  <section><span class="section-tag">THE TEAM</span><h2 class="section-title">Who's building it</h2>
-    <div class="team-grid">
-      <div class="team-card"><div class="team-avatar">👨‍💻</div><div class="team-name">Shaurya Chauhan</div><div class="team-role">Developer</div><div class="team-bio">Building Vasuki Intelligence and developer tools.</div><a href="https://www.linkedin.com/in/shaurya-chauhan-1307742bb/" style="margin-top: 16px; display: inline-block; color:white;">LinkedIn →</a></div>
-      <div class="team-card"><div class="team-avatar">👔</div><div class="team-name">Adamya Khairwal</div><div class="team-role">CEO</div><div class="team-bio">Leading vision and growth of Vasuki iTech Labs.</div><a href="https://www.linkedin.com/in/adamya-r-khairwal-8b51b235b/" style="margin-top: 16px; display: inline-block; color:white;">LinkedIn →</a></div>
-    </div>
-  </section>
-
-  <div class="stats-grid"><div class="stat-cell"><div class="stat-number" data-count="5">0</div><div class="stat-label">Products built</div></div><div class="stat-cell"><div class="stat-number" data-count="2">0</div><div class="stat-label">Team members</div></div><div class="stat-cell"><div class="stat-number" data-count="100">0</div><div class="stat-label">% free to use</div></div><div class="stat-cell"><div class="stat-number" data-count="2026">0</div><div class="stat-label">Year founded</div></div></div>
-
-  <div class="viz-panel"><div class="viz-header"><div><div class="section-tag">RADAR</div><h3>Product capabilities</h3></div></div><div class="radar-legend" id="radarLegend"></div><canvas id="radarCanvas" width="500" height="400" style="width:100%; height:380px;"></canvas></div>
-
-  <div class="viz-panel"><div class="viz-header"><div><div class="section-tag">TIMELINE</div><h3>Platform engagement</h3></div><div class="timeline-buttons" id="tlButtons"><button class="tl-btn active" data-range="7d">7D</button><button class="tl-btn" data-range="30d">30D</button><button class="tl-btn" data-range="90d">90D</button></div></div><canvas id="tlCanvas" width="800" height="200" style="width:100%; height:200px;"></canvas></div>
-
-  <div class="cta-block"><h2 style="font-size: 40px;">Start building with Vasuki</h2><p style="color:#aaa; margin: 20px 0;">Free forever. No credit card.</p><div class="btn-group"><a href="https://shauryachr.github.io/vasuki.github.io/General-AI" class="btn-primary">Open Intelligence →</a><a href="https://vasuki.cloud/" class="btn-outline">vasuki.cloud</a></div></div>
-
-  <footer><div class="footer-grid"><div class="footer-logo"><div style="font-weight:700;">vasuki itech labs</div><p>Build, experiment, and publish for everyone.</p></div><div class="footer-col"><h4>Products</h4><a href="https://shauryachr.github.io/vasuki.github.io/General-AI">Vasuki AI</a><a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Wiki Knowledge</a><a href="code-lab.html">Code Lab</a></div><div class="footer-col"><h4>Company</h4><a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516">About</a><a href="contact-us.html">Contact</a><a href="https://dev.to/adamya_khairwal_9d2286eac/vasuki-ai-revolutionizing-tech-with-seamless-generation-say-no-to-gpts-20em">Blog</a></div><div class="footer-col"><h4>Social</h4><a href="#">LinkedIn</a><a href="#">Twitter</a><a href="https://vasuki-cloud.codeclutch-adamyarao.workers.dev/forms/">Docs</a></div></div><div class="copyright"><span>© 2026 Vasuki iTech Labs — built by Shaurya & Adamya</span><span>✦ free tools</span></div></footer>
-</div>
+</footer>
 
 <script>
-  (function bootSequence(){
-    const bootDiv = document.getElementById('boot');
-    const linesDiv = document.getElementById('bootLines');
-    const progress = document.getElementById('bootProgress');
-    const msgs = ["Initialising Vasuki Laboratory...","Loading AI subsystems...","Connecting to vasuki.cloud...","Mounting Wiki Knowledge...","Calibrating Code Lab...","All systems nominal."];
-    let idx=0;
-    const interval = setInterval(()=>{
-      if(idx<msgs.length){ const line = document.createElement('div'); line.textContent = "> "+msgs[idx]; linesDiv.appendChild(line); progress.style.width = ((idx+1)/msgs.length)*100+"%"; idx++; }
-      else{ clearInterval(interval); setTimeout(()=>bootDiv.classList.add('done'),600); }
-    },300);
-    const skip = ()=>{ clearInterval(interval); bootDiv.classList.add('done'); };
-    document.addEventListener('keydown',skip,{once:true}); document.getElementById('bootSkip')?.addEventListener('click',skip);
-  })();
+  window.onscroll = function() {
+    // Progress Bar
+    let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    let scrolled = (winScroll / height) * 100;
+    document.getElementById("pbar").style.width = scrolled + "%";
 
-  // PROGRESS
-  window.addEventListener('scroll',()=>{ const p = window.scrollY/(document.documentElement.scrollHeight-window.innerHeight); document.getElementById('pbar').style.width = (p*100)+"%"; });
-
-  // PARTICLE NETWORK (background)
-  const canvas = document.getElementById('pcv'), ctx = canvas.getContext('2d');
-  let width, height, mouseX=-1000,mouseY=-1000;
-  function resizeCanvas(){ width=canvas.width=window.innerWidth; height=canvas.height=window.innerHeight; }
-  window.addEventListener('resize',resizeCanvas); resizeCanvas();
-  document.addEventListener('mousemove',e=>{ mouseX=e.clientX; mouseY=e.clientY; });
-  class Part { constructor(){ this.x=Math.random()*width; this.y=Math.random()*height; this.vx=(Math.random()-0.5)*0.4; this.vy=(Math.random()-0.5)*0.4; this.size=Math.random()*1.5+0.5; } update(){ let dx=mouseX-this.x, dy=mouseY-this.y, d=Math.hypot(dx,dy); if(d<150){ this.vx+=dx/d*0.02; this.vy+=dy/d*0.02; } this.vx*=0.99; this.vy*=0.99; this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>width||this.y<0||this.y>height){ this.x=Math.random()*width; this.y=Math.random()*height; } } draw(){ ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fillStyle=`rgba(255,255,255,0.25)`; ctx.fill(); } }
-  let particles = Array.from({length:60},()=>new Part());
-  function animateParticles(){ ctx.clearRect(0,0,width,height); particles.forEach(p=>{ p.update(); p.draw(); }); for(let i=0;i<particles.length;i++) for(let j=i+1;j<particles.length;j++){ let d=Math.hypot(particles[i].x-particles[j].x,particles[i].y-particles[j].y); if(d<100){ ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.strokeStyle=`rgba(255,255,255,0.05)`; ctx.stroke(); } } requestAnimationFrame(animateParticles); } animateParticles();
-
-  // TICKER DYNAMIC
-  const tickerData = ["Vasuki Intelligence","Wiki Knowledge","Code Lab","vasuki.cloud","Test Your Brain","Built by Shaurya & Adamya","100% Free"];
-  const tickerTrack = document.getElementById('tickerTrack');
-  let tickerHtml = "";
-  for(let i=0;i<4;i++) tickerData.forEach(t=> tickerHtml += `<span class="ticker-item"><span class="ticker-dot">●</span>${t}</span>`);
-  tickerTrack.innerHTML = tickerHtml;
-
-  // NETWORK GRAPH (force simulation)
-  let nodes = [{id:"Vasuki AI",x:200,y:150},{id:"Wiki",x:400,y:100},{id:"Code Lab",x:500,y:250},{id:"Cloud",x:300,y:350},{id:"Brain",x:100,y:300}];
-  let edges = [[0,1],[1,2],[2,3],[3,0],[0,4],[4,2],[1,3]];
-  const netCanvas = document.getElementById('netCanvas'), netCtx = netCanvas.getContext('2d');
-  function resizeNet(){ netCanvas.width = netCanvas.clientWidth; netCanvas.height = netCanvas.clientHeight; drawNetwork(); }
-  window.addEventListener('resize',resizeNet); resizeNet();
-  function drawNetwork(){ netCtx.clearRect(0,0,netCanvas.width,netCanvas.height); netCtx.strokeStyle = "#2a2a2a"; netCtx.lineWidth=1.5; edges.forEach(e=>{ netCtx.beginPath(); netCtx.moveTo(nodes[e[0]].x,nodes[e[0]].y); netCtx.lineTo(nodes[e[1]].x,nodes[e[1]].y); netCtx.stroke(); }); nodes.forEach((n,i)=>{ netCtx.fillStyle = "#f5c842"; netCtx.beginPath(); netCtx.arc(n.x,n.y,14,0,Math.PI*2); netCtx.fill(); netCtx.fillStyle="black"; netCtx.font="bold 10px monospace"; netCtx.fillText(n.id.substring(0,8),n.x-20,n.y-12); }); document.getElementById('netStats').innerHTML = `nodes:${nodes.length} links:${edges.length}`; }
-  document.getElementById('addNodeBtn').onclick = ()=>{ let newId = "Node"+ (nodes.length+1); nodes.push({id:newId,x:Math.random()*netCanvas.width,y:Math.random()*netCanvas.height}); if(nodes.length>1){ let r=Math.floor(Math.random()*nodes.length-1); edges.push([nodes.length-1,r]); } drawNetwork(); };
-  document.getElementById('resetNetBtn').onclick = ()=>{ nodes = [{id:"Vasuki AI",x:200,y:150},{id:"Wiki",x:400,y:100},{id:"Code Lab",x:500,y:250},{id:"Cloud",x:300,y:350},{id:"Brain",x:100,y:300}]; edges = [[0,1],[1,2],[2,3],[3,0],[0,4],[4,2],[1,3]]; drawNetwork(); };
-  let pulse = false; setInterval(()=>{ if(pulse){ edges.forEach(e=>{ netCtx.save(); netCtx.shadowBlur=10; netCtx.shadowColor="white"; drawNetwork(); netCtx.restore(); }) } },100);
-  document.getElementById('pulseNetBtn').onclick = ()=>{ pulse=!pulse; };
-  drawNetwork();
-
-  // RADAR CHART
-  const radarCanvas = document.getElementById('radarCanvas'), radarCtx = radarCanvas.getContext('2d');
-  const dimensions = ["AI","Research","DevTools","Cloud","UX"];
-  const products = [{name:"Vasuki Intel",values:[95,88,70,85,90]},{name:"Wiki Knowledge",values:[70,98,60,75,88]},{name:"Code Lab",values:[65,60,98,70,85]},{name:"Vasuki Cloud",values:[80,70,85,96,82]}];
-  let activeRadar = 0;
-  function drawRadar(){
-    radarCanvas.width = radarCanvas.clientWidth; radarCanvas.height = radarCanvas.clientHeight; let w=radarCanvas.width, h=radarCanvas.height, centerX=w/2, centerY=h/2, radius=Math.min(w,h)*0.35;
-    radarCtx.clearRect(0,0,w,h); radarCtx.strokeStyle="#2a2a2a"; for(let i=0;i<=5;i++){ let r = radius*(i/5); radarCtx.beginPath(); for(let j=0;j<dimensions.length;j++){ let angle = (j/dimensions.length)*Math.PI*2 - Math.PI/2; let x=centerX+Math.cos(angle)*r; let y=centerY+Math.sin(angle)*r; if(j===0) radarCtx.moveTo(x,y); else radarCtx.lineTo(x,y); } radarCtx.closePath(); radarCtx.stroke(); }
-    dimensions.forEach((d,i)=>{ let angle = (i/dimensions.length)*Math.PI*2 - Math.PI/2; let x=centerX+Math.cos(angle)*(radius+20); let y=centerY+Math.sin(angle)*(radius+20); radarCtx.fillStyle="#aaa"; radarCtx.font="10px monospace"; radarCtx.fillText(d,x-8,y); });
-    let prod = products[activeRadar]; radarCtx.beginPath(); prod.values.forEach((val,idx)=>{ let valNorm = val/100; let r = radius * valNorm; let angle = (idx/dimensions.length)*Math.PI*2 - Math.PI/2; let x=centerX+Math.cos(angle)*r; let y=centerY+Math.sin(angle)*r; if(idx===0) radarCtx.moveTo(x,y); else radarCtx.lineTo(x,y); }); radarCtx.closePath(); radarCtx.fillStyle = "rgba(255,255,255,0.2)"; radarCtx.fill(); radarCtx.strokeStyle="white"; radarCtx.lineWidth=2; radarCtx.stroke();
-  }
-  const legendDiv = document.getElementById('radarLegend'); products.forEach((p,idx)=>{ let div=document.createElement('div'); div.className="legend-item"; div.innerHTML=`<div class="legend-dot" style="background:white"></div><span>${p.name}</span>`; div.onclick=()=>{ activeRadar=idx; drawRadar(); }; legendDiv.appendChild(div); });
-  window.addEventListener('resize',()=>drawRadar()); drawRadar();
-
-  // TIMELINE CHART
-  const tlCanvas = document.getElementById('tlCanvas'), tlCtx = tlCanvas.getContext('2d');
-  let range='7d';
-  function getData(){ if(range==='7d') return [45,62,78,88,94,102,115]; if(range==='30d') return [42,58,72,85,98,112,128,144,155,168,179,190,205,218,230,245,260,275,289,302,315,330,345,360,378,395,412,428,440,452]; return [50,70,95,120,148,179,215,250,289,330,375,422,475,530,590,654,720,790,860,935,1010,1090,1175,1260,1350,1445,1545,1650,1760,1875]; }
-  function drawTimeline(){
-    tlCanvas.width = tlCanvas.clientWidth; tlCanvas.height = tlCanvas.clientHeight; let data=getData(); let w=tlCanvas.width, h=tlCanvas.height; tlCtx.clearRect(0,0,w,h); if(data.length===0) return; let step=w/(data.length-1); let max=Math.max(...data); tlCtx.beginPath(); data.forEach((v,i)=>{ let x=i*step; let y=h-(v/max)*(h-30); if(i===0) tlCtx.moveTo(x,y); else tlCtx.lineTo(x,y); }); tlCtx.strokeStyle="white"; tlCtx.lineWidth=2; tlCtx.stroke(); tlCtx.fillStyle="#f5c842"; data.forEach((v,i)=>{ let x=i*step; let y=h-(v/max)*(h-30); tlCtx.beginPath(); tlCtx.arc(x,y,4,0,Math.PI*2); tlCtx.fill(); }); }
-  document.querySelectorAll('.tl-btn').forEach(btn=>{ btn.onclick=()=>{ document.querySelectorAll('.tl-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); range=btn.dataset.range; drawTimeline(); }; });
-  window.addEventListener('resize',()=>drawTimeline()); drawTimeline();
-
-  // STAT COUNTERS
-  const counters = document.querySelectorAll('[data-count]');
-  const observer = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting){ let el=e.target; let target=parseInt(el.dataset.count); let current=0; let step=Math.ceil(target/50); let timer=setInterval(()=>{ current+=step; if(current>=target){ el.innerText=target; clearInterval(timer); }else el.innerText=current; },20); observer.unobserve(el); } }); },{threshold:0.5});
-  counters.forEach(c=>observer.observe(c));
-
-  // mobile menu
-  const ham = document.getElementById('hamBtn'), mobMenu = document.getElementById('mobileMenu');
-  ham.addEventListener('click',()=>{ mobMenu.classList.toggle('open'); });
-  document.querySelectorAll('.mobile-menu a').forEach(a=>a.addEventListener('click',()=>mobMenu.classList.remove('open')));
-
-  // portfolite extra hover effects
-  document.querySelectorAll('.project-card,.service-item,.team-card').forEach(card=>{ card.addEventListener('mouseenter',()=>{ card.style.transform = "translateY(-3px)"; }); card.addEventListener('mouseleave',()=>{ card.style.transform = ""; }); });
+    // Header Shrink
+    const nav = document.getElementById('navbar');
+    if (window.scrollY > 50) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  };
 </script>
+
 </body>
 </html>
