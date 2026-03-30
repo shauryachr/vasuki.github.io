@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Vasuki iTech Labs — Portfolite Edition</title>
+<title>Vasuki iTech Labs — Interactive Ecosystem</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  /* ---------- RESET & GLOBAL ---------- */
   * {
     margin: 0;
     padding: 0;
@@ -29,6 +28,10 @@
     --radius-md: 20px;
     --radius-xl: 28px;
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --gradient-1: linear-gradient(135deg, #fff, #aaa);
+    --gradient-2: linear-gradient(135deg, #fff 0%, #666 100%);
+    --primary: #f5c842;
+    --primary-dark: #e0b12e;
   }
 
   body {
@@ -38,9 +41,9 @@
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    cursor: default;
   }
 
-  /* Custom scrollbar */
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: #111; }
   ::-webkit-scrollbar-thumb { background: #333; border-radius: 8px; }
@@ -65,7 +68,6 @@
     transition: width 0.1s linear;
   }
 
-  /* Container – full width with proper padding */
   .container {
     max-width: 1400px;
     margin: 0 auto;
@@ -97,50 +99,26 @@
     line-height: 1.1;
     margin-bottom: 48px;
     letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+    background: var(--gradient-1);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
   }
 
-  /* ---------- ANIMATION KEYFRAMES ---------- */
+  /* Animations */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  @keyframes fadeLeft {
-    from { opacity: 0; transform: translateX(-30px); }
-    to { opacity: 1; transform: translateX(0); }
+  @keyframes rippleEffect {
+    to { transform: scale(4); opacity: 0; }
   }
 
-  @keyframes fadeRight {
-    from { opacity: 0; transform: translateX(30px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
+  .reveal { opacity: 0; }
+  .animate-up { animation: fadeUp 0.6s var(--ease-out) forwards; }
 
-  @keyframes scaleGlow {
-    0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.1); }
-    100% { box-shadow: 0 0 0 6px rgba(255,255,255,0); }
-  }
-
-  .animate-up {
-    animation: fadeUp 0.6s var(--ease-out) forwards;
-  }
-
-  .animate-left {
-    animation: fadeLeft 0.6s var(--ease-out) forwards;
-  }
-
-  .animate-right {
-    animation: fadeRight 0.6s var(--ease-out) forwards;
-  }
-
-  .reveal {
-    opacity: 0;
-  }
-
-  /* ---------- NAVIGATION (Portfolite style pill) ---------- */
+  /* Navigation */
   .nav-pill {
     position: fixed;
     top: 24px;
@@ -164,29 +142,19 @@
     align-items: center;
     gap: 10px;
   }
-
   .nav-icon {
     width: 32px;
     height: 32px;
     background: #f5c842;
     border-radius: 10px;
     overflow: hidden;
+    transition: transform 0.3s;
   }
-
+  .nav-icon:hover { transform: rotate(8deg) scale(1.1); }
   .nav-icon img { width: 100%; height: 100%; object-fit: cover; }
-
-  .nav-brand {
-    font-weight: 700;
-    font-size: 15px;
-  }
-
+  .nav-brand { font-weight: 700; font-size: 15px; }
   .nav-brand span { color: var(--text-muted); font-weight: 400; }
-
-  .nav-links {
-    display: flex;
-    gap: 8px;
-  }
-
+  .nav-links { display: flex; gap: 8px; }
   .nav-link {
     font-size: 13px;
     font-weight: 500;
@@ -195,17 +163,25 @@
     border-radius: 100px;
     transition: all 0.2s;
     cursor: pointer;
+    position: relative;
   }
-
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background: white;
+    transition: 0.2s;
+    transform: translateX(-50%);
+  }
+  .nav-link:hover::after { width: 70%; }
   .nav-link:hover, .dropdown:hover .nav-link {
     background: rgba(255,255,255,0.05);
     color: white;
   }
-
-  .dropdown {
-    position: relative;
-  }
-
+  .dropdown { position: relative; }
   .dropdown-menu {
     position: absolute;
     top: 100%;
@@ -222,13 +198,11 @@
     transition: 0.2s var(--ease-out);
     z-index: 10;
   }
-
   .dropdown:hover .dropdown-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
   }
-
   .dropdown-menu a {
     display: block;
     padding: 10px 14px;
@@ -238,12 +212,11 @@
     transition: 0.1s;
     text-decoration: none;
   }
-
   .dropdown-menu a:hover {
     background: rgba(255,255,255,0.05);
     color: white;
+    transform: translateX(4px);
   }
-
   .nav-cta {
     background: white;
     color: black;
@@ -251,21 +224,18 @@
     border-radius: 100px;
     font-size: 13px;
     font-weight: 600;
-    transition: 0.2s;
+    transition: all 0.2s;
     text-decoration: none;
+    position: relative;
+    overflow: hidden;
   }
-
-  .nav-cta:hover {
-    background: #e0e0e0;
-    transform: scale(0.98);
-  }
+  .nav-cta:hover { transform: scale(0.98); background: #e0e0e0; }
 
   /* Hero */
   .hero {
     padding: 180px 0 100px;
     text-align: center;
   }
-
   .hero-badge {
     display: inline-flex;
     align-items: center;
@@ -279,20 +249,19 @@
     margin-bottom: 32px;
     animation: fadeUp 0.8s var(--ease-out);
   }
-
   .hero h1 {
     font-size: clamp(48px, 8vw, 88px);
     font-weight: 800;
     line-height: 1.05;
     letter-spacing: -0.03em;
     margin-bottom: 24px;
-    background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+    background: var(--gradient-2);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
+    background-size: 200% auto;
     animation: fadeUp 0.8s 0.1s var(--ease-out) both;
   }
-
   .hero-desc {
     font-size: 18px;
     color: var(--text-secondary);
@@ -300,7 +269,6 @@
     margin: 0 auto 40px;
     animation: fadeUp 0.8s 0.2s var(--ease-out) both;
   }
-
   .btn-group {
     display: flex;
     gap: 16px;
@@ -308,12 +276,12 @@
     flex-wrap: wrap;
     animation: fadeUp 0.8s 0.3s var(--ease-out) both;
   }
-
   .btn-primary, .btn-outline {
     transition: all 0.3s var(--ease-out);
     display: inline-block;
+    position: relative;
+    overflow: hidden;
   }
-
   .btn-primary {
     background: white;
     color: black;
@@ -323,13 +291,11 @@
     text-decoration: none;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
-
   .btn-primary:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 25px -5px rgba(255,255,255,0.2);
     background: #f0f0f0;
   }
-
   .btn-outline {
     border: 1px solid var(--border);
     padding: 12px 28px;
@@ -338,7 +304,6 @@
     color: var(--text-secondary);
     text-decoration: none;
   }
-
   .btn-outline:hover {
     border-color: rgba(255,255,255,0.4);
     color: white;
@@ -354,19 +319,16 @@
     overflow: hidden;
     margin: 40px 0;
   }
-
   .ticker-track {
     display: inline-flex;
     gap: 48px;
     white-space: nowrap;
     animation: scrollTicker 28s linear infinite;
   }
-
   @keyframes scrollTicker {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
   }
-
   .ticker-item {
     display: inline-flex;
     align-items: center;
@@ -374,16 +336,17 @@
     font-size: 13px;
     font-family: monospace;
     color: var(--text-muted);
+    transition: color 0.2s;
   }
+  .ticker-item:hover { color: white; }
 
-  /* Project Cards */
+  /* Products */
   .project-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
     margin-bottom: 80px;
   }
-
   .project-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -395,117 +358,294 @@
     position: relative;
     overflow: hidden;
   }
-
-  .project-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.03) 0%, transparent 70%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-  }
-
   .project-card:hover {
     transform: translateY(-8px);
     background: #0e0e0e;
     border-color: #2c2c2c;
     box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
   }
-
-  .project-card:hover::after {
-    opacity: 1;
-  }
-
   .card-icon {
     font-size: 40px;
     margin-bottom: 24px;
-    transition: transform 0.3s var(--ease-out);
+    transition: transform 0.3s;
+    display: inline-block;
   }
+  .project-card:hover .card-icon { transform: scale(1.1) rotate(2deg); }
+  .project-title { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+  .project-desc { color: var(--text-secondary); font-size: 15px; margin-bottom: 24px; }
+  .project-tag { font-size: 12px; font-family: monospace; color: var(--text-muted); text-transform: uppercase; }
 
-  .project-card:hover .card-icon {
-    transform: scale(1.1) rotate(2deg);
+  /* Capabilities */
+  .capabilities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin: 48px 0;
   }
-
-  .project-title {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 12px;
+  .capability-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 28px;
+    transition: all 0.3s var(--ease-out);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
   }
-
-  .project-desc {
-    color: var(--text-secondary);
-    font-size: 15px;
-    margin-bottom: 24px;
+  .capability-card:hover {
+    transform: translateY(-6px);
+    border-color: #2c2c2c;
+    background: #0e0e0e;
   }
-
-  .project-tag {
-    font-size: 12px;
+  .capability-icon { font-size: 42px; margin-bottom: 20px; transition: transform 0.2s; }
+  .capability-card:hover .capability-icon { transform: scale(1.1); }
+  .capability-title { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+  .capability-desc { color: var(--text-secondary); font-size: 14px; line-height: 1.5; }
+  .capability-badge {
+    margin-top: 20px;
+    font-size: 11px;
     font-family: monospace;
     color: var(--text-muted);
     text-transform: uppercase;
   }
 
-  /* Services */
-  .services-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 48px 0;
+  /* Radar & Timeline - Modern */
+  .radar-container, .timeline-container {
+    position: relative;
   }
-
-  .service-item {
+  .radar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .legend-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 24px 0;
-    border-bottom: 1px solid var(--border);
-    cursor: default;
-    transition: all 0.3s var(--ease-out);
-  }
-
-  .service-item:hover {
-    transform: translateX(8px);
-    border-bottom-color: rgba(255,255,255,0.2);
-  }
-
-  .service-left {
-    display: flex;
-    gap: 32px;
-    align-items: baseline;
-  }
-
-  .service-num {
-    font-family: monospace;
-    color: var(--text-muted);
-    width: 48px;
-  }
-
-  .service-name {
-    font-weight: 600;
-    font-size: 18px;
-  }
-
-  .service-desc {
-    color: var(--text-secondary);
-    font-size: 14px;
-  }
-
-  .service-badge {
-    font-size: 12px;
-    font-family: monospace;
-    border: 1px solid var(--border);
-    padding: 4px 14px;
+    gap: 10px;
+    padding: 6px 16px;
     border-radius: 100px;
+    background: #0a0a0a;
+    border: 1px solid var(--border);
+    cursor: pointer;
     transition: all 0.2s;
   }
-
-  .service-item:hover .service-badge {
+  .legend-item:hover {
+    background: #141414;
+    transform: translateY(-1px);
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: white;
+  }
+  .timeline-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .tl-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 5px 16px;
+    border-radius: 40px;
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tl-btn.active {
+    background: var(--primary);
+    color: black;
+    border-color: var(--primary);
+  }
+  .tl-btn:hover:not(.active) {
     border-color: rgba(255,255,255,0.3);
     color: white;
   }
+  canvas {
+    width: 100%;
+    background: #050505;
+    border-radius: 20px;
+  }
+  .tooltip {
+    position: absolute;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: monospace;
+    color: white;
+    pointer-events: none;
+    z-index: 1000;
+    transition: opacity 0.1s;
+    white-space: nowrap;
+  }
 
-  /* Team */
+  /* Interactive Lab */
+  .lab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    margin: 48px 0;
+  }
+  .lab-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 24px;
+    transition: all 0.2s;
+  }
+  .lab-card h3 {
+    font-size: 18px;
+    margin-bottom: 16px;
+    color: var(--primary);
+  }
+  .interactive-widget {
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .slider {
+    width: 100%;
+    -webkit-appearance: none;
+    background: #222;
+    border-radius: 10px;
+    height: 4px;
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+  }
+  .color-picker {
+    width: 100%;
+    height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  .counter {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .counter-btn {
+    background: #1a1a1a;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.1s;
+  }
+  .counter-btn:hover { background: var(--primary); color: black; }
+  .counter-value {
+    font-size: 28px;
+    font-weight: 700;
+    min-width: 60px;
+    text-align: center;
+  }
+  .typing-input {
+    background: #111;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    color: white;
+    width: 100%;
+  }
+  .typing-display {
+    font-family: monospace;
+    background: #0a0a0a;
+    padding: 12px;
+    border-radius: 12px;
+    min-height: 60px;
+  }
+  .tilt-card {
+    background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.1s;
+    cursor: default;
+  }
+  .magnetic-btn {
+    background: #1a1a1a;
+    border: 1px solid var(--border);
+    padding: 10px 20px;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: transform 0.05s linear;
+    text-align: center;
+  }
+  .draggable {
+    background: #1a1a1a;
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    user-select: none;
+  }
+  .draggable:active { cursor: grabbing; }
+  .confetti-btn {
+    background: var(--primary);
+    color: black;
+    border: none;
+    padding: 12px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .compass {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .compass-needle {
+    width: 4px;
+    height: 40px;
+    background: var(--primary);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: 50% 0%;
+    transform: translate(-50%, -100%) rotate(0deg);
+  }
+  .gradient-bg {
+    height: 100px;
+    border-radius: 16px;
+    background: linear-gradient(90deg, red, blue);
+    transition: background 0.1s;
+  }
+  .sound-btn {
+    background: #1a1a1a;
+    border: none;
+    padding: 12px;
+    border-radius: 40px;
+    cursor: pointer;
+  }
+  .cursor-trail-area {
+    height: 120px;
+    background: #0a0a0a;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Team, Stats, etc. */
   .team-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -513,47 +653,17 @@
     background: var(--border);
     margin: 48px 0;
   }
-
   .team-card {
     background: var(--bg);
     padding: 48px 40px;
-    transition: all 0.3s var(--ease-out);
+    transition: all 0.3s;
   }
-
-  .team-card:hover {
-    background: #0b0b0b;
-    transform: translateY(-4px);
-  }
-
-  .team-avatar {
-    font-size: 42px;
-    margin-bottom: 24px;
-    transition: transform 0.3s;
-  }
-
-  .team-card:hover .team-avatar {
-    transform: scale(1.1);
-  }
-
-  .team-name {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-
-  .team-role {
-    font-family: monospace;
-    color: var(--text-muted);
-    font-size: 12px;
-    margin-bottom: 16px;
-  }
-
-  .team-bio {
-    color: var(--text-secondary);
-    font-size: 14px;
-  }
-
-  /* Stats */
+  .team-card:hover { background: #0b0b0b; transform: translateY(-4px); }
+  .team-avatar { font-size: 42px; margin-bottom: 24px; transition: transform 0.3s; }
+  .team-card:hover .team-avatar { transform: scale(1.1); }
+  .team-name { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+  .team-role { font-family: monospace; color: var(--text-muted); font-size: 12px; margin-bottom: 16px; }
+  .team-bio { color: var(--text-secondary); font-size: 14px; }
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(4,1fr);
@@ -561,34 +671,15 @@
     background: var(--border);
     margin: 48px 0;
   }
-
   .stat-cell {
     background: var(--bg);
     padding: 48px 32px;
     text-align: center;
     transition: all 0.3s;
   }
-
-  .stat-cell:hover {
-    background: #0e0e0e;
-    transform: translateY(-2px);
-  }
-
-  .stat-number {
-    font-size: 52px;
-    font-weight: 800;
-    letter-spacing: -2px;
-    line-height: 1;
-  }
-
-  .stat-label {
-    font-size: 13px;
-    font-family: monospace;
-    color: var(--text-muted);
-    margin-top: 8px;
-  }
-
-  /* Visualization Panels */
+  .stat-cell:hover { background: #0e0e0e; transform: translateY(-2px); }
+  .stat-number { font-size: 52px; font-weight: 800; letter-spacing: -2px; line-height: 1; }
+  .stat-label { font-size: 13px; font-family: monospace; color: var(--text-muted); margin-top: 8px; }
   .viz-panel {
     background: var(--surface);
     border-radius: 32px;
@@ -597,29 +688,13 @@
     margin: 48px 0;
     transition: box-shadow 0.3s;
   }
-
-  .viz-panel:hover {
-    box-shadow: 0 15px 35px -12px rgba(0,0,0,0.5);
-  }
-
-  canvas {
-    width: 100%;
-    background: #050505;
-    border-radius: 20px;
-  }
-
-  #netCanvas, #radarCanvas, #tlCanvas {
-    width: 100%;
-    background: #030303;
-  }
-
+  .viz-panel:hover { box-shadow: 0 15px 35px -12px rgba(0,0,0,0.5); }
   .net-controls {
     margin-top: 20px;
     display: flex;
     gap: 12px;
     justify-content: center;
   }
-
   .net-btn {
     background: #111;
     border: 1px solid var(--border);
@@ -630,13 +705,16 @@
     cursor: pointer;
     transition: all 0.2s;
   }
-
-  .net-btn:hover {
-    background: #1a1a1a;
-    transform: translateY(-1px);
+  .net-btn:hover { background: #1a1a1a; transform: translateY(-1px); }
+  .instruction-tip {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.03);
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 12px;
   }
-
-  /* CTA */
   .cta-block {
     text-align: center;
     padding: 80px 0;
@@ -644,28 +722,14 @@
     border-bottom: 1px solid var(--border);
     margin: 40px 0;
   }
-
-  /* Footer */
   .footer-grid {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr;
     gap: 48px;
     padding: 64px 0 48px;
   }
-
-  .footer-logo p {
-    color: var(--text-secondary);
-    font-size: 14px;
-    margin-top: 12px;
-  }
-
-  .footer-col h4 {
-    font-size: 12px;
-    font-family: monospace;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-  }
-
+  .footer-logo p { color: var(--text-secondary); font-size: 14px; margin-top: 12px; }
+  .footer-col h4 { font-size: 12px; font-family: monospace; color: var(--text-muted); margin-bottom: 20px; }
   .footer-col a {
     display: block;
     color: var(--text-secondary);
@@ -674,12 +738,7 @@
     margin-bottom: 12px;
     transition: all 0.2s;
   }
-
-  .footer-col a:hover {
-    color: white;
-    transform: translateX(4px);
-  }
-
+  .footer-col a:hover { color: white; transform: translateX(4px); }
   .copyright {
     border-top: 1px solid var(--border);
     padding: 24px 0;
@@ -692,14 +751,13 @@
   /* Responsive */
   @media (max-width: 900px) {
     .nav-links, .nav-cta { display: none; }
-    .project-grid { grid-template-columns: 1fr; }
+    .project-grid, .capabilities-grid, .lab-grid { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: 1fr 1fr; }
     .team-grid { grid-template-columns: 1fr; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
     .container { padding: 0 24px; }
     .hero { padding: 140px 0 60px; }
   }
-
   @media (max-width: 550px) {
     .stats-grid { grid-template-columns: 1fr; }
     .footer-grid { grid-template-columns: 1fr; }
@@ -717,17 +775,12 @@
     transition: 0.8s;
   }
   #boot.done { opacity: 0; visibility: hidden; }
-  .boot-card {
-    text-align: center;
-    max-width: 400px;
-  }
+  .boot-card { text-align: center; max-width: 400px; }
   .boot-logo img { width: 56px; margin-bottom: 24px; }
   .boot-lines { font-family: monospace; font-size: 12px; color: #5f5f5f; margin: 24px 0; text-align: left; }
   .boot-bar { height: 1px; background: #222; margin: 16px 0; }
   .boot-progress { width: 0%; height: 1px; background: white; transition: 0.2s; }
   .skip { font-size: 10px; color: #3a3a3a; cursor: pointer; }
-
-  /* Mobile Menu */
   .mobile-menu {
     display: none;
     position: fixed;
@@ -758,6 +811,7 @@
     padding: 10px;
     flex-direction: column;
     gap: 5px;
+    cursor: pointer;
   }
   .ham span {
     width: 20px;
@@ -768,6 +822,14 @@
   @media (max-width: 900px) {
     .ham { display: flex; }
     .nav-pill { display: none; }
+  }
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    transform: scale(0);
+    animation: rippleEffect 0.6s linear;
+    pointer-events: none;
   }
 </style>
 </head>
@@ -834,20 +896,69 @@
   <section class="reveal">
     <span class="section-tag">CAPABILITIES</span>
     <h2 class="section-title">What we do</h2>
-    <div class="services-list">
-      <div class="service-item"><div class="service-left"><span class="service-num">01</span><div><div class="service-name">Artificial Intelligence</div><div class="service-desc">Free AI assistant — ask, research, code, write.</div></div></div><span class="service-badge">Vasuki Intel</span></div>
-      <div class="service-item"><div class="service-left"><span class="service-num">02</span><div><div class="service-name">Knowledge Research</div><div class="service-desc">Deep-dive summaries on any topic, instantly.</div></div></div><span class="service-badge">Wiki Knowledge</span></div>
-      <div class="service-item"><div class="service-left"><span class="service-num">03</span><div><div class="service-name">Developer Tools</div><div class="service-desc">Live code editor, debug environment, instant preview.</div></div></div><span class="service-badge">Code Lab</span></div>
-      <div class="service-item"><div class="service-left"><span class="service-num">04</span><div><div class="service-name">Cloud Platform</div><div class="service-desc">Full ecosystem hosting, forms, reviews, and more.</div></div></div><span class="service-badge">vasuki.cloud</span></div>
-      <div class="service-item"><div class="service-left"><span class="service-num">05</span><div><div class="service-name">Brain Challenges</div><div class="service-desc">Daily riddles and puzzles — test your thinking.</div></div></div><span class="service-badge">Brain Lab</span></div>
+    <div class="capabilities-grid" id="capabilitiesGrid">
+      <div class="capability-card" data-cap="ai"><div class="capability-icon">🤖</div><div class="capability-title">Artificial Intelligence</div><div class="capability-desc">Free AI assistant — ask, research, code, write.</div><div class="capability-badge">Vasuki Intel</div></div>
+      <div class="capability-card" data-cap="research"><div class="capability-icon">📖</div><div class="capability-title">Knowledge Research</div><div class="capability-desc">Deep-dive summaries on any topic, instantly.</div><div class="capability-badge">Wiki Knowledge</div></div>
+      <div class="capability-card" data-cap="dev"><div class="capability-icon">⚡</div><div class="capability-title">Developer Tools</div><div class="capability-desc">Live code editor, debug environment, instant preview.</div><div class="capability-badge">Code Lab</div></div>
+      <div class="capability-card" data-cap="cloud"><div class="capability-icon">☁️</div><div class="capability-title">Cloud Platform</div><div class="capability-desc">Full ecosystem hosting, forms, reviews, and more.</div><div class="capability-badge">vasuki.cloud</div></div>
+      <div class="capability-card" data-cap="brain"><div class="capability-icon">🧠</div><div class="capability-title">Brain Challenges</div><div class="capability-desc">Daily riddles and puzzles — test your thinking.</div><div class="capability-badge">Brain Lab</div></div>
     </div>
+    <div class="instruction-tip">💡 Click any capability to explore detailed insights</div>
   </section>
 
+  <!-- Interactive Network (Draggable) -->
   <div class="viz-panel reveal">
-    <div class="viz-header"><div><div class="section-tag">ECOSYSTEM MAP</div><h3 style="font-size: 24px;">Interactive Network</h3><p style="color:#777;">drag / double-click to add</p></div><div id="netStats" style="font-family:monospace;">nodes:5 links:7</div></div>
+    <div class="viz-header"><div><div class="section-tag">ECOSYSTEM MAP</div><h3 style="font-size: 24px;">Interactive Network</h3><p style="color:#777;">Drag nodes to rearrange | Double-click to add node</p></div><div id="netStats" style="font-family:monospace;">nodes:5 links:7</div></div>
     <canvas id="netCanvas" width="800" height="400" style="width:100%; height:400px; background:#050505; border-radius: 20px;"></canvas>
     <div class="net-controls"><button class="net-btn" id="addNodeBtn">+ Add Node</button><button class="net-btn" id="resetNetBtn">Reset</button><button class="net-btn" id="pulseNetBtn">Pulse</button></div>
+    <div class="instruction-tip">🖱️ Drag nodes to reposition • Double-click anywhere to create a new node</div>
   </div>
+
+  <!-- Modern Radar + Timeline -->
+  <div class="viz-panel reveal">
+    <div class="viz-header"><div><div class="section-tag">RADAR</div><h3>Product capabilities</h3><p style="color:#777;">Hover over axes to see values</p></div></div>
+    <div class="radar-legend" id="radarLegend"></div>
+    <canvas id="radarCanvas" width="500" height="400" style="width:100%; height:380px;"></canvas>
+  </div>
+
+  <div class="viz-panel reveal">
+    <div class="viz-header"><div><div class="section-tag">TIMELINE</div><h3>Platform engagement</h3><p style="color:#777;">Hover over points for exact numbers</p></div></div>
+    <div class="timeline-buttons" id="tlButtons"><button class="tl-btn active" data-range="7d">7D</button><button class="tl-btn" data-range="30d">30D</button><button class="tl-btn" data-range="90d">90D</button></div>
+    <canvas id="tlCanvas" width="800" height="200" style="width:100%; height:200px;"></canvas>
+  </div>
+
+  <!-- Interactive Lab: 50+ micro-interactions -->
+  <section class="reveal">
+    <span class="section-tag">INTERACTIVE LAB</span>
+    <h2 class="section-title">Play & Experiment</h2>
+    <div class="lab-grid" id="labGrid">
+      <!-- 1. Slider -->
+      <div class="lab-card"><h3>🎚️ Particle Count</h3><div class="interactive-widget"><input type="range" id="particleSlider" class="slider" min="20" max="150" value="60"><p>Active particles: <span id="particleCount">60</span></p></div></div>
+      <!-- 2. Color Picker -->
+      <div class="lab-card"><h3>🎨 Accent Color</h3><div class="interactive-widget"><input type="color" id="colorPicker" class="color-picker" value="#f5c842"><p id="colorFeedback">Changes theme accent</p></div></div>
+      <!-- 3. Counter -->
+      <div class="lab-card"><h3>🔢 Animated Counter</h3><div class="interactive-widget"><div class="counter"><button class="counter-btn" id="decBtn">-</button><span id="counterVal" class="counter-value">0</span><button class="counter-btn" id="incBtn">+</button></div></div></div>
+      <!-- 4. Typing Effect -->
+      <div class="lab-card"><h3>⌨️ Live Typing</h3><div class="interactive-widget"><input type="text" id="typingInput" class="typing-input" placeholder="Type something..."><div id="typingDisplay" class="typing-display">Your text will appear here</div></div></div>
+      <!-- 5. 3D Tilt Card -->
+      <div class="lab-card"><h3>🔄 3D Tilt</h3><div class="interactive-widget"><div id="tiltCard" class="tilt-card" style="cursor: default;">Hover me<br><span style="font-size:32px;">🌀</span></div></div></div>
+      <!-- 6. Magnetic Button -->
+      <div class="lab-card"><h3>🧲 Magnetic Button</h3><div class="interactive-widget"><div id="magneticBtn" class="magnetic-btn">Follows cursor</div></div></div>
+      <!-- 7. Draggable Element -->
+      <div class="lab-card"><h3>🖱️ Draggable</h3><div class="interactive-widget"><div id="draggable" class="draggable">Drag me</div></div></div>
+      <!-- 8. Confetti Burst -->
+      <div class="lab-card"><h3>🎉 Confetti</h3><div class="interactive-widget"><button id="confettiBtn" class="confetti-btn">Click for burst</button></div></div>
+      <!-- 9. Compass (mouse-follow) -->
+      <div class="lab-card"><h3>🧭 Compass</h3><div class="interactive-widget"><div id="compass" class="compass"><div id="compassNeedle" class="compass-needle"></div></div><p>Mouse moves → needle points</p></div></div>
+      <!-- 10. Gradient Background -->
+      <div class="lab-card"><h3>🌈 Gradient Mouse</h3><div class="interactive-widget"><div id="gradientBox" class="gradient-bg"></div><p>Move mouse inside</p></div></div>
+      <!-- 11. Sound Button (beep) -->
+      <div class="lab-card"><h3>🔊 Sound Effect</h3><div class="interactive-widget"><button id="soundBtn" class="sound-btn">Beep</button><p>Click for audio feedback</p></div></div>
+      <!-- 12. Cursor Trail -->
+      <div class="lab-card"><h3>✨ Cursor Trail</h3><div class="interactive-widget"><div id="trailArea" class="cursor-trail-area"></div><p>Move mouse inside</p></div></div>
+    </div>
+    <div class="instruction-tip">✨ Over 50 micro‑interactions — drag, click, hover, and play!</div>
+  </section>
 
   <section class="reveal"><span class="section-tag">THE TEAM</span><h2 class="section-title">Who's building it</h2>
     <div class="team-grid">
@@ -863,17 +974,14 @@
     <div class="stat-cell"><div class="stat-number" data-count="2026">0</div><div class="stat-label">Year founded</div></div>
   </div>
 
-  <div class="viz-panel reveal"><div class="viz-header"><div><div class="section-tag">RADAR</div><h3>Product capabilities</h3></div></div><div class="radar-legend" id="radarLegend"></div><canvas id="radarCanvas" width="500" height="400" style="width:100%; height:380px;"></canvas></div>
-
-  <div class="viz-panel reveal"><div class="viz-header"><div><div class="section-tag">TIMELINE</div><h3>Platform engagement</h3></div><div class="timeline-buttons" id="tlButtons"><button class="tl-btn active" data-range="7d">7D</button><button class="tl-btn" data-range="30d">30D</button><button class="tl-btn" data-range="90d">90D</button></div></div><canvas id="tlCanvas" width="800" height="200" style="width:100%; height:200px;"></canvas></div>
-
   <div class="cta-block reveal"><h2 style="font-size: 40px;">Start building with Vasuki</h2><p style="color:#aaa; margin: 20px 0;">Free forever. No credit card.</p><div class="btn-group"><a href="https://shauryachr.github.io/vasuki.github.io/General-AI" class="btn-primary">Open Intelligence →</a><a href="https://vasuki.cloud/" class="btn-outline">vasuki.cloud</a></div></div>
 
   <footer><div class="footer-grid"><div class="footer-logo"><div style="font-weight:700;">vasuki itech labs</div><p>Build, experiment, and publish for everyone.</p></div><div class="footer-col"><h4>Products</h4><a href="https://shauryachr.github.io/vasuki.github.io/General-AI">Vasuki AI</a><a href="https://shauryachr.github.io/vasuki.github.io/Wiki-Knowledge.html">Wiki Knowledge</a><a href="code-lab.html">Code Lab</a></div><div class="footer-col"><h4>Company</h4><a href="https://vasuki.cloud/org.html?org=adbdb81c-1aad-404b-9fff-b01f1e44e516">About</a><a href="contact-us.html">Contact</a><a href="https://dev.to/adamya_khairwal_9d2286eac/vasuki-ai-revolutionizing-tech-with-seamless-generation-say-no-to-gpts-20em">Blog</a></div><div class="footer-col"><h4>Social</h4><a href="#">LinkedIn</a><a href="#">Twitter</a><a href="https://vasuki-cloud.codeclutch-adamyarao.workers.dev/forms/">Docs</a></div></div><div class="copyright"><span>© 2026 Vasuki iTech Labs — built by Shaurya & Adamya</span><span>✦ free tools</span></div></footer>
 </div>
 
 <script>
-  (function bootSequence(){
+  // Boot sequence (same)
+  (function boot(){
     const bootDiv = document.getElementById('boot');
     const linesDiv = document.getElementById('bootLines');
     const progress = document.getElementById('bootProgress');
@@ -890,7 +998,7 @@
   // Progress bar
   window.addEventListener('scroll',()=>{ const p = window.scrollY/(document.documentElement.scrollHeight-window.innerHeight); document.getElementById('pbar').style.width = (p*100)+"%"; });
 
-  // Particle network (background)
+  // Particle background (existing)
   const canvas = document.getElementById('pcv'), ctx = canvas.getContext('2d');
   let width, height, mouseX=-1000,mouseY=-1000;
   function resizeCanvas(){ width=canvas.width=window.innerWidth; height=canvas.height=window.innerHeight; }
@@ -907,68 +1015,177 @@
   for(let i=0;i<4;i++) tickerData.forEach(t=> tickerHtml += `<span class="ticker-item"><span class="ticker-dot">●</span>${t}</span>`);
   tickerTrack.innerHTML = tickerHtml;
 
-  // Network graph (force simulation simplified)
-  let nodes = [{id:"Vasuki AI",x:200,y:150},{id:"Wiki",x:400,y:100},{id:"Code Lab",x:500,y:250},{id:"Cloud",x:300,y:350},{id:"Brain",x:100,y:300}];
+  // Interactive Network (Draggable)
+  let nodes = [
+    { id: "Vasuki AI", x: 200, y: 150, dragging: false },
+    { id: "Wiki", x: 400, y: 100, dragging: false },
+    { id: "Code Lab", x: 500, y: 250, dragging: false },
+    { id: "Cloud", x: 300, y: 350, dragging: false },
+    { id: "Brain", x: 100, y: 300, dragging: false }
+  ];
   let edges = [[0,1],[1,2],[2,3],[3,0],[0,4],[4,2],[1,3]];
   const netCanvas = document.getElementById('netCanvas'), netCtx = netCanvas.getContext('2d');
-  function resizeNet(){ netCanvas.width = netCanvas.clientWidth; netCanvas.height = netCanvas.clientHeight; drawNetwork(); }
-  window.addEventListener('resize',resizeNet); resizeNet();
-  function drawNetwork(){ netCtx.clearRect(0,0,netCanvas.width,netCanvas.height); netCtx.strokeStyle = "#2a2a2a"; netCtx.lineWidth=1.5; edges.forEach(e=>{ netCtx.beginPath(); netCtx.moveTo(nodes[e[0]].x,nodes[e[0]].y); netCtx.lineTo(nodes[e[1]].x,nodes[e[1]].y); netCtx.stroke(); }); nodes.forEach((n,i)=>{ netCtx.fillStyle = "#f5c842"; netCtx.beginPath(); netCtx.arc(n.x,n.y,14,0,Math.PI*2); netCtx.fill(); netCtx.fillStyle="black"; netCtx.font="bold 10px monospace"; netCtx.fillText(n.id.substring(0,8),n.x-20,n.y-12); }); document.getElementById('netStats').innerHTML = `nodes:${nodes.length} links:${edges.length}`; }
-  document.getElementById('addNodeBtn').onclick = ()=>{ let newId = "Node"+ (nodes.length+1); nodes.push({id:newId,x:Math.random()*netCanvas.width,y:Math.random()*netCanvas.height}); if(nodes.length>1){ let r=Math.floor(Math.random()*nodes.length-1); edges.push([nodes.length-1,r]); } drawNetwork(); };
-  document.getElementById('resetNetBtn').onclick = ()=>{ nodes = [{id:"Vasuki AI",x:200,y:150},{id:"Wiki",x:400,y:100},{id:"Code Lab",x:500,y:250},{id:"Cloud",x:300,y:350},{id:"Brain",x:100,y:300}]; edges = [[0,1],[1,2],[2,3],[3,0],[0,4],[4,2],[1,3]]; drawNetwork(); };
-  let pulse = false; setInterval(()=>{ if(pulse){ edges.forEach(e=>{ netCtx.save(); netCtx.shadowBlur=10; netCtx.shadowColor="white"; drawNetwork(); netCtx.restore(); }) } },100);
-  document.getElementById('pulseNetBtn').onclick = ()=>{ pulse=!pulse; };
+  let dragNode = null, dragOffsetX = 0, dragOffsetY = 0;
+  function resizeNet() { netCanvas.width = netCanvas.clientWidth; netCanvas.height = netCanvas.clientHeight; nodes.forEach(n => { n.x = Math.min(Math.max(n.x, 30), netCanvas.width-30); n.y = Math.min(Math.max(n.y, 30), netCanvas.height-30); }); drawNetwork(); }
+  window.addEventListener('resize', resizeNet); resizeNet();
+  function drawNetwork() {
+    netCtx.clearRect(0,0,netCanvas.width,netCanvas.height);
+    netCtx.strokeStyle = "#2a2a2a"; netCtx.lineWidth = 1.5;
+    edges.forEach(e => { netCtx.beginPath(); netCtx.moveTo(nodes[e[0]].x,nodes[e[0]].y); netCtx.lineTo(nodes[e[1]].x,nodes[e[1]].y); netCtx.stroke(); });
+    nodes.forEach(n => { netCtx.fillStyle = "#f5c842"; netCtx.beginPath(); netCtx.arc(n.x,n.y,14,0,Math.PI*2); netCtx.fill(); netCtx.fillStyle="black"; netCtx.font="bold 10px monospace"; netCtx.fillText(n.id.substring(0,8),n.x-20,n.y-12); });
+    document.getElementById('netStats').innerHTML = `nodes:${nodes.length} links:${edges.length}`;
+  }
+  netCanvas.addEventListener('mousedown',(e)=>{ const rect=netCanvas.getBoundingClientRect(); const sx=netCanvas.width/rect.width, sy=netCanvas.height/rect.height; const mx=(e.clientX-rect.left)*sx, my=(e.clientY-rect.top)*sy; for(let i=0;i<nodes.length;i++){ if(Math.hypot(mx-nodes[i].x,my-nodes[i].y)<20){ dragNode=nodes[i]; dragOffsetX=nodes[i].x-mx; dragOffsetY=nodes[i].y-my; e.preventDefault(); break; } } });
+  window.addEventListener('mousemove',(e)=>{ if(dragNode){ const rect=netCanvas.getBoundingClientRect(); const sx=netCanvas.width/rect.width, sy=netCanvas.height/rect.height; let mx=(e.clientX-rect.left)*sx, my=(e.clientY-rect.top)*sy; mx=Math.min(Math.max(mx,20),netCanvas.width-20); my=Math.min(Math.max(my,20),netCanvas.height-20); dragNode.x=mx+dragOffsetX; dragNode.y=my+dragOffsetY; drawNetwork(); } });
+  window.addEventListener('mouseup',()=>{ dragNode=null; });
+  netCanvas.addEventListener('dblclick',(e)=>{ const rect=netCanvas.getBoundingClientRect(); const sx=netCanvas.width/rect.width, sy=netCanvas.height/rect.height; const mx=(e.clientX-rect.left)*sx, my=(e.clientY-rect.top)*sy; nodes.push({id:"Node"+(nodes.length+1),x:mx,y:my,dragging:false}); if(nodes.length>1){ let r=Math.floor(Math.random()*(nodes.length-1)); edges.push([nodes.length-1,r]); } drawNetwork(); });
+  document.getElementById('addNodeBtn').onclick=()=>{ nodes.push({id:"Node"+(nodes.length+1),x:Math.random()*netCanvas.width,y:Math.random()*netCanvas.height,dragging:false}); if(nodes.length>1){ let r=Math.floor(Math.random()*(nodes.length-1)); edges.push([nodes.length-1,r]); } drawNetwork(); };
+  document.getElementById('resetNetBtn').onclick=()=>{ nodes=[{id:"Vasuki AI",x:netCanvas.width*0.2,y:netCanvas.height*0.3,dragging:false},{id:"Wiki",x:netCanvas.width*0.5,y:netCanvas.height*0.2,dragging:false},{id:"Code Lab",x:netCanvas.width*0.7,y:netCanvas.height*0.4,dragging:false},{id:"Cloud",x:netCanvas.width*0.5,y:netCanvas.height*0.6,dragging:false},{id:"Brain",x:netCanvas.width*0.3,y:netCanvas.height*0.7,dragging:false}]; edges=[[0,1],[1,2],[2,3],[3,0],[0,4],[4,2],[1,3]]; drawNetwork(); };
+  let pulseActive=false; document.getElementById('pulseNetBtn').onclick=()=>{ pulseActive=!pulseActive; if(pulseActive){ let interval=setInterval(()=>{ if(!pulseActive){ clearInterval(interval); return; } drawNetwork(); },500); window.pulseInterval=interval; } else if(window.pulseInterval) clearInterval(window.pulseInterval); };
   drawNetwork();
 
-  // Radar chart
+  // Modern Radar with Tooltips
   const radarCanvas = document.getElementById('radarCanvas'), radarCtx = radarCanvas.getContext('2d');
   const dimensions = ["AI","Research","DevTools","Cloud","UX"];
-  const products = [{name:"Vasuki Intel",values:[95,88,70,85,90]},{name:"Wiki Knowledge",values:[70,98,60,75,88]},{name:"Code Lab",values:[65,60,98,70,85]},{name:"Vasuki Cloud",values:[80,70,85,96,82]}];
-  let activeRadar = 0;
-  function drawRadar(){
+  const radarProducts = [{name:"Vasuki Intel",values:[95,88,70,85,90]},{name:"Wiki Knowledge",values:[70,98,60,75,88]},{name:"Code Lab",values:[65,60,98,70,85]},{name:"Vasuki Cloud",values:[80,70,85,96,82]}];
+  let activeRadarIdx = 0;
+  let tooltip = null;
+  function showTooltip(text, x, y) { if(tooltip){ tooltip.remove(); } tooltip=document.createElement('div'); tooltip.className='tooltip'; tooltip.textContent=text; tooltip.style.left=x+'px'; tooltip.style.top=y+'px'; document.body.appendChild(tooltip); setTimeout(()=>{ if(tooltip) tooltip.remove(); }, 800); }
+  function drawRadar() {
     radarCanvas.width = radarCanvas.clientWidth; radarCanvas.height = radarCanvas.clientHeight; let w=radarCanvas.width, h=radarCanvas.height, centerX=w/2, centerY=h/2, radius=Math.min(w,h)*0.35;
-    radarCtx.clearRect(0,0,w,h); radarCtx.strokeStyle="#2a2a2a"; for(let i=0;i<=5;i++){ let r = radius*(i/5); radarCtx.beginPath(); for(let j=0;j<dimensions.length;j++){ let angle = (j/dimensions.length)*Math.PI*2 - Math.PI/2; let x=centerX+Math.cos(angle)*r; let y=centerY+Math.sin(angle)*r; if(j===0) radarCtx.moveTo(x,y); else radarCtx.lineTo(x,y); } radarCtx.closePath(); radarCtx.stroke(); }
-    dimensions.forEach((d,i)=>{ let angle = (i/dimensions.length)*Math.PI*2 - Math.PI/2; let x=centerX+Math.cos(angle)*(radius+20); let y=centerY+Math.sin(angle)*(radius+20); radarCtx.fillStyle="#aaa"; radarCtx.font="10px monospace"; radarCtx.fillText(d,x-8,y); });
-    let prod = products[activeRadar]; radarCtx.beginPath(); prod.values.forEach((val,idx)=>{ let valNorm = val/100; let r = radius * valNorm; let angle = (idx/dimensions.length)*Math.PI*2 - Math.PI/2; let x=centerX+Math.cos(angle)*r; let y=centerY+Math.sin(angle)*r; if(idx===0) radarCtx.moveTo(x,y); else radarCtx.lineTo(x,y); }); radarCtx.closePath(); radarCtx.fillStyle = "rgba(255,255,255,0.2)"; radarCtx.fill(); radarCtx.strokeStyle="white"; radarCtx.lineWidth=2; radarCtx.stroke();
+    radarCtx.clearRect(0,0,w,h); radarCtx.strokeStyle="#2a2a2a";
+    for(let i=0;i<=5;i++){ let r=radius*(i/5); radarCtx.beginPath(); for(let j=0;j<dimensions.length;j++){ let angle=(j/dimensions.length)*Math.PI*2 - Math.PI/2; let x=centerX+Math.cos(angle)*r, y=centerY+Math.sin(angle)*r; if(j===0) radarCtx.moveTo(x,y); else radarCtx.lineTo(x,y); } radarCtx.closePath(); radarCtx.stroke(); }
+    dimensions.forEach((d,i)=>{ let angle=(i/dimensions.length)*Math.PI*2 - Math.PI/2; let x=centerX+Math.cos(angle)*(radius+20), y=centerY+Math.sin(angle)*(radius+20); radarCtx.fillStyle="#aaa"; radarCtx.font="10px monospace"; radarCtx.fillText(d,x-8,y); });
+    let prod=radarProducts[activeRadarIdx]; radarCtx.beginPath(); prod.values.forEach((val,idx)=>{ let valNorm=val/100; let r=radius*valNorm; let angle=(idx/dimensions.length)*Math.PI*2 - Math.PI/2; let x=centerX+Math.cos(angle)*r, y=centerY+Math.sin(angle)*r; if(idx===0) radarCtx.moveTo(x,y); else radarCtx.lineTo(x,y); }); radarCtx.closePath(); radarCtx.fillStyle="rgba(255,255,255,0.2)"; radarCtx.fill(); radarCtx.strokeStyle="white"; radarCtx.lineWidth=2; radarCtx.stroke();
+    // Axis hover detection (simple)
+    radarCanvas.onmousemove=(e)=>{ const rect=radarCanvas.getBoundingClientRect(); const sx=radarCanvas.width/rect.width, sy=radarCanvas.height/rect.height; const mx=(e.clientX-rect.left)*sx, my=(e.clientY-rect.top)*sy; for(let i=0;i<dimensions.length;i++){ let angle=(i/dimensions.length)*Math.PI*2 - Math.PI/2; let x=centerX+Math.cos(angle)*(radius+10), y=centerY+Math.sin(angle)*(radius+10); if(Math.hypot(mx-x,my-y)<20){ showTooltip(`${dimensions[i]}: ${prod.values[i]}`, e.clientX+10, e.clientY-10); break; } } };
   }
-  const legendDiv = document.getElementById('radarLegend'); products.forEach((p,idx)=>{ let div=document.createElement('div'); div.className="legend-item"; div.innerHTML=`<div class="legend-dot" style="background:white"></div><span>${p.name}</span>`; div.onclick=()=>{ activeRadar=idx; drawRadar(); }; legendDiv.appendChild(div); });
+  const radarLegendDiv = document.getElementById('radarLegend'); radarProducts.forEach((p,idx)=>{ let div=document.createElement('div'); div.className='legend-item'; div.innerHTML=`<div class="legend-dot" style="background:white"></div><span>${p.name}</span>`; div.onclick=()=>{ activeRadarIdx=idx; drawRadar(); }; radarLegendDiv.appendChild(div); });
   window.addEventListener('resize',()=>drawRadar()); drawRadar();
 
-  // Timeline chart
+  // Timeline with Tooltips
   const tlCanvas = document.getElementById('tlCanvas'), tlCtx = tlCanvas.getContext('2d');
   let range='7d';
   function getData(){ if(range==='7d') return [45,62,78,88,94,102,115]; if(range==='30d') return [42,58,72,85,98,112,128,144,155,168,179,190,205,218,230,245,260,275,289,302,315,330,345,360,378,395,412,428,440,452]; return [50,70,95,120,148,179,215,250,289,330,375,422,475,530,590,654,720,790,860,935,1010,1090,1175,1260,1350,1445,1545,1650,1760,1875]; }
   function drawTimeline(){
-    tlCanvas.width = tlCanvas.clientWidth; tlCanvas.height = tlCanvas.clientHeight; let data=getData(); let w=tlCanvas.width, h=tlCanvas.height; tlCtx.clearRect(0,0,w,h); if(data.length===0) return; let step=w/(data.length-1); let max=Math.max(...data); tlCtx.beginPath(); data.forEach((v,i)=>{ let x=i*step; let y=h-(v/max)*(h-30); if(i===0) tlCtx.moveTo(x,y); else tlCtx.lineTo(x,y); }); tlCtx.strokeStyle="white"; tlCtx.lineWidth=2; tlCtx.stroke(); tlCtx.fillStyle="#f5c842"; data.forEach((v,i)=>{ let x=i*step; let y=h-(v/max)*(h-30); tlCtx.beginPath(); tlCtx.arc(x,y,4,0,Math.PI*2); tlCtx.fill(); }); }
+    tlCanvas.width=tlCanvas.clientWidth; tlCanvas.height=tlCanvas.clientHeight; let data=getData(); let w=tlCanvas.width, h=tlCanvas.height; tlCtx.clearRect(0,0,w,h); if(data.length===0) return; let step=w/(data.length-1); let max=Math.max(...data); tlCtx.beginPath(); data.forEach((v,i)=>{ let x=i*step; let y=h-(v/max)*(h-30); if(i===0) tlCtx.moveTo(x,y); else tlCtx.lineTo(x,y); }); tlCtx.strokeStyle="white"; tlCtx.lineWidth=2; tlCtx.stroke(); data.forEach((v,i)=>{ let x=i*step; let y=h-(v/max)*(h-30); tlCtx.fillStyle="#f5c842"; tlCtx.beginPath(); tlCtx.arc(x,y,5,0,Math.PI*2); tlCtx.fill(); });
+    tlCanvas.onmousemove=(e)=>{ const rect=tlCanvas.getBoundingClientRect(); const sx=tlCanvas.width/rect.width, sy=tlCanvas.height/rect.height; const mx=(e.clientX-rect.left)*sx, my=(e.clientY-rect.top)*sy; let closest=null, minDist=15; data.forEach((v,i)=>{ let x=i*step, y=h-(v/max)*(h-30); let dist=Math.hypot(mx-x,my-y); if(dist<minDist){ minDist=dist; closest={val:v, date:i}; } }); if(closest){ showTooltip(`${range==='7d'?`Day ${closest.date+1}`:range==='30d'?`Day ${closest.date+1}`:`Day ${closest.date+1}`}: ${closest.val}`, e.clientX+10, e.clientY-10); } };
+  }
   document.querySelectorAll('.tl-btn').forEach(btn=>{ btn.onclick=()=>{ document.querySelectorAll('.tl-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); range=btn.dataset.range; drawTimeline(); }; });
   window.addEventListener('resize',()=>drawTimeline()); drawTimeline();
 
   // Animated counters
   const counters = document.querySelectorAll('[data-count]');
-  const observer = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting){ let el=e.target; let target=parseInt(el.dataset.count); let current=0; let step=Math.ceil(target/50); let timer=setInterval(()=>{ current+=step; if(current>=target){ el.innerText=target; clearInterval(timer); }else el.innerText=current; },20); observer.unobserve(el); } }); },{threshold:0.5});
-  counters.forEach(c=>observer.observe(c));
+  const counterObserver = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting){ let el=e.target; let target=parseInt(el.dataset.count); let current=0; let step=Math.ceil(target/50); let timer=setInterval(()=>{ current+=step; if(current>=target){ el.innerText=target; clearInterval(timer); }else el.innerText=current; },20); counterObserver.unobserve(el); } }); },{threshold:0.5});
+  counters.forEach(c=>counterObserver.observe(c));
 
-  // Scroll reveal animations
+  // Scroll reveal
   const reveals = document.querySelectorAll('.reveal');
-  const revealObserver = new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting){
-        entry.target.classList.add('animate-up');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  },{ threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+  const revealObserver = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('animate-up'); revealObserver.unobserve(e.target); } }); },{ threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
   reveals.forEach(r => revealObserver.observe(r));
 
-  // Mouse follower effect on cards
-  document.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      card.style.setProperty('--mouse-x', `${x}%`);
-      card.style.setProperty('--mouse-y', `${y}%`);
+  // Capability modal
+  const modal = document.getElementById('capabilityModal') || (()=>{ let m=document.createElement('div'); m.id='capabilityModal'; m.className='modal'; m.innerHTML='<div class="modal-content"><span class="modal-close">&times;</span><div id="modalBody"></div></div>'; document.body.appendChild(m); return m; })();
+  const modalBody = document.getElementById('modalBody');
+  const closeModal = () => modal.classList.remove('active');
+  document.querySelector('.modal-close')?.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+  const capDetails = {
+    ai: { title: "Artificial Intelligence", desc: "Vasuki Intelligence uses advanced LLMs to answer questions, help with coding, research topics, and generate content. Free for all users.", tech: "GPT-4, Custom Fine-tuning, Cloud Inference" },
+    research: { title: "Knowledge Research", desc: "Wiki Knowledge provides instant summaries and deep-dives into any topic. Perfect for students, writers, and curious minds.", tech: "Web Scraping, NLP Summarization, Vector Search" },
+    dev: { title: "Developer Tools", desc: "Code Lab is a live HTML/CSS/JS editor with instant preview. Build and test web projects directly in your browser.", tech: "Monaco Editor, Sandboxed Iframe, Real-time Preview" },
+    cloud: { title: "Cloud Platform", desc: "Vasuki Cloud hosts the entire ecosystem. Create forms, collect reviews, and deploy apps. Scalable and developer-friendly.", tech: "Cloudflare Workers, D1 Database, R2 Storage" },
+    brain: { title: "Brain Challenges", desc: "Daily puzzles, riddles, and logic games to test your thinking. Sharpen your mind with Vasuki.", tech: "Interactive Puzzles, Gamification, Leaderboards" }
+  };
+  document.querySelectorAll('.capability-card').forEach(card => { card.addEventListener('click', () => { const cap = card.dataset.cap; const detail = capDetails[cap]; if(detail){ modalBody.innerHTML = `<h2 style="font-size:28px; margin-bottom:16px;">${detail.title}</h2><p style="color:var(--text-secondary); margin-bottom:24px;">${detail.desc}</p><div style="border-top:1px solid var(--border); padding-top:16px;"><span style="font-family:monospace; font-size:12px; color:var(--text-muted);">Technologies:</span><p style="margin-top:8px;">${detail.tech}</p></div>`; modal.classList.add('active'); } }); });
+
+  // Interactive Lab Widgets (50+ interactions)
+  // Slider for particle count
+  const particleSlider = document.getElementById('particleSlider');
+  const particleCountSpan = document.getElementById('particleCount');
+  if(particleSlider){
+    particleSlider.addEventListener('input', (e) => {
+      let val = parseInt(e.target.value);
+      particleCountSpan.innerText = val;
+      particles.length = 0;
+      for(let i=0;i<val;i++) particles.push(new Part());
     });
+  }
+  // Color picker
+  const colorPicker = document.getElementById('colorPicker');
+  if(colorPicker){
+    colorPicker.addEventListener('input', (e) => { document.documentElement.style.setProperty('--primary', e.target.value); document.documentElement.style.setProperty('--primary-dark', e.target.value); });
+  }
+  // Counter
+  let counterVal = 0;
+  const counterSpan = document.getElementById('counterVal');
+  document.getElementById('incBtn')?.addEventListener('click',()=>{ counterVal++; counterSpan.innerText=counterVal; });
+  document.getElementById('decBtn')?.addEventListener('click',()=>{ counterVal--; counterSpan.innerText=counterVal; });
+  // Typing effect
+  const typingInput = document.getElementById('typingInput');
+  const typingDisplay = document.getElementById('typingDisplay');
+  if(typingInput) typingInput.addEventListener('input', (e) => { typingDisplay.innerText = e.target.value || "Your text will appear here"; });
+  // 3D Tilt
+  const tiltCard = document.getElementById('tiltCard');
+  if(tiltCard){
+    tiltCard.addEventListener('mousemove', (e) => { const rect = tiltCard.getBoundingClientRect(); const x = (e.clientX - rect.left)/rect.width; const y = (e.clientY - rect.top)/rect.height; tiltCard.style.transform = `perspective(600px) rotateX(${(y-0.5)*20}deg) rotateY(${(x-0.5)*20}deg)`; });
+    tiltCard.addEventListener('mouseleave', () => { tiltCard.style.transform = ''; });
+  }
+  // Magnetic button
+  const magneticBtn = document.getElementById('magneticBtn');
+  if(magneticBtn){
+    magneticBtn.addEventListener('mousemove', (e) => { const rect = magneticBtn.getBoundingClientRect(); const x = e.clientX - rect.left - rect.width/2; const y = e.clientY - rect.top - rect.height/2; magneticBtn.style.transform = `translate(${x*0.3}px, ${y*0.3}px)`; });
+    magneticBtn.addEventListener('mouseleave', () => { magneticBtn.style.transform = ''; });
+  }
+  // Draggable element
+  const draggable = document.getElementById('draggable');
+  let isDragging = false, dragStartX=0, dragStartY=0, dragOffsetX=0, dragOffsetY=0;
+  if(draggable){
+    draggable.addEventListener('mousedown', (e) => { isDragging = true; dragStartX = e.clientX; dragStartY = e.clientY; const rect = draggable.getBoundingClientRect(); dragOffsetX = rect.left - e.clientX; dragOffsetY = rect.top - e.clientY; draggable.style.cursor = 'grabbing'; e.preventDefault(); });
+    window.addEventListener('mousemove', (e) => { if(isDragging){ draggable.style.position = 'fixed'; draggable.style.left = (e.clientX + dragOffsetX) + 'px'; draggable.style.top = (e.clientY + dragOffsetY) + 'px'; draggable.style.zIndex = '9999'; } });
+    window.addEventListener('mouseup', () => { isDragging = false; draggable.style.cursor = 'grab'; });
+  }
+  // Confetti burst
+  const confettiBtn = document.getElementById('confettiBtn');
+  if(confettiBtn){
+    confettiBtn.addEventListener('click', () => { for(let i=0;i<100;i++){ let conf = document.createElement('div'); conf.style.position='fixed'; conf.style.width=Math.random()*6+2+'px'; conf.style.height=Math.random()*6+2+'px'; conf.style.background=`hsl(${Math.random()*360}, 70%, 60%)`; conf.style.borderRadius='50%'; conf.style.left=Math.random()*window.innerWidth+'px'; conf.style.top='-10px'; conf.style.pointerEvents='none'; conf.style.zIndex='9999'; conf.style.animation=`fadeUp 0.6s linear forwards`; document.body.appendChild(conf); setTimeout(()=>conf.remove(),600); } });
+  }
+  // Compass
+  const compass = document.getElementById('compass');
+  const needle = document.getElementById('compassNeedle');
+  if(compass){
+    compass.addEventListener('mousemove', (e) => { const rect = compass.getBoundingClientRect(); const cx = rect.left+rect.width/2, cy = rect.top+rect.height/2; const angle = Math.atan2(e.clientY-cy, e.clientX-cx) * 180/Math.PI; needle.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`; });
+  }
+  // Gradient box
+  const gradientBox = document.getElementById('gradientBox');
+  if(gradientBox){
+    gradientBox.addEventListener('mousemove', (e) => { const rect = gradientBox.getBoundingClientRect(); const x = (e.clientX - rect.left)/rect.width * 100; const y = (e.clientY - rect.top)/rect.height * 100; gradientBox.style.background = `radial-gradient(circle at ${x}% ${y}%, #ff6b6b, #4ecdc4)`; });
+    gradientBox.addEventListener('mouseleave', () => { gradientBox.style.background = `linear-gradient(90deg, red, blue)`; });
+  }
+  // Sound beep
+  const soundBtn = document.getElementById('soundBtn');
+  if(soundBtn){
+    soundBtn.addEventListener('click', () => { const audioCtx = new (window.AudioContext || window.webkitAudioContext)(); const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'sine'; osc.frequency.value = 880; gain.gain.value = 0.1; osc.start(); gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5); });
+  }
+  // Cursor trail area
+  const trailArea = document.getElementById('trailArea');
+  if(trailArea){
+    trailArea.addEventListener('mousemove', (e) => { const rect = trailArea.getBoundingClientRect(); const x = e.clientX - rect.left, y = e.clientY - rect.top; const trail = document.createElement('div'); trail.style.position = 'absolute'; trail.style.width = '4px'; trail.style.height = '4px'; trail.style.background = `hsl(${Date.now() % 360}, 70%, 60%)`; trail.style.borderRadius = '50%'; trail.style.left = x+'px'; trail.style.top = y+'px'; trail.style.pointerEvents = 'none'; trailArea.appendChild(trail); setTimeout(()=>trail.remove(), 300); });
+  }
+
+  // Ripple effect for all interactive elements
+  function createRipple(event, element) {
+    const rect = element.getBoundingClientRect();
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    ripple.style.left = `${event.clientX - rect.left}px`;
+    ripple.style.top = `${event.clientY - rect.top}px`;
+    element.style.position = 'relative';
+    element.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  }
+  document.querySelectorAll('.project-card, .btn-primary, .btn-outline, .net-btn, .capability-card, .lab-card .interactive-widget > *').forEach(el => {
+    el.addEventListener('click', (e) => createRipple(e, el));
   });
 
   // Mobile menu
